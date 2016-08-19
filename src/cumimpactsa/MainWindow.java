@@ -301,7 +301,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         menuProcessing.setText("Processing & data");
 
-        menuSensitivityscores.setText("Load sensitivity scores...");
+        menuSensitivityscores.setText("Load sensitivity weights...");
         menuSensitivityscores.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuSensitivityscoresActionPerformed(evt);

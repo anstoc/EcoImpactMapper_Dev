@@ -50,7 +50,7 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="menuSensitivityscores">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Load sensitivity scores..."/>
+                <Property name="text" type="java.lang.String" value="Load sensitivity weights..."/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuSensitivityscoresActionPerformed"/>
