@@ -1,0 +1,16 @@
+1. Make removal work
+2. no duplicates of selective factors
+3. saving and loading selective factors
+4. remove data types functions and replace with selective factors
+
+5. save last used open project folder
+
+6. let low pass filter for resolution improvement automatically detect best distance
+
+7. implement logger
+
+8. testing
+
+9. write new tutorial and trim away unused functions, e.g. the Morris analysis and regions and aois
+
+10. publish as soon as the GEB paper comes out
