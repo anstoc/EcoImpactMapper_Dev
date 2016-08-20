@@ -89,7 +89,7 @@ public class MainWindow extends javax.swing.JFrame {
         menuSave = new javax.swing.JMenuItem();
         menuLoad = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
-        menuProcessing = new javax.swing.JMenu();
+        menuAssignSelectiveFactors = new javax.swing.JMenu();
         menuSensitivityscores = new javax.swing.JMenuItem();
         menuPreprocessing = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
@@ -97,6 +97,7 @@ public class MainWindow extends javax.swing.JFrame {
         menuItemExportPolyAreas = new javax.swing.JMenuItem();
         menuItemLoadRegions = new javax.swing.JMenuItem();
         menuItemAois = new javax.swing.JMenuItem();
+        jMenuItem5 = new javax.swing.JMenuItem();
         MenuView = new javax.swing.JMenu();
         jMenu5 = new javax.swing.JMenu();
         radioButtonMenuItemLinearStretch = new javax.swing.JRadioButtonMenuItem();
@@ -299,7 +300,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         menuBarMain.add(menuProject);
 
-        menuProcessing.setText("Processing & data");
+        menuAssignSelectiveFactors.setText("Processing & data");
 
         menuSensitivityscores.setText("Load sensitivity weights...");
         menuSensitivityscores.addActionListener(new java.awt.event.ActionListener() {
@@ -307,7 +308,7 @@ public class MainWindow extends javax.swing.JFrame {
                 menuSensitivityscoresActionPerformed(evt);
             }
         });
-        menuProcessing.add(menuSensitivityscores);
+        menuAssignSelectiveFactors.add(menuSensitivityscores);
 
         menuPreprocessing.setText("Pre-processing...");
         menuPreprocessing.addActionListener(new java.awt.event.ActionListener() {
@@ -315,7 +316,7 @@ public class MainWindow extends javax.swing.JFrame {
                 menuPreprocessingActionPerformed(evt);
             }
         });
-        menuProcessing.add(menuPreprocessing);
+        menuAssignSelectiveFactors.add(menuPreprocessing);
 
         jMenuItem3.setText("Data types...");
         jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
@@ -323,7 +324,7 @@ public class MainWindow extends javax.swing.JFrame {
                 jMenuItem3ActionPerformed(evt);
             }
         });
-        menuProcessing.add(jMenuItem3);
+        menuAssignSelectiveFactors.add(jMenuItem3);
 
         menuItemExportLayer.setText("Export displayed layer...");
         menuItemExportLayer.addActionListener(new java.awt.event.ActionListener() {
@@ -331,7 +332,7 @@ public class MainWindow extends javax.swing.JFrame {
                 menuItemExportLayerActionPerformed(evt);
             }
         });
-        menuProcessing.add(menuItemExportLayer);
+        menuAssignSelectiveFactors.add(menuItemExportLayer);
 
         menuItemExportPolyAreas.setText("Extract & export polygon areas...");
         menuItemExportPolyAreas.addActionListener(new java.awt.event.ActionListener() {
@@ -339,7 +340,7 @@ public class MainWindow extends javax.swing.JFrame {
                 menuItemExportPolyAreasActionPerformed(evt);
             }
         });
-        menuProcessing.add(menuItemExportPolyAreas);
+        menuAssignSelectiveFactors.add(menuItemExportPolyAreas);
 
         menuItemLoadRegions.setText("Load regions...");
         menuItemLoadRegions.addActionListener(new java.awt.event.ActionListener() {
@@ -347,7 +348,7 @@ public class MainWindow extends javax.swing.JFrame {
                 menuItemLoadRegionsActionPerformed(evt);
             }
         });
-        menuProcessing.add(menuItemLoadRegions);
+        menuAssignSelectiveFactors.add(menuItemLoadRegions);
 
         menuItemAois.setText("Load areas of interest...");
         menuItemAois.addActionListener(new java.awt.event.ActionListener() {
@@ -355,9 +356,17 @@ public class MainWindow extends javax.swing.JFrame {
                 menuItemAoisActionPerformed(evt);
             }
         });
-        menuProcessing.add(menuItemAois);
+        menuAssignSelectiveFactors.add(menuItemAois);
 
-        menuBarMain.add(menuProcessing);
+        jMenuItem5.setText("Assign selective factors...");
+        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem5ActionPerformed(evt);
+            }
+        });
+        menuAssignSelectiveFactors.add(jMenuItem5);
+
+        menuBarMain.add(menuAssignSelectiveFactors);
 
         MenuView.setText("View");
 
@@ -946,7 +955,6 @@ public class MainWindow extends javax.swing.JFrame {
         ProcessingWindow dialog = new ProcessingWindow(this, true);
         dialog.setVisible(true);
         
-        //set up all lists
         
     }//GEN-LAST:event_menuPreprocessingActionPerformed
 
@@ -2466,6 +2474,12 @@ public class MainWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_menuItemSensitivityIndexActionPerformed
 
+    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
+        
+        FactorLayerDialog dialog = new FactorLayerDialog(this, true);
+        dialog.setVisible(true);
+    }//GEN-LAST:event_jMenuItem5ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -2521,6 +2535,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -2530,6 +2545,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JList listEcocomps;
     private javax.swing.JList listOtherData;
     private javax.swing.JList listStressors;
+    private javax.swing.JMenu menuAssignSelectiveFactors;
     private javax.swing.JMenuBar menuBarMain;
     private javax.swing.JMenuItem menuColorScale;
     private javax.swing.JMenu menuDiversityIndexAvg;
@@ -2551,7 +2567,6 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem menuLoad;
     private javax.swing.JMenuItem menuNew;
     private javax.swing.JMenuItem menuPreprocessing;
-    private javax.swing.JMenu menuProcessing;
     private javax.swing.JMenu menuProject;
     private javax.swing.JMenuItem menuSave;
     private javax.swing.JMenuItem menuSensitivityscores;

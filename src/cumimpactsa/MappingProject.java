@@ -30,6 +30,7 @@ public class MappingProject
     public ArrayList<SpatialDataLayer> stressors = new ArrayList<SpatialDataLayer>();
     public ArrayList<SpatialDataLayer> ecocomps = new ArrayList<SpatialDataLayer>();
     public ArrayList<PreProcessor> processors = new ArrayList<PreProcessor>();
+    public ArrayList<String> selectiveFactors = new ArrayList<String>();
     public SensitivityScoreSet sensitivityScores = new SensitivityScoreSet();
     public SpatialDataLayer regions = null;
     public SpatialDataLayer aois = null;
@@ -85,6 +86,13 @@ public class MappingProject
         processors.add(new IdwSpreader());
         processors.add(new AreaRefiner()); 
         processors.add(new ResolutionReducer());
+    }
+    
+    public void initializeSelectiveFactors()
+    {
+        selectiveFactors=new ArrayList<String>();
+        selectiveFactors.add(new AreaRefiner().getName());
+        selectiveFactors.add(new IdwSpreader().getName());
     }
     
     public String[] getProcessorNames()
@@ -704,6 +712,35 @@ public class MappingProject
                 {return i;}
         }
         return -1;
+    }
+
+    ArrayList<String> getDataLayerBySelectiveFactor(String factorName) 
+    {
+        if(factorName==null) return null;
+        
+        ArrayList<String> layers = new ArrayList<String>();
+        for(int i=0; i<stressors.size(); i++)
+        {
+            for(int j=0; j<stressors.get(i).selectiveFactors.size();j++)
+            {
+                if(stressors.get(i).selectiveFactors.get(j).equals(factorName))
+                {
+                    layers.add(stressors.get(i).getName());
+                }
+            }
+        }
+        for(int i=0; i<ecocomps.size(); i++)
+        {
+            for(int j=0; j<ecocomps.get(i).selectiveFactors.size();j++)
+            {
+                if(ecocomps.get(i).selectiveFactors.get(j).equals(factorName))
+                {
+                    layers.add(ecocomps.get(i).getName());
+                }
+            }
+        }
+        
+        return layers;
     }
 
     

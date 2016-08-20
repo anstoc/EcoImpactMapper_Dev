@@ -21,6 +21,7 @@ public class SpatialDataLayer implements DrawableData
     protected String dataType = GlobalResources.SPATIALDATATYPE_UNKNOWN;
     
     private ArrayList<PreProcessor> processingChain=new ArrayList<PreProcessor>();
+    protected ArrayList<String> selectiveFactors = new ArrayList<String>(); //data set specific factors to be applied in uncertainty analysis
     
     private boolean processingChainLoaded=false;
     

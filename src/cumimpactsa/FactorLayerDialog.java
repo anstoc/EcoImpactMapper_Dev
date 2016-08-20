@@ -31,10 +31,17 @@ public class FactorLayerDialog extends javax.swing.JDialog {
         this.listLayers.setModel(model);
         
         //set up factor list
+        GlobalResources.mappingProject.initializeSelectiveFactors();
         ArrayList<String> factorNames=GlobalResources.mappingProject.selectiveFactors;
         DefaultListModel model2 = new DefaultListModel();
-        for(int i=0; i<factorNames.size; i++) {model2.addElement(factorNames.get(i));}
+        for(int i=0; i<factorNames.size(); i++) {model2.addElement(factorNames.get(i));}
         this.listFactors.setModel(model2);
+        
+        ////set up empty assigned factors list
+        DefaultListModel model3 = new DefaultListModel();
+        this.listApplyTo.setModel(model3);
+        
+        
     }
 
     /**
@@ -63,6 +70,7 @@ public class FactorLayerDialog extends javax.swing.JDialog {
         jButton1.setText("jButton1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
 
         jLabel1.setText("Data layers");
 
@@ -75,12 +83,19 @@ public class FactorLayerDialog extends javax.swing.JDialog {
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
+        listLayers.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(listLayers);
 
         listFactors.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
+        });
+        listFactors.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        listFactors.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                listFactorsValueChanged(evt);
+            }
         });
         jScrollPane2.setViewportView(listFactors);
 
@@ -89,6 +104,7 @@ public class FactorLayerDialog extends javax.swing.JDialog {
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
+        listApplyTo.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane3.setViewportView(listApplyTo);
 
         buttonOK.setText("OK");
@@ -98,9 +114,19 @@ public class FactorLayerDialog extends javax.swing.JDialog {
             }
         });
 
-        buttonAdd.setText("<<<");
+        buttonAdd.setText("<--");
+        buttonAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonAddActionPerformed(evt);
+            }
+        });
 
-        buttonRemove.setText(">>>");
+        buttonRemove.setText("-->");
+        buttonRemove.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonRemoveActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -116,9 +142,9 @@ public class FactorLayerDialog extends javax.swing.JDialog {
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(buttonAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(buttonRemove, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(buttonRemove, javax.swing.GroupLayout.DEFAULT_SIZE, 64, Short.MAX_VALUE)
+                    .addComponent(buttonAdd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1)
@@ -153,8 +179,64 @@ public class FactorLayerDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void buttonOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonOKActionPerformed
-        // TODO add your handling code here:
+        this.setVisible(false);
     }//GEN-LAST:event_buttonOKActionPerformed
+
+    
+    private void buttonAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAddActionPerformed
+        //get selected data layer
+        String selected= (String) this.listLayers.getSelectedValue();
+        String factor = (String) this.listFactors.getSelectedValue();
+        if(selected==null || factor==null)
+        {
+            return;
+        }
+        else
+        {
+            GlobalResources.mappingProject.getDataLayerByName(selected).selectiveFactors.add(factor);
+        }
+        listFactorsValueChanged(null); //update UI
+    }//GEN-LAST:event_buttonAddActionPerformed
+
+    private void buttonRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRemoveActionPerformed
+        String selected= (String) this.listLayers.getSelectedValue();
+        String factor = (String) this.listApplyTo.getSelectedValue();
+        if(selected==null || factor ==null)
+        {
+            return;
+        }
+         else
+        {
+            ArrayList<String> factorList =GlobalResources.mappingProject.getDataLayerByName(selected).selectiveFactors;
+            factorList.remove(this.listFactors.getSelectedIndex());
+        }
+        listFactorsValueChanged(null); //update UI
+    }//GEN-LAST:event_buttonRemoveActionPerformed
+
+    private void listFactorsValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listFactorsValueChanged
+        //get selected data layer
+        String selectedValue= (String) this.listFactors.getSelectedValue();
+        
+        //case 1: no data selected
+        if(selectedValue==null)
+        {
+            DefaultListModel model = new DefaultListModel();
+            this.listApplyTo.setModel(model);
+        }
+        //case 2: one factor selected
+        else
+        {
+            DefaultListModel model = new DefaultListModel();
+            ArrayList<String> layerList = GlobalResources.mappingProject.getDataLayerBySelectiveFactor(selectedValue);
+            
+            for(int i=0; i<layerList.size();i++)
+            {
+                model.addElement(layerList.get(i));
+            }
+            
+            this.listApplyTo.setModel(model);
+        }
+    }//GEN-LAST:event_listFactorsValueChanged
 
     /**
      * @param args the command line arguments
