@@ -193,22 +193,21 @@ public class FactorLayerDialog extends javax.swing.JDialog {
         }
         else
         {
-            GlobalResources.mappingProject.getDataLayerByName(selected).selectiveFactors.add(factor);
+            GlobalResources.mappingProject.getDataLayerByName(selected).addSelectiveFactor(factor);
         }
         listFactorsValueChanged(null); //update UI
     }//GEN-LAST:event_buttonAddActionPerformed
 
     private void buttonRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRemoveActionPerformed
-        String selected= (String) this.listLayers.getSelectedValue();
-        String factor = (String) this.listApplyTo.getSelectedValue();
-        if(selected==null || factor ==null)
+        String layer= (String) this.listApplyTo.getSelectedValue();
+        String factor = (String) this.listFactors.getSelectedValue();
+        if(layer==null || factor ==null)
         {
             return;
         }
          else
         {
-            ArrayList<String> factorList =GlobalResources.mappingProject.getDataLayerByName(selected).selectiveFactors;
-            factorList.remove(this.listFactors.getSelectedIndex());
+            GlobalResources.mappingProject.getDataLayerByName(layer).removeSelectiveFactor(factor);  
         }
         listFactorsValueChanged(null); //update UI
     }//GEN-LAST:event_buttonRemoveActionPerformed

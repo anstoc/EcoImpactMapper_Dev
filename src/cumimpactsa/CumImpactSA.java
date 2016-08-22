@@ -18,6 +18,5 @@ public class CumImpactSA {
         
         MainWindow mainWindow=new MainWindow();
         mainWindow.setVisible(true);
-        
     }
 }

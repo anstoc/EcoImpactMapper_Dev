@@ -1,9 +1,9 @@
-1. Make removal work
-2. no duplicates of selective factors
+
+
 3. saving and loading selective factors
 4. remove data types functions and replace with selective factors
 
-5. save last used open project folder
+
 
 6. let low pass filter for resolution improvement automatically detect best distance
 

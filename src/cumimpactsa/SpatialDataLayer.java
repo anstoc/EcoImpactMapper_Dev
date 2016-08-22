@@ -203,6 +203,30 @@ public class SpatialDataLayer implements DrawableData
        return GlobalResources.DATATYPE_SPATIAL;
     }
     
-
+    public void addSelectiveFactor(String factorName)
+    {
+        boolean contained=false;
+        for(int i=0; i<selectiveFactors.size();i++)
+        {
+            if(factorName.equals(selectiveFactors.get(i)))
+            {
+                contained=true;
+            }
+        }
+        if(!contained) {this.selectiveFactors.add(factorName);}
+    }
+    
+    public void removeSelectiveFactor(String factorName)
+    {
+        int index=-1;
+        for(int i=0; i<selectiveFactors.size();i++)
+        {
+            if(factorName.equals(selectiveFactors.get(i)))
+            {
+               index=i;
+            }
+        }
+        if(index>=0) {selectiveFactors.remove(index);}
+    }
     
 }
