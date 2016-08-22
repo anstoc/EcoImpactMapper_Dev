@@ -481,6 +481,8 @@ public class MappingProject
         table.writeToFile(filename);
     }
     
+
+    
     private void saveDataTypes(String filename)
     {
         CsvTableGeneral table = new CsvTableGeneral();
