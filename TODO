@@ -1,9 +1,7 @@
 
 
-3. saving and loading selective factors
+
 4. remove data types functions and replace with selective factors
-
-
 
 6. let low pass filter for resolution improvement automatically detect best distance
 
@@ -13,4 +11,4 @@
 
 9. write new tutorial and trim away unused functions, e.g. the Morris analysis and regions and aois
 
-10. publish as soon as the GEB paper comes out
+10. publish, add comments to GEB and JORS?

@@ -388,6 +388,20 @@ public class MappingProject
         //create processing chain file
         saveDataTypes(dataTypeName);
         
+        //add path to sourcefile for selective factors
+        pos=filename.lastIndexOf(".");
+        if(pos<1) {basepath=filename;}
+        else {basepath = filename.substring(0,pos);}
+        String selFactorName=basepath+"_SF.csv";
+        row = new ArrayList<String>();
+        row.add("SF");
+        row.add("n/a");
+        row.add(getRelativePath(selFactorName));
+        row.add("n/a");row.add("n/a");row.add("n/a");
+        table.addRow(row);
+        //create selective factors file
+        saveSelectiveFactors(selFactorName);
+        
         //save regions
         if(regions!=null)
         {    
@@ -511,6 +525,39 @@ public class MappingProject
         table.writeToFile(filename);
     }
     
+    private void saveSelectiveFactors(String filename)
+    {
+        CsvTableGeneral table = new CsvTableGeneral();
+        table.addColumn("DataLayer");
+        table.addColumn("Factor");
+        
+        //go through stressors
+        for(int i=0; i<stressors.size();i++)
+        {
+            ArrayList<String> selectiveFactors = stressors.get(i).selectiveFactors;
+            for(int j=0; j<selectiveFactors.size(); j++)
+            {
+                ArrayList<String> row = new ArrayList<String>();
+                row.add(stressors.get(i).getName());
+                row.add(selectiveFactors.get(j));
+                table.addRow(row);     
+            }
+        }
+
+        for(int i=0; i<ecocomps.size();i++)
+        {
+            ArrayList<String> selectiveFactors = ecocomps.get(i).selectiveFactors;
+            for(int j=0; j<selectiveFactors.size(); j++)
+            {
+                ArrayList<String> row = new ArrayList<String>();
+                row.add(ecocomps.get(i).getName());
+                row.add(selectiveFactors.get(j));
+                table.addRow(row);     
+            }    
+        }
+        
+        table.writeToFile(filename);
+    }
     
     public void createFromTable(CsvTableGeneral table)
     {
@@ -526,6 +573,7 @@ public class MappingProject
         //final StatusWindow statusWindow = new StatusWindow();
         final CsvTableGeneral procTable=new CsvTableGeneral();
         final CsvTableGeneral dataTypeTable=new CsvTableGeneral();
+        final CsvTableGeneral selFactorsTable=new CsvTableGeneral();
         //statusWindow.setVisible(true);
         
         //do loading in worker thread
@@ -599,6 +647,13 @@ public class MappingProject
                        dataTypeTable.readFromFile(new File(dataTypeFileName));
                        //processing of this table will occur when all other data are loaded to make sure no data layers are missing
                    }
+                   else if(resType.get(row).equals("SF"))
+                   {
+                        //load table
+                       String selFactorsFileName=getAbsolutePath(file.get(row));
+                       selFactorsTable.readFromFile(new File(selFactorsFileName));
+                       //processing of this table will occur when all other data are loaded to make sure no data layers are missing
+                   }
                    else if(resType.get(row).equals("color"))
                    {
                        if(resName.get(row).equals("maxcolor")) 
@@ -657,7 +712,19 @@ public class MappingProject
                         layer.setSpatialDataType(types.get(i));
                     }
                 }
-                 
+                
+                //project file contained reference to a selective factors table
+                if(selFactorsTable.getColNames().size()>0)
+                {
+                    ArrayList<String> layers=selFactorsTable.getColumn("DataLayer");
+                    ArrayList<String> factors=selFactorsTable.getColumn("Factor");
+                    for(int i=0; i<layers.size();i++)
+                    {
+                        SpatialDataLayer layer = getDataLayerByName(layers.get(i));
+                        if(layer!=null) layer.addSelectiveFactor(factors.get(i));
+                    }
+                }
+                
                 processing=false;
                 return true;
                 
