@@ -27,6 +27,8 @@ public abstract class GlobalResources
     public static CsvTableFloat lastOpenedTable = null;
     public static String lastOpenedTableFile = "";
     
+    public static float lowPassFilterDistance=25000;
+    
     /*private static int[] workerCodes=new int[1];
 
     private static int rasterXDim=-1;

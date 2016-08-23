@@ -7,6 +7,7 @@ package cumimpactsa;
 import java.util.ArrayList;
 import java.util.Random;
 
+
 /**
  *
  * @author ast;
@@ -166,8 +167,8 @@ public class AreaRefiner extends GeneralProcessor
         DataGrid unfilteredGrid = new DataGrid(randomValues,vmax,0,grid.getNoDataValue());
     
         //TODO 6 for Micheli et al (26km), 2 for Korpinen et al (25km), 3 for global at 8km resolution
-        return Helpers.lowPassFilter(unfilteredGrid, 2);
-        
+        int filterCells = (int) Math.floor(GlobalResources.lowPassFilterDistance/(2*GlobalResources.mappingProject.grid.getCellSize()));
+        return Helpers.lowPassFilter(unfilteredGrid, filterCells);
     }
 
     @Override

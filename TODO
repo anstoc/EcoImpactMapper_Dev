@@ -1,13 +1,6 @@
 
-
-
-4. remove data types functions and replace with selective factors
-
-5. Allow selection of spreading distance in pre-processing dialog
-
-6. let low pass filter for resolution improvement automatically detect best distance
-
 7. implement logger
+
 
 8. testing
 

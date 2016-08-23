@@ -74,7 +74,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
         checkBoxMultiWorst = new javax.swing.JCheckBox();
         checkBoxMultiDiminish = new javax.swing.JCheckBox();
         textFieldThresholdsMax = new javax.swing.JTextField();
-        textFieldThresholdsMin = new javax.swing.JTextField();
+        textFieldFilterDistance = new javax.swing.JTextField();
         checkBoxThresholds = new javax.swing.JCheckBox();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
@@ -97,6 +97,8 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
         buttonSave = new javax.swing.JButton();
         buttonLoad = new javax.swing.JButton();
         checkBoxMapStressorContributions = new javax.swing.JCheckBox();
+        jLabel15 = new javax.swing.JLabel();
+        textFieldThresholdsMin1 = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -197,7 +199,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
 
         jLabel6.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
         jLabel6.setText("Processing options");
-        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 390, -1, -1));
+        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 390, -1, -1));
 
         checkBoxMissingStressorData.setSelected(true);
         checkBoxMissingStressorData.setText("Missing stressor data");
@@ -259,9 +261,14 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
         textFieldThresholdsMax.setName("threshmax"); // NOI18N
         getContentPane().add(textFieldThresholdsMax, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 270, 60, -1));
 
-        textFieldThresholdsMin.setText("0");
-        textFieldThresholdsMin.setName("threshmin"); // NOI18N
-        getContentPane().add(textFieldThresholdsMin, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 270, 60, -1));
+        textFieldFilterDistance.setText("25000");
+        textFieldFilterDistance.setName("threshmin"); // NOI18N
+        textFieldFilterDistance.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                textFieldFilterDistanceFocusLost(evt);
+            }
+        });
+        getContentPane().add(textFieldFilterDistance, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 410, 70, -1));
 
         checkBoxThresholds.setSelected(true);
         checkBoxThresholds.setText("Ecological thresholds");
@@ -286,7 +293,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
         textFieldThreads.setText("1");
         textFieldThreads.setToolTipText("<html>Most modern computer processors have several cores, i.e. they can do several<br>\ncalculations at the same time. In this case, for large data sets and many simulation runs, \nyou can speed up processing by increasing the number of threads up to your number of cores.</html>");
         textFieldThreads.setName("nrthreads"); // NOI18N
-        getContentPane().add(textFieldThreads, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 480, 30, 20));
+        getContentPane().add(textFieldThreads, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 480, 30, 20));
 
         textFieldReducedAnalysisResMax.setText("2");
         textFieldReducedAnalysisResMax.setName("redresmax"); // NOI18N
@@ -296,7 +303,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
         checkBoxImprovedStressorRes.setText("Improved stressor res.");
         checkBoxImprovedStressorRes.setToolTipText("<html>In each simulation run, stressor intensities represented by large, uniform areas<br>\nwill be replaced with fine-resolution versions that retain the general patterns. These stressors<br>\nmust first be identified as type \"polygon\" in the Processing & data/Data types menu.\n</html>");
         checkBoxImprovedStressorRes.setName("cbimpres"); // NOI18N
-        getContentPane().add(checkBoxImprovedStressorRes, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 370, -1, -1));
+        getContentPane().add(checkBoxImprovedStressorRes, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 390, -1, -1));
 
         buttonCancel.setText("Cancel");
         buttonCancel.addActionListener(new java.awt.event.ActionListener() {
@@ -316,13 +323,13 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
 
         jLabel10.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
         jLabel10.setText("Impacts on ecosystem components");
-        getContentPane().add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 410, -1, -1));
+        getContentPane().add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 450, -1, -1));
 
         checkBoxImpactsAsSum.setSelected(true);
         checkBoxImpactsAsSum.setText("Sum");
         checkBoxImpactsAsSum.setToolTipText("<html>Impacts in cells with more than one ecosystem component will be summed or averaged<br>\nin each simulation run. At least one option must be selected. If both are selected, a coin is flipped<br>\nto choose one in each simulation run.</html>");
         checkBoxImpactsAsSum.setName("cbsum"); // NOI18N
-        getContentPane().add(checkBoxImpactsAsSum, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 430, -1, -1));
+        getContentPane().add(checkBoxImpactsAsSum, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 470, -1, -1));
 
         checkBoxImpactsAsMean.setSelected(true);
         checkBoxImpactsAsMean.setText("Mean");
@@ -333,7 +340,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
                 checkBoxImpactsAsMeanActionPerformed(evt);
             }
         });
-        getContentPane().add(checkBoxImpactsAsMean, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 460, -1, -1));
+        getContentPane().add(checkBoxImpactsAsMean, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 500, -1, -1));
 
         jLabel11.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
         jLabel11.setText("Multiple effects models");
@@ -348,12 +355,12 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
                 checkBoxSpatialSummaryActionPerformed(evt);
             }
         });
-        getContentPane().add(checkBoxSpatialSummary, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 450, -1, -1));
+        getContentPane().add(checkBoxSpatialSummary, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 450, -1, -1));
 
         checkBoxAddRunsToResults.setText("Show simulation runs in project results");
         checkBoxAddRunsToResults.setToolTipText("<html>If this option is selected, the human impact map from each simulation run<br>\nis added to the project results. This option should be disabled if the number of simulation/br>\nruns is large.</html>");
         checkBoxAddRunsToResults.setName("cbshowruns"); // NOI18N
-        getContentPane().add(checkBoxAddRunsToResults, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 430, -1, -1));
+        getContentPane().add(checkBoxAddRunsToResults, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 430, -1, -1));
 
         jLabel12.setText("Max");
         getContentPane().add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 80, -1, -1));
@@ -367,7 +374,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
 
         jLabel14.setText("Number of threads:");
         jLabel14.setToolTipText("<html>Most modern computer processors have several cores, i.e. they can do several<br>\ncalculations at the same time. In this case, for large data sets and many simulation runs, \nyou can speed up processing by increasing the number of threads up to your number of cores.</html>");
-        getContentPane().add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 480, -1, -1));
+        getContentPane().add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 480, -1, -1));
 
         buttonSave.setText("Save settings...");
         buttonSave.addActionListener(new java.awt.event.ActionListener() {
@@ -388,7 +395,14 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
         checkBoxMapStressorContributions.setText("Map stressor contributions");
         checkBoxMapStressorContributions.setToolTipText("<html>If this option is selected, the human impact map from each simulation run<br>\nis added to the project results. This option should be disabled if the number of simulation/br>\nruns is large.</html>");
         checkBoxMapStressorContributions.setName("cbshowruns"); // NOI18N
-        getContentPane().add(checkBoxMapStressorContributions, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 410, -1, -1));
+        getContentPane().add(checkBoxMapStressorContributions, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 410, -1, -1));
+
+        jLabel15.setText("Filter distance:");
+        getContentPane().add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 420, -1, -1));
+
+        textFieldThresholdsMin1.setText("0");
+        textFieldThresholdsMin1.setName("threshmin"); // NOI18N
+        getContentPane().add(textFieldThresholdsMin1, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 270, 60, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -465,7 +479,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
        try
         {
             mcm.ecologicalThresholds=this.checkBoxThresholds.isSelected();
-            mcm.ecologicalThresholdMin=Double.parseDouble(this.textFieldThresholdsMin.getText());
+            mcm.ecologicalThresholdMin=Double.parseDouble(this.textFieldFilterDistance.getText());
             mcm.ecologicalThresholdMax=Double.parseDouble(this.textFieldThresholdsMax.getText());
         }
         catch(Exception e) {error="Ecological thresholds range must be numeric.";}
@@ -593,6 +607,18 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
        
     }//GEN-LAST:event_checkBoxSpatialSummaryActionPerformed
 
+    private void textFieldFilterDistanceFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_textFieldFilterDistanceFocusLost
+        try
+        {
+            float filterDistance=Float.parseFloat(textFieldFilterDistance.getText());
+            GlobalResources.lowPassFilterDistance=filterDistance;
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(this, "Low pass filter distance must be a number.");
+        }
+    }//GEN-LAST:event_textFieldFilterDistanceFocusLost
+
     private Component getComponentByName(String name)
     {
         Component found=null;
@@ -716,6 +742,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -724,6 +751,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JTextField textFieldFilterDistance;
     private javax.swing.JTextField textFieldMissingStressorDataMax;
     private javax.swing.JTextField textFieldMissingStressorDataMin;
     private javax.swing.JTextField textFieldOutputFolder;
@@ -736,6 +764,6 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
     private javax.swing.JTextField textFieldSimulationRuns;
     private javax.swing.JTextField textFieldThreads;
     private javax.swing.JTextField textFieldThresholdsMax;
-    private javax.swing.JTextField textFieldThresholdsMin;
+    private javax.swing.JTextField textFieldThresholdsMin1;
     // End of variables declaration//GEN-END:variables
 }
