@@ -33,7 +33,7 @@ public class MCSimulationManager
     public boolean missingStressorData=true; public double missingStressorDataMin=0; public double missingStressorDataMax=0.333;
     public boolean sensitivityScoreErrors=true; public double sensitivityScoreErrorsMin=0; public double sensitivityScoreErrorsMax=0.333;
     
-    public boolean pointStressLinearDecay=true; public double pointDataLinearDecayMin=0; public double pointDataLinearDecayMax=20;
+    public boolean stressLinearDecay=true; public double linearDecayMin=0; public double linearDecayMax=20;
     
     public boolean ecologicalThresholds=true; public double ecologicalThresholdMin=0; public double ecologicalThresholdMax=1;
     
@@ -91,9 +91,9 @@ public class MCSimulationManager
         copy.multipleEffectsDominant=multipleEffectsDominant;
         copy.outputFolder=outputFolder;
         copy.percentCompleted=percentCompleted;
-        copy.pointDataLinearDecayMax=pointDataLinearDecayMax;
-        copy.pointDataLinearDecayMin=pointDataLinearDecayMin;
-        copy.pointStressLinearDecay=pointStressLinearDecay;
+        copy.linearDecayMax=linearDecayMax;
+        copy.linearDecayMin=linearDecayMin;
+        copy.stressLinearDecay=stressLinearDecay;
         copy.reducedAnalysisRes=reducedAnalysisRes;
         copy.reducedAnalysisResMax=reducedAnalysisResMax;
         copy.reducedAnalysisResMin=reducedAnalysisResMin;
@@ -180,12 +180,12 @@ public class MCSimulationManager
         } 
     }
     
-    public ArrayList<SpatialDataLayer> makeLayerListCloneBySpatialDataType(ArrayList<SpatialDataLayer> list, String spatialDataType)
+   /* public ArrayList<SpatialDataLayer> makeLayerListCloneBySelectiveFactor(ArrayList<SpatialDataLayer> list, String factor)
     {
         ArrayList<SpatialDataLayer> cloneList = new ArrayList<SpatialDataLayer>();
         for(int i=0; i<list.size();i++)
         {
-            if(list.get(i).getSpatialDataType().equals(spatialDataType))
+            if(list.get(i).isSelectiveFactorAssigned(factor))
             {
                 cloneList.add(list.get(i).clone());
             }
@@ -195,7 +195,7 @@ public class MCSimulationManager
             }
         }
         return cloneList;
-    }
+    }*/
     
     protected void eraseProcessingChains(ArrayList<SpatialDataLayer> list)
     {
@@ -255,8 +255,9 @@ public class MCSimulationManager
                 eraseProcessingChains(stressors);
                 ArrayList<SpatialDataLayer> ecocomps = makeLayerListClone(GlobalResources.mappingProject.ecocomps);
                 SensitivityScoreSet scores = GlobalResources.mappingProject.sensitivityScores.clone(stressors, ecocomps);
-                setPointStressLinearDecay(stressors);
+                stressLinearDecay(stressors);
                 setReducedAnalysisRes(stressors, ecocomps);
+                setImprovedStressorResolution(stressors);
                 addTransformations(stressors);
                 addToProcessingChains(stressors,new Rescaler());
 
@@ -366,24 +367,24 @@ public class MCSimulationManager
         
     }
 
-    protected void setPointStressLinearDecay(ArrayList<SpatialDataLayer> stressors) 
+    protected void stressLinearDecay(ArrayList<SpatialDataLayer> stressors) 
     {
-        if(!this.pointStressLinearDecay) {return;}
+        if(!this.stressLinearDecay) {return;}
         //create random distance
-        double rDistance = pointDataLinearDecayMin+Math.random()*(pointDataLinearDecayMax-pointDataLinearDecayMin);
+        double rDistance = linearDecayMin+Math.random()*(linearDecayMax-linearDecayMin);
         
-        int pointDataCount=0;
+        int layerCount=0;
         for(int i=0; i<stressors.size();i++)
         {
-            if(stressors.get(i).getSpatialDataType().equals(GlobalResources.SPATIALDATATYPE_POINT))
+            if(stressors.get(i).isSelectiveFactorAssigned(new IdwSpreader().getName()))
             {
-                pointDataCount++;
+                layerCount++;
                 IdwSpreader spreader = new IdwSpreader();
                 spreader.setParamValue("distance", rDistance);
                 stressors.get(i).getProcessingChain().add(spreader);
             }
         }
-        System.out.println("    "+prefix+": Point stressor decay distance: "+rDistance+"; for all "+pointDataCount+" point data sets.");
+        System.out.println("    "+prefix+": Stressor decay distance: "+rDistance+"; for all "+layerCount+" data layers.");
     }
 
     private int getImpactModel() 
@@ -453,17 +454,17 @@ public class MCSimulationManager
     {
         if(!this.improvedStressorRes) {return;}
         //improving the resolution is a pre-processing step
-        int polygonDataCount=0;
+        int layerCount=0;
         for(int i=0; i<stressors.size();i++)
         {
-            if(stressors.get(i).getSpatialDataType().equals(GlobalResources.SPATIALDATATYPE_POLYGON))
+            if(stressors.get(i).isSelectiveFactorAssigned(new AreaRefiner().getName()))
             {
-                polygonDataCount++;
+                layerCount++;
                 AreaRefiner refiner = new AreaRefiner();
                 stressors.get(i).getProcessingChain().add(refiner);
             }
         }
-        System.out.println("   Improved resolution for all " + polygonDataCount +" rasterized polygon layers.");
+        System.out.println("    "+prefix+": Improved resolution for " + layerCount +" data layers.");
     }
 
     private void setReducedAnalysisRes(ArrayList<SpatialDataLayer> stressors, ArrayList<SpatialDataLayer> ecocomps) 

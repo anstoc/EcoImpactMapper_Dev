@@ -385,8 +385,6 @@ public class MappingProject
         row.add(getRelativePath(dataTypeName));
         row.add("n/a");row.add("n/a");row.add("n/a");
         table.addRow(row);
-        //create processing chain file
-        saveDataTypes(dataTypeName);
         
         //add path to sourcefile for selective factors
         pos=filename.lastIndexOf(".");
@@ -495,35 +493,6 @@ public class MappingProject
         table.writeToFile(filename);
     }
     
-
-    
-    private void saveDataTypes(String filename)
-    {
-        CsvTableGeneral table = new CsvTableGeneral();
-        table.addColumn("DataLayer");
-        table.addColumn("DataType");
-        
-        //go through stressors
-        for(int i=0; i<stressors.size();i++)
-        {
-            String dataType = stressors.get(i).getSpatialDataType();
-            ArrayList<String> row = new ArrayList<String>();
-            row.add(stressors.get(i).getName());
-            row.add(dataType);
-            table.addRow(row);     
-        }
-
-        for(int i=0; i<ecocomps.size();i++)
-        {
-            String dataType = ecocomps.get(i).getSpatialDataType();
-            ArrayList<String> row = new ArrayList<String>();
-            row.add(ecocomps.get(i).getName());
-            row.add(dataType);
-            table.addRow(row);     
-        }
-        
-        table.writeToFile(filename);
-    }
     
     private void saveSelectiveFactors(String filename)
     {
@@ -701,17 +670,6 @@ public class MappingProject
                     }
                 }
                 
-                //project file contained reference to a data type table
-                if(dataTypeTable.getColNames().size()>0)
-                {
-                    ArrayList<String> layers=dataTypeTable.getColumn("DataLayer");
-                    ArrayList<String> types=dataTypeTable.getColumn("DataType");
-                    for(int i=0; i<layers.size();i++)
-                    {
-                        SpatialDataLayer layer = getDataLayerByName(layers.get(i));
-                        layer.setSpatialDataType(types.get(i));
-                    }
-                }
                 
                 //project file contained reference to a selective factors table
                 if(selFactorsTable.getColNames().size()>0)

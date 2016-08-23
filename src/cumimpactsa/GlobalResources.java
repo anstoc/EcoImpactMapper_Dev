@@ -26,11 +26,6 @@ public abstract class GlobalResources
     public static String lastUsedFolder=System.getProperty("user.home");
     public static CsvTableFloat lastOpenedTable = null;
     public static String lastOpenedTableFile = "";
-    public static final String SPATIALDATATYPE_POINT = "point";
-    public static final String SPATIALDATATYPE_LINE = "line";
-    public static final String SPATIALDATATYPE_POLYGON = "polygon";
-    public static final String SPATIALDATATYPE_SURFACE = "surface"; 
-    public static final String SPATIALDATATYPE_UNKNOWN = "unknown";
     
     /*private static int[] workerCodes=new int[1];
 

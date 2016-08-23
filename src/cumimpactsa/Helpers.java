@@ -164,4 +164,12 @@ public abstract class Helpers
             }
         }
     }
+    
+    public static ArrayList<String> deepArrayListCopy(ArrayList<String> list)
+    {
+        ArrayList<String> copy = new ArrayList<String>();
+        for(int i=0; i<list.size();i++) {copy.add(new String(list.get(i)));}
+        return copy;
+    }
+    
 }

@@ -18,7 +18,6 @@ public class SpatialDataLayer implements DrawableData
     protected DataGrid grid;
     protected DataGrid processedGrid;
     protected int type;
-    protected String dataType = GlobalResources.SPATIALDATATYPE_UNKNOWN;
     
     private ArrayList<PreProcessor> processingChain=new ArrayList<PreProcessor>();
     protected ArrayList<String> selectiveFactors = new ArrayList<String>(); //data set specific factors to be applied in uncertainty analysis
@@ -88,19 +87,10 @@ public class SpatialDataLayer implements DrawableData
         newInfo.yField=this.source.yField;
         
         SpatialDataLayer clone = new SpatialDataLayer(newName,newGrid,this.type,newInfo);
-        clone.setSpatialDataType(this.getSpatialDataType());
+        clone.selectiveFactors=Helpers.deepArrayListCopy(selectiveFactors);
         return clone;
     }
     
-    public String getSpatialDataType()
-    {
-        return dataType;
-    }
-    
-    public void setSpatialDataType(String type)
-    {
-        dataType=type;
-    }
     
     protected boolean isProcessingChainLoaded()
     {
@@ -229,4 +219,17 @@ public class SpatialDataLayer implements DrawableData
         if(index>=0) {selectiveFactors.remove(index);}
     }
     
+    public boolean isSelectiveFactorAssigned(String factor)
+    {
+        if(selectiveFactors==null) return false;
+        boolean isAssigned=false;
+        for(int i=0; i< selectiveFactors.size(); i++)
+        {
+            if(selectiveFactors.get(i).equals(factor))
+            {
+                isAssigned=true;
+            }
+        }
+        return isAssigned;
+    }
 }

@@ -137,12 +137,10 @@ public class MainWindow extends javax.swing.JFrame {
         menuAssignSelectiveFactors = new javax.swing.JMenu();
         menuSensitivityscores = new javax.swing.JMenuItem();
         menuPreprocessing = new javax.swing.JMenuItem();
-        jMenuItem3 = new javax.swing.JMenuItem();
         menuItemExportLayer = new javax.swing.JMenuItem();
         menuItemExportPolyAreas = new javax.swing.JMenuItem();
         menuItemLoadRegions = new javax.swing.JMenuItem();
         menuItemAois = new javax.swing.JMenuItem();
-        jMenuItem5 = new javax.swing.JMenuItem();
         MenuView = new javax.swing.JMenu();
         jMenu5 = new javax.swing.JMenu();
         radioButtonMenuItemLinearStretch = new javax.swing.JRadioButtonMenuItem();
@@ -164,6 +162,7 @@ public class MainWindow extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
         menuItemAreaPlots = new javax.swing.JMenuItem();
         menuUncertainty = new javax.swing.JMenu();
+        jMenuItem5 = new javax.swing.JMenuItem();
         menuItemMonteCarloRanks = new javax.swing.JMenuItem();
         menuItemMorris = new javax.swing.JMenuItem();
         menuItemFreeMem = new javax.swing.JMenuItem();
@@ -363,14 +362,6 @@ public class MainWindow extends javax.swing.JFrame {
         });
         menuAssignSelectiveFactors.add(menuPreprocessing);
 
-        jMenuItem3.setText("Data types...");
-        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem3ActionPerformed(evt);
-            }
-        });
-        menuAssignSelectiveFactors.add(jMenuItem3);
-
         menuItemExportLayer.setText("Export displayed layer...");
         menuItemExportLayer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -402,14 +393,6 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
         menuAssignSelectiveFactors.add(menuItemAois);
-
-        jMenuItem5.setText("Assign selective factors...");
-        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem5ActionPerformed(evt);
-            }
-        });
-        menuAssignSelectiveFactors.add(jMenuItem5);
 
         menuBarMain.add(menuAssignSelectiveFactors);
 
@@ -549,6 +532,14 @@ public class MainWindow extends javax.swing.JFrame {
         menuDiversityIndexAvg.add(jMenu2);
 
         menuUncertainty.setText("Uncertainty");
+
+        jMenuItem5.setText("Assign selective factors...");
+        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem5ActionPerformed(evt);
+            }
+        });
+        menuUncertainty.add(jMenuItem5);
 
         menuItemMonteCarloRanks.setText("Monte Carlo with random sampling");
         menuItemMonteCarloRanks.addActionListener(new java.awt.event.ActionListener() {
@@ -1623,11 +1614,6 @@ public class MainWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_menuItemAreaPlotsActionPerformed
 
-    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-        DataTypeDialog dialog = new DataTypeDialog(this, false);
-        dialog.setVisible(true);
-    }//GEN-LAST:event_jMenuItem3ActionPerformed
-
     private void menuItemExportLayerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemExportLayerActionPerformed
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -2578,7 +2564,6 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu5;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JScrollPane jScrollPane1;

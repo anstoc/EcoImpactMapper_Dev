@@ -233,7 +233,7 @@ public class MorrisSampler
         //first the changes that affect stressors
         if(parameters[2]>0) 
         {    
-            setPointStressLinearDecay(stressors, parameters[2]);
+            setStressLinearDecay(stressors, parameters[2]);
         }
 
         if(parameters[5]>0) setImprovedStressorResolution(stressors);
@@ -454,12 +454,12 @@ public class MorrisSampler
     {
         
         //improving the resolution is a pre-processing step
-        int polygonDataCount=0;
+        int layerCount=0;
         for(int i=0; i<stressors.size();i++)
         {
-            if(stressors.get(i).getSpatialDataType().equals(GlobalResources.SPATIALDATATYPE_POLYGON))
+            if(stressors.get(i).isSelectiveFactorAssigned(new AreaRefiner().getName()))
             {
-                polygonDataCount++;
+                layerCount++;
                 AreaRefiner refiner = new AreaRefiner();
                 refiner.setParamValue("seed", areaRefinerSeeds[i]);
                 stressors.get(i).getProcessingChain().add(refiner);
@@ -520,15 +520,15 @@ public class MorrisSampler
         }
     }
     
-    protected void setPointStressLinearDecay(ArrayList<SpatialDataLayer> stressors, double parameter) 
+    protected void setStressLinearDecay(ArrayList<SpatialDataLayer> stressors, double parameter) 
     {
         double rDistance = 20000 * parameter;
-        int pointDataCount=0;
+        int layerCount=0;
         for(int i=0; i<stressors.size();i++)
         {
-            if(stressors.get(i).getSpatialDataType().equals(GlobalResources.SPATIALDATATYPE_POINT))
+            if(stressors.get(i).isSelectiveFactorAssigned(new IdwSpreader().getName()))
             {
-                pointDataCount++;
+                layerCount++;
                 IdwSpreader spreader = new IdwSpreader();
                 spreader.setParamValue("distance", rDistance);
                 stressors.get(i).getProcessingChain().add(spreader);

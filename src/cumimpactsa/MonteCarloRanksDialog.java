@@ -456,9 +456,9 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
        
        try
         {
-            mcm.pointStressLinearDecay=this.checkBoxPointStressDecay.isSelected();
-            mcm.pointDataLinearDecayMin=Double.parseDouble(this.textFieldPointStressDecayMin.getText());
-            mcm.pointDataLinearDecayMax=Double.parseDouble(this.textFieldPointStressDecayMax.getText());
+            mcm.stressLinearDecay=this.checkBoxPointStressDecay.isSelected();
+            mcm.linearDecayMin=Double.parseDouble(this.textFieldPointStressDecayMin.getText());
+            mcm.linearDecayMax=Double.parseDouble(this.textFieldPointStressDecayMax.getText());
         }
         catch(Exception e) {error="Point data stress decay range ,ust be numeric.";}
        

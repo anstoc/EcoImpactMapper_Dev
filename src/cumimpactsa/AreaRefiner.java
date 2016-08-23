@@ -58,7 +58,7 @@ public class AreaRefiner extends GeneralProcessor
         int[][] areaCodes = grid.calculatePresenceAreasFast();
         float[][] originalData = grid.getData();
         
-        System.out.println("Merging completed.");
+
         //create a list of AreaInfo objects with x, y, area code, etc.
         //ArrayList<AreaInfo> areas = new ArrayList<AreaInfo>();
         
@@ -72,8 +72,7 @@ public class AreaRefiner extends GeneralProcessor
                 if(areaCodes[x][y]>max) {max=areaCodes[x][y];}
             }
         
-        System.out.println("Re-determined number of areas: "+max);
-
+      
         //2. create two arrays indexed by area numbers. one contains sum of original values in that area, 
         //one contains sum of random values. add random numbers on the way and calculate sums (1 pass)
         
@@ -167,7 +166,7 @@ public class AreaRefiner extends GeneralProcessor
         DataGrid unfilteredGrid = new DataGrid(randomValues,vmax,0,grid.getNoDataValue());
     
         //TODO 6 for Micheli et al (26km), 2 for Korpinen et al (25km), 3 for global at 8km resolution
-        return Helpers.lowPassFilter(unfilteredGrid, 3);
+        return Helpers.lowPassFilter(unfilteredGrid, 2);
         
     }
 
