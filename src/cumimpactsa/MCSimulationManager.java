@@ -282,7 +282,7 @@ public class MCSimulationManager
         } 
         catch (Exception e) {
             System.out.println("ERROR IN THREAD: "+this.prefix);
-            System.out.println(e.getStackTrace());
+            System.out.println(e.getStackTrace().toString());
         }
     }
 

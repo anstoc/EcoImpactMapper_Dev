@@ -6,6 +6,7 @@ package cumimpactsa;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import javax.swing.JTextArea;
 
 /**
  *
@@ -29,47 +30,12 @@ public abstract class GlobalResources
     
     public static float lowPassFilterDistance=25000;
     
-    /*private static int[] workerCodes=new int[1];
 
-    private static int rasterXDim=-1;
-    private static int rasterYDim=-1;
-    
-    public static void initializeWorkerCodes(int size)
-    {
-        workerCodes=new int[10];
-    }
-    
-    public static synchronized void setWorkerCode(int worker, int code)
-    {
-        workerCodes[worker-1]=code;
-    }
-    
-    public static synchronized int[] getWorkerCodes()
-    {
-        return workerCodes;
-    }
-    
-    public static synchronized int getRasterXDim()
-    {
-        return rasterXDim;
-    }
-    public static synchronized int getRasterYDim()
-    {
-        return rasterYDim;
-    }
-    public static synchronized void setRasterXDim(int xDim)
-    {
-        rasterXDim=xDim;
-    }
-    public static synchronized void setRasterYDim(int yDim)
-    {
-        rasterYDim=yDim;
-    }*/
-    
     
     public static String getDateTime()
     {
       return new SimpleDateFormat("yyyyMMdd HH:mm").format(Calendar.getInstance().getTime());
     }
+    
     
 }

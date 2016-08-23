@@ -551,14 +551,13 @@ public class MappingProject
              @Override
              protected Boolean doInBackground() throws Exception 
              {
-                
                  //go through line-by-line and load data
                 for(int row=0; row<resType.size(); row++)
                 { 
                     processingProgressPercent=(int) (100*row/resType.size());
                     //load spatial data
                     
-                    System.out.println("Loading: " + getAbsolutePath(file.get(row)) + " Value: " + valueField.get(row));
+                    System.out.println("  Loading: " + getAbsolutePath(file.get(row)) + " Value: " + valueField.get(row));
                     
                     if(resType.get(row).equals("stressor") || resType.get(row).equals("ecocomp") || resType.get(row).equals("result") || resType.get(row).equals("regions") || resType.get(row).equals("aois"))
                     {

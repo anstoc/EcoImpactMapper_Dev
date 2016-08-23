@@ -74,7 +74,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
         checkBoxMultiWorst = new javax.swing.JCheckBox();
         checkBoxMultiDiminish = new javax.swing.JCheckBox();
         textFieldThresholdsMax = new javax.swing.JTextField();
-        textFieldFilterDistance = new javax.swing.JTextField();
+        textFieldThresholdsMin = new javax.swing.JTextField();
         checkBoxThresholds = new javax.swing.JCheckBox();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
@@ -98,7 +98,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
         buttonLoad = new javax.swing.JButton();
         checkBoxMapStressorContributions = new javax.swing.JCheckBox();
         jLabel15 = new javax.swing.JLabel();
-        textFieldThresholdsMin1 = new javax.swing.JTextField();
+        textFieldFilterDistance = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -261,14 +261,14 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
         textFieldThresholdsMax.setName("threshmax"); // NOI18N
         getContentPane().add(textFieldThresholdsMax, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 270, 60, -1));
 
-        textFieldFilterDistance.setText("25000");
-        textFieldFilterDistance.setName("threshmin"); // NOI18N
-        textFieldFilterDistance.addFocusListener(new java.awt.event.FocusAdapter() {
+        textFieldThresholdsMin.setText("0");
+        textFieldThresholdsMin.setName("threshmin"); // NOI18N
+        textFieldThresholdsMin.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
-                textFieldFilterDistanceFocusLost(evt);
+                textFieldThresholdsMinFocusLost(evt);
             }
         });
-        getContentPane().add(textFieldFilterDistance, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 410, 70, -1));
+        getContentPane().add(textFieldThresholdsMin, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 270, 60, -1));
 
         checkBoxThresholds.setSelected(true);
         checkBoxThresholds.setText("Ecological thresholds");
@@ -400,9 +400,14 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
         jLabel15.setText("Filter distance:");
         getContentPane().add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 420, -1, -1));
 
-        textFieldThresholdsMin1.setText("0");
-        textFieldThresholdsMin1.setName("threshmin"); // NOI18N
-        getContentPane().add(textFieldThresholdsMin1, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 270, 60, -1));
+        textFieldFilterDistance.setText("25000");
+        textFieldFilterDistance.setName("threshmin"); // NOI18N
+        textFieldFilterDistance.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                textFieldFilterDistanceFocusLost(evt);
+            }
+        });
+        getContentPane().add(textFieldFilterDistance, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 410, 100, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -479,7 +484,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
        try
         {
             mcm.ecologicalThresholds=this.checkBoxThresholds.isSelected();
-            mcm.ecologicalThresholdMin=Double.parseDouble(this.textFieldFilterDistance.getText());
+            mcm.ecologicalThresholdMin=Double.parseDouble(this.textFieldThresholdsMin.getText());
             mcm.ecologicalThresholdMax=Double.parseDouble(this.textFieldThresholdsMax.getText());
         }
         catch(Exception e) {error="Ecological thresholds range must be numeric.";}
@@ -607,8 +612,12 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
        
     }//GEN-LAST:event_checkBoxSpatialSummaryActionPerformed
 
+    private void textFieldThresholdsMinFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_textFieldThresholdsMinFocusLost
+       
+    }//GEN-LAST:event_textFieldThresholdsMinFocusLost
+
     private void textFieldFilterDistanceFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_textFieldFilterDistanceFocusLost
-        try
+         try
         {
             float filterDistance=Float.parseFloat(textFieldFilterDistance.getText());
             GlobalResources.lowPassFilterDistance=filterDistance;
@@ -764,6 +773,6 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
     private javax.swing.JTextField textFieldSimulationRuns;
     private javax.swing.JTextField textFieldThreads;
     private javax.swing.JTextField textFieldThresholdsMax;
-    private javax.swing.JTextField textFieldThresholdsMin1;
+    private javax.swing.JTextField textFieldThresholdsMin;
     // End of variables declaration//GEN-END:variables
 }

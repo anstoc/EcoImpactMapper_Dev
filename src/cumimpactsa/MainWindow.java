@@ -94,8 +94,6 @@ public class MainWindow extends javax.swing.JFrame {
             }
         } );
 
-        
-        
     }
 
     /**
@@ -208,7 +206,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         labelStressors.setText("Stressors");
 
-        labelEcologicalComponents.setText("Ecological components");
+        labelEcologicalComponents.setText("Ecosystem components");
 
         drawingPane.setBackground(new java.awt.Color(204, 204, 204));
         drawingPane.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -610,18 +608,19 @@ public class MainWindow extends javax.swing.JFrame {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(drawingPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .add(jLabel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
+                        .add(249, 249, 249))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, progressBar, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(jLabel1)
                             .add(layout.createSequentialGroup()
+                                .add(12, 12, 12)
                                 .add(radioButtonRawLayer)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                 .add(radioButtonProcessedLayer)))
-                        .add(0, 98, Short.MAX_VALUE))
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                        .add(jLabel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .add(249, 249, 249))
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, progressBar, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .add(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -629,7 +628,7 @@ public class MainWindow extends javax.swing.JFrame {
             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                    .add(layout.createSequentialGroup()
                         .add(9, 9, 9)
                         .add(jLabel3)
                         .add(2, 2, 2)
@@ -642,17 +641,17 @@ public class MainWindow extends javax.swing.JFrame {
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                             .add(radioButtonRawLayer)
                             .add(radioButtonProcessedLayer))
-                        .add(3, 3, 3))
+                        .add(8, 8, 8))
                     .add(layout.createSequentialGroup()
                         .add(labelStressors)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(layout.createSequentialGroup()
-                                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                 .add(labelEcologicalComponents)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                 .add(jLabel2)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED))
@@ -667,8 +666,8 @@ public class MainWindow extends javax.swing.JFrame {
                                 .add(120, 120, 120)))
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(buttonResultsMinus)
-                            .add(jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 142, Short.MAX_VALUE))
-                        .addContainerGap())))
+                            .add(jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE))))
+                .addContainerGap())
         );
 
         pack();
@@ -868,6 +867,7 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonEcoMinusActionPerformed
 
     private void menuLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuLoadActionPerformed
+
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fileChooser.setCurrentDirectory(new File(GlobalResources.lastUsedFolder));
@@ -875,8 +875,8 @@ public class MainWindow extends javax.swing.JFrame {
         
         if (result == JFileChooser.APPROVE_OPTION)
         {
-
             File selectedFile = fileChooser.getSelectedFile();
+            System.out.println("Loading file: "+selectedFile.getAbsolutePath());
             GlobalResources.lastUsedFolder=selectedFile.getParent();
             this.setResizable(false);
             this.setFocusable(false);

@@ -27,6 +27,12 @@ public class MCSimulationWorker extends SwingWorker<MCSimulationManager,Void>
         this.mcm=mcm;
     }
     
+    public MCSimulationManager getSimulationManager()
+    {
+        if(!working) {return mcm;}
+        else {return null;}
+    }
+    
     @Override
     protected MCSimulationManager doInBackground() throws Exception 
     {
