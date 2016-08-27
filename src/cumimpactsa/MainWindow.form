@@ -35,7 +35,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem4">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Export data with lower resolution..."/>
+                <Property name="text" type="java.lang.String" value="** Export data with lower resolution..."/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem4ActionPerformed"/>
@@ -66,7 +66,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="menuItemExportLayer">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Export displayed layer..."/>
+                <Property name="text" type="java.lang.String" value="** Export displayed layer..."/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuItemExportLayerActionPerformed"/>
@@ -74,7 +74,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="menuItemExportPolyAreas">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Extract &amp; export polygon areas..."/>
+                <Property name="text" type="java.lang.String" value="** Extract &amp; export polygon areas..."/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuItemExportPolyAreasActionPerformed"/>
@@ -90,7 +90,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="menuItemAois">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Load areas of interest..."/>
+                <Property name="text" type="java.lang.String" value="** Load areas of interest..."/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuItemAoisActionPerformed"/>
@@ -284,7 +284,7 @@
             </Menu>
             <MenuItem class="javax.swing.JMenuItem" name="menuItemFreeMem">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Free memory"/>
+                <Property name="text" type="java.lang.String" value="** Free memory"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuItemFreeMemActionPerformed"/>
@@ -294,7 +294,7 @@
         </Menu>
         <Menu class="javax.swing.JMenu" name="jMenu4">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Development"/>
+            <Property name="text" type="java.lang.String" value="** Development"/>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="menuItemRunCurrentTest">
@@ -312,7 +312,7 @@
   </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
-    <Property name="title" type="java.lang.String" value="ImpactMapper"/>
+    <Property name="title" type="java.lang.String" value="EcoImpactMapper"/>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="menuBar" type="java.lang.String" value="menuBarMain"/>

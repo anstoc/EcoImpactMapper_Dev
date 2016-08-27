@@ -557,7 +557,7 @@ public class MappingProject
                     processingProgressPercent=(int) (100*row/resType.size());
                     //load spatial data
                     
-                    System.out.println("  Loading: " + getAbsolutePath(file.get(row)) + " Value: " + valueField.get(row));
+                    GlobalResources.statusWindow.println("Loading: " + getAbsolutePath(file.get(row)) + " Value: " + valueField.get(row));
                     
                     if(resType.get(row).equals("stressor") || resType.get(row).equals("ecocomp") || resType.get(row).equals("result") || resType.get(row).equals("regions") || resType.get(row).equals("aois"))
                     {
@@ -645,7 +645,7 @@ public class MappingProject
                        sensitivityScores=new SensitivityScoreSet();
                        sensitivityScores.createFromFile(getAbsolutePath(file.get(row)));
                    }
-
+                    
                     
                 }
 
@@ -685,6 +685,14 @@ public class MappingProject
                 processing=false;
                 return true;
                 
+            }
+        
+            @Override 
+            protected void done()
+            {
+                GlobalResources.statusWindow.println("Loading is done.");
+                GlobalResources.mappingProject.setProcessingProgressPercent(100);
+                GlobalResources.statusWindow.ready2bClosed();
             }
              
 	};

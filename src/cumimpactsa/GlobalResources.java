@@ -15,6 +15,8 @@ import javax.swing.JTextArea;
 public abstract class GlobalResources 
 {
     public static MappingProject mappingProject=new MappingProject();
+    public static StatusWindow statusWindow;
+    
     
     public static final float NODATAVALUE=-9999; //keep negative for proper function
     public static final int DATATYPE_STRESSOR=1;
