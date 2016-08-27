@@ -1,13 +1,17 @@
+
+
+update  swingworkers (the 6 impact indices)
+
+remove status bar from main window
+
+update  swingworkers (MC, Morris)
+
 implement logging
 
-make status window
+testing
 
-update generic swingworkers
+remove functions that are marked with ** (dev version only)
 
-update specific swingworkers (MC, Morris)
+write new tutorial and trim away unused functions, e.g. the Morris analysis and regions and aois
 
-8. testing
-
-9. write new tutorial and trim away unused functions, e.g. the Morris analysis and regions and aois
-
-10. publish, add comments to GEB and JORS?
+publish, add comments to GEB and JORS?
