@@ -1312,7 +1312,7 @@ public class MainWindow extends javax.swing.JFrame {
                  @Override
                  protected WeightedStressorIndex doInBackground() throws Exception 
                  {
-                    //System.out.println("**** Started background thread...");
+                    GlobalResources.statusWindow.println("Started worker thread...");
                     WeightedStressorIndex index = new WeightedStressorIndex(selectedFile.getAbsolutePath());
                     GlobalResources.mappingProject.processing=false;
                     return index;
@@ -1323,32 +1323,39 @@ public class MainWindow extends javax.swing.JFrame {
                  {
                      //System.out.println("Background thread is done.");
                      
-                     try    {
+                     try    
+                     {
+                        GlobalResources.statusWindow.println("Worker thread is done.");
+                        GlobalResources.mappingProject.setProcessingProgressPercent(100);
+                        GlobalResources.statusWindow.setProgress(100);
                         WeightedStressorIndex index = get();
+                        GlobalResources.statusWindow.println("Writing results to file: "+selectedFile.getAbsolutePath());
+                        CsvTableGeneral table = GlobalResources.mappingProject.grid.createTableFromLayer(index, false);
+                        table.writeToFile(selectedFile.getAbsolutePath());
                      }
                      catch(Exception e)
                      {
-                         JOptionPane.showMessageDialog(null, "Error retriving results from diversity index calculation thread.");
+                         GlobalResources.statusWindow.println("Error retriving results from diversity index calculation thread.");
+                         GlobalResources.statusWindow.println(e);
                      }
-                     GlobalResources.mappingProject.setProcessingProgressPercent(0);
+                     finally
+                     {
+                        GlobalResources.mappingProject.setProcessingProgressPercent(0);
+                        GlobalResources.statusWindow.ready2bClosed();
+                     }
                      
                  }
             };
             try
             {
+                GlobalResources.mappingProject.setProcessingProgressPercent(0);
+                GlobalResources.statusWindow.setProgress(0);
+                GlobalResources.statusWindow.setNewText("Calculating weighted stressor index...");
                 worker.execute();
-                
-                //block whil processing, but update progress bar
-                while(GlobalResources.mappingProject.processing)
-                {
+                timer.start();
+                GlobalResources.statusWindow.setVisible(true);
+                timer.stop();
 
-                    //System.out.println("Main thread is waiting...");
-                    progressBar.setValue(GlobalResources.mappingProject.getProcessingProgressPercent());
-                    progressBar.update(progressBar.getGraphics());
-                    Thread.sleep(500);
-                }
-           
-                Thread.sleep(100); //
                 WeightedStressorIndex index = worker.get();
                  //show in drawing pane;
                 drawingPaneShows = index;
@@ -1357,8 +1364,6 @@ public class MainWindow extends javax.swing.JFrame {
                 GlobalResources.mappingProject.results.add(index);
                 updateResultsList();
 
-                CsvTableGeneral table = GlobalResources.mappingProject.grid.createTableFromLayer(index, false);
-                table.writeToFile(selectedFile.getAbsolutePath());
             }
             catch(Exception e)
             {
@@ -1412,14 +1417,18 @@ public class MainWindow extends javax.swing.JFrame {
                         StressorIndex index = get();
                         CsvTableGeneral table = GlobalResources.mappingProject.grid.createTableFromLayer(index, false);
                         table.writeToFile(selectedFile.getAbsolutePath());
-                        GlobalResources.statusWindow.ready2bClosed();
                         
                      }
                      catch(Exception e)
                      {
                          JOptionPane.showMessageDialog(null, "Error retriving results from diversity index calculation thread.");
                      }
-                     GlobalResources.mappingProject.setProcessingProgressPercent(0);
+                     finally
+                     {
+                         GlobalResources.mappingProject.setProcessingProgressPercent(0);
+                         GlobalResources.statusWindow.ready2bClosed();
+                     }
+                    
                      
                  }
             };
@@ -2459,12 +2468,15 @@ public class MainWindow extends javax.swing.JFrame {
                         GlobalResources.statusWindow.println("Writing results to file: "+selectedFile.getAbsolutePath());
                         table.writeToFile(selectedFile.getAbsolutePath());
                         GlobalResources.mappingProject.results.add(index);
-                        GlobalResources.statusWindow.ready2bClosed();
                      }
                      catch(Exception e)
                      {
                          GlobalResources.statusWindow.println( "Error retriving results from diversity index calculation thread.");
                          GlobalResources.statusWindow.println(e);
+                     }
+                     finally
+                     {
+                         GlobalResources.statusWindow.ready2bClosed();
                      }
                      
                  }
