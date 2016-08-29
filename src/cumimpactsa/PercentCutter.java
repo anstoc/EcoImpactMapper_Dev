@@ -53,7 +53,6 @@ public class PercentCutter extends GeneralProcessor
             }
            
         }
-         //System.out.println("    Replaced "+replaced+" out of "+locations.size()+ " non-zero cells with max value: " +maxValue);
         return new DataGrid(values,maxValue,grid.getMin(),grid.getNoDataValue());
 
 

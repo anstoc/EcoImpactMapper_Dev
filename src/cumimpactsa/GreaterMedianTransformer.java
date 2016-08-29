@@ -52,7 +52,6 @@ public class GreaterMedianTransformer extends GeneralProcessor
             {
                 float breakPercentile=((float) (nextBreak)/locations.size());
                 values[locations.get(l).x][locations.get(l).y] = breakPercentile;
-                //System.out.println("    l: "+l + " nextBreak" + nextBreak + " value: " + breakPercentile);
                 l++;
             }
 

@@ -88,13 +88,8 @@ public class ErrorCreatorMoveLines extends GeneralProcessor
                             currentX+=dx;
                             currentY+=dy;
                         }
-                        else
-                        {
-                            System.out.println("Problem while calculating lines - check");
-                        }
                         
                         //check if no data - in this case, we're done
-                        //System.out.println(currentX+","+currentY);
                         if(currentX>=data.length || currentX<0 || currentY>=data[0].length || currentY<0 || data[(int) Math.round(currentX)][(int) Math.round(currentY)] == grid.getNoDataValue())
                         {
                             hitNoData=true;
@@ -126,91 +121,7 @@ public class ErrorCreatorMoveLines extends GeneralProcessor
         //todo: not presence-absence --> make lines with sampled unique values
         
         return new DataGrid(data,newMax,newMin,grid.getNoDataValue());
-        
-        /* THIS IS OLD CODE WORKS FOR PRESENCE-ABSENCE
-         double data[][]=GlobalResources.mappingProject.grid.getEmptyGrid().clone();
-        double newMax=grid.getMin();
-        double newMin=grid.getMax();
-        if(grid.isPresenceAbsence() && grid.getUniqueDataValues().get(0)==0)
-        {
-            double targetLength=grid.getCellsWithPresence();
-            
-            double totalLength=0;
-            while(totalLength<targetLength)
-            {
-                double remainingLength=targetLength-totalLength;
-                double nextLength=Math.round(Math.random()*remainingLength); //length of the next line segment
-                double createdLength=0;
 
-                
-                //random starting point - must not be noData
-                int startX = (int) Math.floor(Math.random()*data.length);
-                int startY = (int) Math.floor(Math.random()*data[0].length);
-                
-                if(data[startX][startY]!=grid.getNoDataValue())
-                {
-                    createdLength+=1;
-                    data[startX][startY]=1;
-                    //random direction
-                    double dx=1-Math.random()*2;
-                    double dy=1-Math.random()*2;
-                
-                    if(Math.abs(dx)>Math.abs(dy))
-                    {
-                        if(dx>0) dx=1; else dx=-1;
-                        dy=dy*1/dx; 
-                    }
-                    else
-                    {
-                        dx=dx*1/dy;
-                        if(dy>0) dy=1; else dy=-1;
-                    }
-                    
-                    //weiter
-                    boolean hitNoData=false;
-                    double currentX=startX;
-                    double currentY=startY;
-                    while(createdLength<nextLength && !hitNoData)
-                    {
-                        if(Math.abs(dx)==1)
-                        {
-                            currentX+=dx;
-                            currentY+=dy;
-                        }
-                        else if(Math.abs(dy)==1)
-                        {
-                            currentX+=dx;
-                            currentY+=dy;
-                        }
-                        else
-                        {
-                            System.out.println("Problem while calculating lines - check");
-                        }
-                        
-                        //check if no data - in this case, we're done
-                        if(currentX>data.length || currentX<0 || currentY>data[0].length || currentY<0 || data[(int) Math.round(currentX)][(int) Math.round(currentY)] == grid.getNoDataValue())
-                        {
-                            hitNoData=true;
-                        }
-                        else //create new point and go on with loop
-                        {
-                            if(data[(int) Math.round(currentX)][(int) Math.round(currentY)] < 0.01) 
-                            {
-                                createdLength+=1;
-                               
-                            }
-                            data[(int) Math.round(currentX)][(int) Math.round(currentY)] = 1;
-                        }
-                    }
-                }
-            totalLength+=createdLength;
-            }
-            newMax=1;
-            newMin=0;
-        }
-        //todo: not presence-absence --> make lines with sampled unique values
-        
-        return new DataGrid(data,newMax,newMin,grid.getNoDataValue());*/
     }
 
     @Override

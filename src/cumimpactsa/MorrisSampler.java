@@ -229,7 +229,6 @@ public class MorrisSampler
         scores = originalScores.clone(stressors, ecocomps);
 
         //make changes according to model factors
-        //System.out.println("    "+prefix+" Setting point stress lin decay");
         //first the changes that affect stressors
         if(parameters[2]>0) 
         {    

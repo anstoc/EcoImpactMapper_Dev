@@ -55,7 +55,6 @@ public class ErrorCreatorMoveAreas extends GeneralProcessor
         {
             data[x][y]=targetValue; 
             createdCellNr++;
-            //System.out.println("Created: "+createdCellNr+ "    Target: "+targetCellNr);
             //set neighborhood, making sure it doesn't exceed array bounds
             int startX=x;
             int endX=x;

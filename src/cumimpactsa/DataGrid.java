@@ -339,7 +339,6 @@ public class DataGrid
          //now use area code raster to calculate cells in each area
         areaSizes=new int[currentAreaCode];
         areaValues=new float[currentAreaCode];
-        //System.out.println("Found "+currentAreaCode+" areas.");
         for(int x=0; x<areaCodes.length;x++)
             for(int y=0;y<areaCodes[0].length;y++)
             {
@@ -375,78 +374,9 @@ public class DataGrid
         
        return areaCodes;
     }
-    
-    //faster way to calculate presence areas.
-    /*public int[][] calculatePresenceAreasFast2()
-    {
-        //General procedure: go through data; when finding a non-zero non-no-data cell that is not assigned to an area number it;
-        //check neighborhood and use number from there; if 2 numbers in neighborhood pick first and add them to a "merge" list as these areas meet.
-
-        int currentAreaCode=0;
-        int[][] areaCodes = new int[values.length][values[0].length];
-        
-        for(int x=0;x<values.length;x++)
-            for(int y=0;y<values[0].length;y++)
-            {
-                if(values[x][y]>0 && values[x][y]!=noDataValue)
-                {
-                    
-                    ArrayList<Integer> codes=getNeighborhoodAreaCodes(areaCodes,x,y);
-                    //no existing areas in neighborhood: start new one
-                    if(codes.size()==0)
-                    {
-                        currentAreaCode++;
-                        setNeighborhoodAreaCodes(areaCodes,x,y,currentAreaCode);
-                    }
-                    //one ore more existing codes
-                    else
-                    {
-                        setNeighborhoodAreaCodes(areaCodes,x,y,codes.get(0));
-                    }
-                }
-            }
-        
-        //now let's pass again and check if we find 2 distinct area codes that are neighboring!
-        //if so, set them all to the same code.
-        
-        System.out.println("Completed first pass. Areas created: "+currentAreaCode);
-        
-        boolean mergingNeeded=true;
-        int passes = 0;
-        
-        while(mergingNeeded)
-        {
-            passes++;
-            System.out.println("Merging passes: "+passes);
-            mergingNeeded = false;  //only goes back to true if areas are merged in this pass
-            for(int x=0;x<values.length;x++)
-                for(int y=0;y<values[0].length;y++)
-                {
-                    if(areaCodes[x][y]>0)
-                    {
-                         ArrayList<Integer> codes=getNeighborhoodAreaCodes(areaCodes,x,y);
-                         if(codes.size()>1)
-                         {
-                             mergeAreas(areaCodes, codes);
-                             mergingNeeded = true;
-                         }
-                    }
-                }
-        }
-        
-        System.out.println("******Merging completed.");
- 
-       return areaCodes;
-    }   */
-    
-    
-    
+       
     public void mergeAreas(int[][] areaCodes, ArrayList<Integer> codes)
     {
-      
-        String merging="   Merging: ";
-        for(int i=0; i<codes.size();i++) {merging=merging+codes.get(i)+", ";}
-        System.out.println(merging);
         for(int x=0;x<areaCodes.length;x++)
             for(int y=0;y<areaCodes[0].length;y++)
             {

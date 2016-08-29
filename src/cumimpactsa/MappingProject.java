@@ -133,6 +133,7 @@ public class MappingProject
 
     public void saveLowerResolutionVersion(String filename, int reductionFactor) 
     {
+        GlobalResources.statusWindow.println("Reducing resolution by factor "+reductionFactor);
         MCSimulationManager mcm = new MCSimulationManager();
         ArrayList<SpatialDataLayer> stressors2 = mcm.makeLayerListClone(stressors);
         mcm.eraseProcessingChains(stressors2);
@@ -154,21 +155,22 @@ public class MappingProject
         }
         
         //create CsvTable for first stressor
-        System.out.println("Reducing resolution for stressor 1 of "+stressors2.size());
+        GlobalResources.statusWindow.println("Reducing resolution for stressor 1 of "+stressors2.size());
         CsvTableGeneral masterTable = grid.createTableFromLayer(stressors2.get(0), true, grid.getCellSize()*reductionFactor);
         for(int i=1; i<stressors2.size();i++)
         {
-            System.out.println("Reducing resolution for stressor " + (i+1) + " of "+stressors2.size());
+            GlobalResources.statusWindow.println("Reducing resolution for stressor " + (i+1) + " of "+stressors2.size());
             CsvTableGeneral newTable = grid.createTableFromLayer(stressors2.get(i), true, grid.getCellSize()*reductionFactor);
             masterTable.append(newTable);
         }
         for(int i=0; i<ecocomps2.size();i++)
         {
-            System.out.println("Reducing resolution for ecological component " + (i+1) + " of "+ecocomps2.size());
+            GlobalResources.statusWindow.println("Reducing resolution for ecological component " + (i+1) + " of "+ecocomps2.size());
             CsvTableGeneral newTable = grid.createTableFromLayer(ecocomps2.get(i), true, grid.getCellSize()*reductionFactor);
             masterTable.append(newTable);
         }
         
+        GlobalResources.statusWindow.println("Writing reduced resolution data to: "+filename);
         masterTable.writeToFile(filename);
   
     
@@ -561,7 +563,6 @@ public class MappingProject
                     
                     if(resType.get(row).equals("stressor") || resType.get(row).equals("ecocomp") || resType.get(row).equals("result") || resType.get(row).equals("regions") || resType.get(row).equals("aois"))
                     {
-                        //System.out.println("  SPATIAL");
                         int dataType=-1;
                         if(resType.get(row).equals("stressor")) {dataType=GlobalResources.DATATYPE_STRESSOR;}
                         else if(resType.get(row).equals("ecocomp")) {dataType=GlobalResources.DATATYPE_ECOCOMP;}

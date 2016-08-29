@@ -20,8 +20,6 @@ public class ImpactIndexAdditive extends SpatialDataLayer
      
         super("Impact index",null,GlobalResources.DATATYPE_SPATIAL,null);
         
-        System.out.println("****Calculating with additive MEM");
-        
         this.scores=sensitivityScores;
         source = new DataSourceInfo();
         source.sourceFile=saveFileName;
@@ -35,7 +33,6 @@ public class ImpactIndexAdditive extends SpatialDataLayer
         this.type = GlobalResources.DATATYPE_SPATIAL;
         
         //needed to calculate average and impact contributions
-        System.out.println("****Calculating diversity index...");
         DiversityIndex divIndex = new DiversityIndex("not_saved");
         float[][] ecocompSum = divIndex.getGrid().getData();
               
@@ -55,7 +52,6 @@ public class ImpactIndexAdditive extends SpatialDataLayer
         
         for(int i=0; i<sensitivityScores.size();i++)
         {
-            System.out.println("****Processing impact: "+i+" of "+ sensitivityScores.size()+":"+sensitivityScores.getInfo(i).getStressor().getName()+ " on " + sensitivityScores.getInfo(i).getEcocomp().getName());
             GlobalResources.mappingProject.setProcessingProgressPercent((int) (100*i/sensitivityScores.size()));
             
             ImpactInfo impact = sensitivityScores.getInfo(i);
@@ -120,9 +116,7 @@ public class ImpactIndexAdditive extends SpatialDataLayer
             }    
         }*/
          
-       System.out.println("****Creating grid"); 
        grid = new DataGrid(data,max,min,GlobalResources.NODATAVALUE);
-       System.out.println("****Done.");
     }
      
      

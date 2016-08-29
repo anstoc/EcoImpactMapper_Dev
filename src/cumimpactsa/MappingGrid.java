@@ -54,20 +54,21 @@ public class MappingGrid
         
             //get cell size by comparing distance between three pre-selected cells with the current one. 
             //Smallest distance in either x or y direction found is taken to be cell size
+            GlobalResources.statusWindow.println("Determining input resolution...");
             for(int i=0; i<x.length;i++)
             {   
                 if(Math.abs(x[i]-x1)<cellsize && Math.abs(x[i]-x1)!=0) 
-                    {cellsize = (float) Math.abs(x[i]-x1);System.out.println("i: "+i+"; x1: "+x1 + "; xi: "+x[i]+"; New cellsize: "+cellsize);}
+                    {cellsize = (float) Math.abs(x[i]-x1); GlobalResources.statusWindow.println("i: "+i+"; x1: "+x1 + "; xi: "+x[i]+"; New cellsize: "+cellsize);}
                 if(Math.abs(x[i]-x2)<cellsize && Math.abs(x[i]-x2)!=0) 
-                    {cellsize = (float) Math.abs(x[i]-x2);System.out.println("i: "+i+"; x2: "+x2 + "; xi: "+x[i]+"; New cellsize: "+cellsize);}
+                    {cellsize = (float) Math.abs(x[i]-x2);GlobalResources.statusWindow.println("i: "+i+"; x2: "+x2 + "; xi: "+x[i]+"; New cellsize: "+cellsize);}
                 if(Math.abs(x[i]-x3)<cellsize && Math.abs(x[i]-x3)!=0) 
-                    {cellsize = (float) Math.abs(x[i]-x3);System.out.println("i: "+i+"; x3: "+x3 + "; xi: "+x[i]+"; New cellsize: "+cellsize);}
+                    {cellsize = (float) Math.abs(x[i]-x3);GlobalResources.statusWindow.println("i: "+i+"; x3: "+x3 + "; xi: "+x[i]+"; New cellsize: "+cellsize);}
                 if(Math.abs(y[i]-y1)<cellsize && Math.abs(y[i]-y1)!=0) 
-                    {cellsize = (float) Math.abs(y[i]-y1);System.out.println("i: "+i+"; y1: "+y1 + "; yi: "+y[i]+"; New cellsize: "+cellsize);}
+                    {cellsize = (float) Math.abs(y[i]-y1);GlobalResources.statusWindow.println("i: "+i+"; y1: "+y1 + "; yi: "+y[i]+"; New cellsize: "+cellsize);}
                 if(Math.abs(y[i]-y2)<cellsize && Math.abs(y[i]-y2)!=0) 
-                    {cellsize = (float) Math.abs(y[i]-y2);System.out.println("i: "+i+"; y2: "+y2 + "; yi: "+y[i]+"; New cellsize: "+cellsize);}
+                    {cellsize = (float) Math.abs(y[i]-y2);GlobalResources.statusWindow.println("i: "+i+"; y2: "+y2 + "; yi: "+y[i]+"; New cellsize: "+cellsize);}
                 if(Math.abs(y[i]-y3)<cellsize && Math.abs(y[i]-y3)!=0) 
-                    {cellsize = (float) Math.abs(y[i]-y3);System.out.println("i: "+i+"; y3: "+y3 + "; yi: "+y[i]+"; New cellsize: "+cellsize);}
+                    {cellsize = (float) Math.abs(y[i]-y3);GlobalResources.statusWindow.println("i: "+i+"; y3: "+y3 + "; yi: "+y[i]+"; New cellsize: "+cellsize);}
             }
 
         

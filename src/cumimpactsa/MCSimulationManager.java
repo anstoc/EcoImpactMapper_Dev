@@ -155,7 +155,6 @@ public class MCSimulationManager
            newInfo.cellSum = GlobalResources.mappingProject.ecocomps.get(i).getGrid().getCellSum();
            ecocompInfos.add(newInfo);
         }
-        //System.out.println("Setting up analysis regions;");
         ArrayList<Float> regionCodes = GlobalResources.mappingProject.regions.grid.getUniqueDataValues();
  
         regionInfos = new ArrayList<RegionRankInfo>();
@@ -303,7 +302,6 @@ public class MCSimulationManager
     protected void changeSensitivityScores(SensitivityScoreSet scores)
     {
         if(!this.sensitivityScoreErrors) {return;}
-        //System.out.println("    ---- "+scores.getInfo(0).getSensitivityScore());
         float[] scoreErrors = new float[scores.size()];
         for(int i=0; i<scoreErrors.length;i++) {scoreErrors[i] = (float) (0.5*(scores.getMax()-scores.getMin())-(Math.random()*(scores.getMax()-scores.getMin())));} //random errors, can be +/- 50% of score range between original max and min scores
         float parameter = (float) Math.random();
@@ -1071,11 +1069,6 @@ public StressorRankInfo getStressorInfoByName(String name)
             Collections.sort(cellInfos,new CellComparatorXY());
             Collections.sort(mcm2.cellInfos,new CellComparatorXY());
             
-            //DEBUG
-            if(cellInfos.size()!=mcm2.cellInfos.size())
-            {
-                System.out.println("ERROR: Merging MC simulation results from different size data sets.");
-            }
             
             //now the two MCSimulationManager's cell lists are in the same order.
             for(int i=0; i<cellInfos.size();i++)

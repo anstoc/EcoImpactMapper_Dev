@@ -39,7 +39,6 @@ public class DiversityIndex extends SpatialDataLayer
         float min=1;
         for(int l=0; l<ecocompDataList.size();l++)
         {
-            //System.out.println("Calculatin diversity index, layer: " + l);
             GlobalResources.mappingProject.setProcessingProgressPercent((int) (100*l/ecocompDataList.size()));
             float[][] ecocompData=ecocompDataList.get(l);
             for(int y=0;y<data[0].length;y++)
@@ -91,7 +90,6 @@ public class DiversityIndex extends SpatialDataLayer
         float min=1;
         for(int l=0; l<ecocompDataList.size();l++)
         {
-            //System.out.println("Calculatin diversity index, layer: " + l);
             GlobalResources.mappingProject.setProcessingProgressPercent((int) (100*l/ecocompDataList.size()));
             float[][] ecocompData=ecocompDataList.get(l);
             for(int y=0;y<data[0].length;y++)

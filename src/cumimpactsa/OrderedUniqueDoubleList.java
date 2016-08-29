@@ -30,7 +30,6 @@ public class OrderedUniqueDoubleList
             }
             if(!list.get(i-1).equals(x))
             {
-                //System.out.println("Adding "+x+" at position "+i+" of "+list.size());
                 list.add(i,x);
             } 
         }

@@ -1299,8 +1299,6 @@ public class MainWindow extends javax.swing.JFrame {
                  @Override 
                  protected void done()
                  {
-                     //System.out.println("Background thread is done.");
-                     
                      try    
                      {
                         GlobalResources.statusWindow.println("Worker thread is done.");
@@ -1376,8 +1374,6 @@ public class MainWindow extends javax.swing.JFrame {
                  @Override 
                  protected void done()
                  {
-                     //System.out.println("Background thread is done.");
-                     
                      try    
                      {
                         GlobalResources.mappingProject.setProcessingProgressPercent(100);
@@ -2169,7 +2165,6 @@ public class MainWindow extends javax.swing.JFrame {
                             System.out.println("THREAD 2 STATE: "+mw2.getState());
                         }
                         
-                        //System.out.println("Main thread: Waiting for worker threads to finish.");
                         Thread.sleep(1000);
                     }
                     System.out.println("Threads completed.");

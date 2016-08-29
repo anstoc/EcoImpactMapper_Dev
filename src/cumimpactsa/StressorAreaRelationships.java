@@ -103,7 +103,6 @@ public class StressorAreaRelationships
        for(int i=1; i<=items.size();i++)
        {
            GlobalResources.mappingProject.setProcessingProgressPercent((int) (20+80*i/items.size()));
-           //System.out.println("Calculation done: " + GlobalResources.mappingProject.processingProgressPercent);
            for(int s=0; s<items.get(i-1).stressorValues.length; s++)
            {
                percentStressors[s][i]=100*percentStressors[s][i]/stressorSum[s];
