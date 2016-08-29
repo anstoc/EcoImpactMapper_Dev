@@ -1,11 +1,13 @@
-replace all System.out.printlns
+Make MC dialog foolproof - check variable ranges upon entering new values
 
-make Morris dialog
+make Morris dialog, store levels in a new class??
+
+adjust Morris so that it works with the new info
 
 testing
 
 remove functions that are marked with ** (dev version only)
 
 write new tutorial and trim away unused functions, e.g. the Morris analysis and regions and aois
-
+    
 publish, add comments to GEB and JORS?

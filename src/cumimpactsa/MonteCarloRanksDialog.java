@@ -110,6 +110,11 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
 
         textFieldSimulationRuns.setText("1000");
         textFieldSimulationRuns.setName("runs"); // NOI18N
+        textFieldSimulationRuns.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                textFieldSimulationRunsFocusLost(evt);
+            }
+        });
         getContentPane().add(textFieldSimulationRuns, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 22, 118, -1));
 
         textFieldOutputFolder.setEditable(false);
@@ -140,10 +145,20 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
 
         textFieldMissingStressorDataMin.setText("0");
         textFieldMissingStressorDataMin.setName("missingmin"); // NOI18N
+        textFieldMissingStressorDataMin.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                textFieldMissingStressorDataMinFocusLost(evt);
+            }
+        });
         getContentPane().add(textFieldMissingStressorDataMin, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 100, 60, -1));
 
         textFieldMissingStressorDataMax.setText("0.333");
         textFieldMissingStressorDataMax.setName("missingmax"); // NOI18N
+        textFieldMissingStressorDataMax.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                textFieldMissingStressorDataMaxFocusLost(evt);
+            }
+        });
         textFieldMissingStressorDataMax.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 textFieldMissingStressorDataMaxActionPerformed(evt);
@@ -153,6 +168,11 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
 
         textFieldSensitivtyScoreErrorsMin.setText("0");
         textFieldSensitivtyScoreErrorsMin.setName("sensmin"); // NOI18N
+        textFieldSensitivtyScoreErrorsMin.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                textFieldSensitivtyScoreErrorsMinFocusLost(evt);
+            }
+        });
         textFieldSensitivtyScoreErrorsMin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 textFieldSensitivtyScoreErrorsMinActionPerformed(evt);
@@ -168,6 +188,11 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
 
         textFieldSensitivtyScoreErrorMax.setText("1.0");
         textFieldSensitivtyScoreErrorMax.setName("sensmax"); // NOI18N
+        textFieldSensitivtyScoreErrorMax.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                textFieldSensitivtyScoreErrorMaxFocusLost(evt);
+            }
+        });
         textFieldSensitivtyScoreErrorMax.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 textFieldSensitivtyScoreErrorMaxActionPerformed(evt);
@@ -181,10 +206,20 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
 
         textFieldPointStressDecayMax.setText("20000");
         textFieldPointStressDecayMax.setName("decaymax"); // NOI18N
+        textFieldPointStressDecayMax.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                textFieldPointStressDecayMaxFocusLost(evt);
+            }
+        });
         getContentPane().add(textFieldPointStressDecayMax, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 200, 60, -1));
 
         textFieldPointStressDecayMin.setText("0");
         textFieldPointStressDecayMin.setName("decaymin"); // NOI18N
+        textFieldPointStressDecayMin.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                textFieldPointStressDecayMinFocusLost(evt);
+            }
+        });
         getContentPane().add(textFieldPointStressDecayMin, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 200, 60, -1));
 
         checkBoxPointStressDecay.setSelected(true);
@@ -259,6 +294,11 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
 
         textFieldThresholdsMax.setText("1");
         textFieldThresholdsMax.setName("threshmax"); // NOI18N
+        textFieldThresholdsMax.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                textFieldThresholdsMaxFocusLost(evt);
+            }
+        });
         getContentPane().add(textFieldThresholdsMax, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 270, 60, -1));
 
         textFieldThresholdsMin.setText("0");
@@ -297,6 +337,11 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
 
         textFieldReducedAnalysisResMax.setText("2");
         textFieldReducedAnalysisResMax.setName("redresmax"); // NOI18N
+        textFieldReducedAnalysisResMax.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                textFieldReducedAnalysisResMaxFocusLost(evt);
+            }
+        });
         getContentPane().add(textFieldReducedAnalysisResMax, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 340, 60, -1));
 
         checkBoxImprovedStressorRes.setSelected(true);
@@ -370,6 +415,11 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
 
         textFieldReducedAnalysisResMin.setText("1");
         textFieldReducedAnalysisResMin.setName("redresmin"); // NOI18N
+        textFieldReducedAnalysisResMin.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                textFieldReducedAnalysisResMinFocusLost(evt);
+            }
+        });
         getContentPane().add(textFieldReducedAnalysisResMin, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 340, 60, -1));
 
         jLabel14.setText("Number of threads:");
@@ -613,7 +663,16 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_checkBoxSpatialSummaryActionPerformed
 
     private void textFieldThresholdsMinFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_textFieldThresholdsMinFocusLost
-       
+        try
+        {
+            float nr=Float.parseFloat(textFieldThresholdsMin.getText());
+            if(nr<0 || nr>1) throw new Exception(); 
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(this, "Please enter a number between 0 and 1.");
+            textFieldThresholdsMin.setText("0");
+        }
     }//GEN-LAST:event_textFieldThresholdsMinFocusLost
 
     private void textFieldFilterDistanceFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_textFieldFilterDistanceFocusLost
@@ -624,9 +683,140 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
         }
         catch(Exception e)
         {
-            JOptionPane.showMessageDialog(this, "Low pass filter distance must be a number.");
+            JOptionPane.showMessageDialog(this, "Low pass filter distance must be a number greater than 0.");
+            textFieldFilterDistance.setText(GlobalResources.lowPassFilterDistance+"");
         }
     }//GEN-LAST:event_textFieldFilterDistanceFocusLost
+
+    private void textFieldSimulationRunsFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_textFieldSimulationRunsFocusLost
+         try
+        {
+            int runs=Integer.parseInt(textFieldSimulationRuns.getText());
+            if(runs<0) {throw new Exception();}
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(this, "Simulation runs must be an integer greater than 0.");
+            textFieldSimulationRuns.setText("1000");
+        }
+    }//GEN-LAST:event_textFieldSimulationRunsFocusLost
+
+    private void textFieldMissingStressorDataMinFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_textFieldMissingStressorDataMinFocusLost
+        try
+        {
+            float min=Float.parseFloat(textFieldMissingStressorDataMin.getText());
+            if(min<0 || min>1) throw new Exception(); 
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(this, "Please enter a number between 0 and 1.");
+            textFieldMissingStressorDataMin.setText("0");
+        }
+    }//GEN-LAST:event_textFieldMissingStressorDataMinFocusLost
+
+    private void textFieldMissingStressorDataMaxFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_textFieldMissingStressorDataMaxFocusLost
+        try
+        {
+            float nr=Float.parseFloat(textFieldMissingStressorDataMax.getText());
+            if(nr<0 || nr>1) throw new Exception(); 
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(this, "Please enter a number between 0 and 1.");
+            textFieldMissingStressorDataMax.setText("0.333");
+        }
+    }//GEN-LAST:event_textFieldMissingStressorDataMaxFocusLost
+
+    private void textFieldSensitivtyScoreErrorsMinFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_textFieldSensitivtyScoreErrorsMinFocusLost
+        try
+        {
+            float nr=Float.parseFloat(textFieldSensitivtyScoreErrorsMin.getText());
+            if(nr<0 || nr>1) throw new Exception(); 
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(this, "Please enter a number between 0 and 1.");
+            textFieldSensitivtyScoreErrorsMin.setText("0");
+        }
+    }//GEN-LAST:event_textFieldSensitivtyScoreErrorsMinFocusLost
+
+    private void textFieldSensitivtyScoreErrorMaxFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_textFieldSensitivtyScoreErrorMaxFocusLost
+        try
+        {
+            float nr=Float.parseFloat(textFieldSensitivtyScoreErrorMax.getText());
+            if(nr<0 || nr>1) throw new Exception(); 
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(this, "Please enter a number between 0 and 1.");
+            textFieldSensitivtyScoreErrorMax.setText("1");
+        }
+    }//GEN-LAST:event_textFieldSensitivtyScoreErrorMaxFocusLost
+
+    private void textFieldPointStressDecayMinFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_textFieldPointStressDecayMinFocusLost
+        try
+        {
+            float nr=Float.parseFloat(textFieldPointStressDecayMin.getText());
+            if(nr<0) throw new Exception(); 
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(this, "Please enter a number larger than or equal to 0.");
+            textFieldPointStressDecayMin.setText("0");
+        }
+    }//GEN-LAST:event_textFieldPointStressDecayMinFocusLost
+
+    private void textFieldPointStressDecayMaxFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_textFieldPointStressDecayMaxFocusLost
+        try
+        {
+            float nr=Float.parseFloat(textFieldPointStressDecayMax.getText());
+            if(nr<0) throw new Exception(); 
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(this, "Please enter a number larger than or equal to 0.");
+            textFieldPointStressDecayMax.setText("20000");
+        }
+    }//GEN-LAST:event_textFieldPointStressDecayMaxFocusLost
+
+    private void textFieldThresholdsMaxFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_textFieldThresholdsMaxFocusLost
+        try
+        {
+            float nr=Float.parseFloat(textFieldThresholdsMax.getText());
+            if(nr<0 || nr>1) throw new Exception(); 
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(this, "Please enter a number between 0 and 1.");
+            textFieldThresholdsMax.setText("1");
+        }
+    }//GEN-LAST:event_textFieldThresholdsMaxFocusLost
+
+    private void textFieldReducedAnalysisResMinFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_textFieldReducedAnalysisResMinFocusLost
+        try
+        {
+            int nr=Integer.parseInt(textFieldReducedAnalysisResMin.getText());
+            if(nr<1) throw new Exception(); 
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(this, "Please enter an integer greater than 0.");
+            textFieldReducedAnalysisResMin.setText("1");
+        }
+    }//GEN-LAST:event_textFieldReducedAnalysisResMinFocusLost
+
+    private void textFieldReducedAnalysisResMaxFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_textFieldReducedAnalysisResMaxFocusLost
+        try
+        {
+            int nr=Integer.parseInt(textFieldReducedAnalysisResMax.getText());
+            if(nr<1) throw new Exception(); 
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(this, "Please enter an integer greater than 0.");
+            textFieldReducedAnalysisResMax.setText("2");
+        }
+    }//GEN-LAST:event_textFieldReducedAnalysisResMaxFocusLost
 
     private Component getComponentByName(String name)
     {

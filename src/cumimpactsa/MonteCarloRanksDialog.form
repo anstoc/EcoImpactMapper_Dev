@@ -44,6 +44,9 @@
         <Property name="text" type="java.lang.String" value="1000"/>
         <Property name="name" type="java.lang.String" value="runs" noResource="true"/>
       </Properties>
+      <Events>
+        <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="textFieldSimulationRunsFocusLost"/>
+      </Events>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
           <AbsoluteConstraints x="6" y="22" width="118" height="-1"/>
@@ -118,6 +121,9 @@
         <Property name="text" type="java.lang.String" value="0"/>
         <Property name="name" type="java.lang.String" value="missingmin" noResource="true"/>
       </Properties>
+      <Events>
+        <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="textFieldMissingStressorDataMinFocusLost"/>
+      </Events>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
           <AbsoluteConstraints x="230" y="100" width="60" height="-1"/>
@@ -130,6 +136,7 @@
         <Property name="name" type="java.lang.String" value="missingmax" noResource="true"/>
       </Properties>
       <Events>
+        <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="textFieldMissingStressorDataMaxFocusLost"/>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="textFieldMissingStressorDataMaxActionPerformed"/>
       </Events>
       <Constraints>
@@ -144,6 +151,7 @@
         <Property name="name" type="java.lang.String" value="sensmin" noResource="true"/>
       </Properties>
       <Events>
+        <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="textFieldSensitivtyScoreErrorsMinFocusLost"/>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="textFieldSensitivtyScoreErrorsMinActionPerformed"/>
       </Events>
       <Constraints>
@@ -171,6 +179,7 @@
         <Property name="name" type="java.lang.String" value="sensmax" noResource="true"/>
       </Properties>
       <Events>
+        <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="textFieldSensitivtyScoreErrorMaxFocusLost"/>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="textFieldSensitivtyScoreErrorMaxActionPerformed"/>
       </Events>
       <Constraints>
@@ -197,6 +206,9 @@
         <Property name="text" type="java.lang.String" value="20000"/>
         <Property name="name" type="java.lang.String" value="decaymax" noResource="true"/>
       </Properties>
+      <Events>
+        <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="textFieldPointStressDecayMaxFocusLost"/>
+      </Events>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
           <AbsoluteConstraints x="300" y="200" width="60" height="-1"/>
@@ -208,6 +220,9 @@
         <Property name="text" type="java.lang.String" value="0"/>
         <Property name="name" type="java.lang.String" value="decaymin" noResource="true"/>
       </Properties>
+      <Events>
+        <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="textFieldPointStressDecayMinFocusLost"/>
+      </Events>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
           <AbsoluteConstraints x="230" y="200" width="60" height="-1"/>
@@ -368,6 +383,9 @@
         <Property name="text" type="java.lang.String" value="1"/>
         <Property name="name" type="java.lang.String" value="threshmax" noResource="true"/>
       </Properties>
+      <Events>
+        <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="textFieldThresholdsMaxFocusLost"/>
+      </Events>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
           <AbsoluteConstraints x="300" y="270" width="60" height="-1"/>
@@ -457,6 +475,9 @@
         <Property name="text" type="java.lang.String" value="2"/>
         <Property name="name" type="java.lang.String" value="redresmax" noResource="true"/>
       </Properties>
+      <Events>
+        <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="textFieldReducedAnalysisResMaxFocusLost"/>
+      </Events>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
           <AbsoluteConstraints x="300" y="340" width="60" height="-1"/>
@@ -610,6 +631,9 @@
         <Property name="text" type="java.lang.String" value="1"/>
         <Property name="name" type="java.lang.String" value="redresmin" noResource="true"/>
       </Properties>
+      <Events>
+        <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="textFieldReducedAnalysisResMinFocusLost"/>
+      </Events>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
           <AbsoluteConstraints x="230" y="340" width="60" height="-1"/>

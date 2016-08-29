@@ -984,6 +984,11 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_menuLoadActionPerformed
 
     private void menuSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuSaveActionPerformed
+        if(GlobalResources.mappingProject.grid==null)
+        {
+            JOptionPane.showMessageDialog(this, "Nothing to save.");
+            return;
+        }    
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fileChooser.setCurrentDirectory(new File(GlobalResources.lastUsedFolder));
@@ -1086,6 +1091,11 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_drawingPaneComponentResized
 
     private void menuImpactIndex1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuImpactIndex1ActionPerformed
+        if(GlobalResources.mappingProject.grid==null)
+        {
+            JOptionPane.showMessageDialog(this, "No data loaded.");
+            return;
+        } 
         //check if sensitivity scores exist
         if(GlobalResources.mappingProject.sensitivityScores==null || GlobalResources.mappingProject.sensitivityScores.size()<1)
         {
@@ -1178,6 +1188,11 @@ public class MainWindow extends javax.swing.JFrame {
 
     //impact index as sum
     private void menuImpactIndexActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuImpactIndexActionPerformed
+        if(GlobalResources.mappingProject.grid==null)
+        {
+            JOptionPane.showMessageDialog(this, "No data loaded.");
+            return;
+        } 
         //check if sensitivity scores exist
         if(GlobalResources.mappingProject.sensitivityScores==null || GlobalResources.mappingProject.sensitivityScores.size()<1)
         {
@@ -1267,6 +1282,11 @@ public class MainWindow extends javax.swing.JFrame {
 
     //weighted stressor index
     private void menuWeightedStressorIndexActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuWeightedStressorIndexActionPerformed
+        if(GlobalResources.mappingProject.grid==null)
+        {
+            JOptionPane.showMessageDialog(this, "No data loaded.");
+            return;
+        } 
         //check if sensitivity scores exist
         if(GlobalResources.mappingProject.sensitivityScores==null || GlobalResources.mappingProject.sensitivityScores.size()<1)
         {
@@ -1349,6 +1369,11 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_menuWeightedStressorIndexActionPerformed
 
     private void menuStressorIndexActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuStressorIndexActionPerformed
+        if(GlobalResources.mappingProject.grid==null)
+        {
+            JOptionPane.showMessageDialog(this, "No data loaded.");
+            return;
+        } 
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fileChooser.setCurrentDirectory(new File(GlobalResources.lastUsedFolder));
@@ -1426,6 +1451,11 @@ public class MainWindow extends javax.swing.JFrame {
 
     //diversity index - refactoring failed thus the general name
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        if(GlobalResources.mappingProject.grid==null)
+        {
+            JOptionPane.showMessageDialog(this, "No data loaded.");
+            return;
+        } 
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fileChooser.setCurrentDirectory(new File(GlobalResources.lastUsedFolder));
@@ -1508,7 +1538,12 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void menuItemAreaPlotsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemAreaPlotsActionPerformed
-         JFileChooser fileChooser = new JFileChooser();
+        if(GlobalResources.mappingProject.grid==null)
+        {
+            JOptionPane.showMessageDialog(this, "No data loaded.");
+            return;
+        }
+        JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fileChooser.setCurrentDirectory(new File(GlobalResources.lastUsedFolder));
         int result = fileChooser.showSaveDialog(this);
@@ -1664,7 +1699,18 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_menuItemLoadRegionsActionPerformed
 
     private void menuItemMonteCarloRanksActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemMonteCarloRanksActionPerformed
-       
+        if(GlobalResources.mappingProject.grid==null)
+        {
+            JOptionPane.showMessageDialog(this, "No data loaded.");
+            return;
+        }
+        //check if sensitivity scores exist
+        if(GlobalResources.mappingProject.sensitivityScores==null || GlobalResources.mappingProject.sensitivityScores.size()<1)
+        {
+            JOptionPane.showMessageDialog(this,"Please load sensitivity weights.");
+            return;
+        }
+        //check if regions exist
         //calculate: # of times a region is among the 5 highest impacted and the 5 lowest impacted; rank range of each region; # of times each CELL is in the 10% highest 
         //and the 10% lowest impacted; rank range of each cell
         final MCSimulationManager mcm = new MCSimulationManager();
@@ -1754,7 +1800,12 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_menuItemMonteCarloRanksActionPerformed
 
     private void menuItemImpactIndexDominantSumActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemImpactIndexDominantSumActionPerformed
-            //check if sensitivity scores exist
+        if(GlobalResources.mappingProject.grid==null)
+        {
+            JOptionPane.showMessageDialog(this, "No data loaded.");
+            return;
+        } 
+        //check if sensitivity scores exist
         if(GlobalResources.mappingProject.sensitivityScores==null || GlobalResources.mappingProject.sensitivityScores.size()<1)
         {
             JOptionPane.showMessageDialog(this,"To calculate an impact index, you must first load sensitivity weights.");
@@ -1827,7 +1878,7 @@ public class MainWindow extends javax.swing.JFrame {
                 
                 ImpactIndexDominant index = worker.get();            
                 drawingPaneShows = index;
-                updateGraphics();
+                        updateGraphics();
                 GlobalResources.mappingProject.results.add(index);
                 updateResultsList();
             }
@@ -1841,6 +1892,11 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_menuItemImpactIndexDominantSumActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        if(GlobalResources.mappingProject.grid==null)
+        {
+            JOptionPane.showMessageDialog(this, "No data loaded.");
+            return;
+        }         
         //check if sensitivity scores exist
         if(GlobalResources.mappingProject.sensitivityScores==null || GlobalResources.mappingProject.sensitivityScores.size()<1)
         {
@@ -1926,7 +1982,17 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void menuItemDiminishingImpactsSumActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemDiminishingImpactsSumActionPerformed
-                //check if sensitivity scores exist
+        if(GlobalResources.mappingProject.grid==null)
+        {
+            JOptionPane.showMessageDialog(this, "No data loaded.");
+            return;
+        }
+        if(GlobalResources.mappingProject.grid==null)
+        {
+            JOptionPane.showMessageDialog(this, "No data loaded.");
+            return;
+        }         
+        //check if sensitivity scores exist
         if(GlobalResources.mappingProject.sensitivityScores==null || GlobalResources.mappingProject.sensitivityScores.size()<1)
         {
             JOptionPane.showMessageDialog(this,"To calculate an impact index, you must first load sensitivity weights.");
@@ -2013,6 +2079,11 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_menuItemDiminishingImpactsSumActionPerformed
 
     private void menuItemDiminishingImpactMeanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemDiminishingImpactMeanActionPerformed
+        if(GlobalResources.mappingProject.grid==null)
+        {
+            JOptionPane.showMessageDialog(this, "No data loaded.");
+            return;
+        }        
         //check if sensitivity weights exist
         if(GlobalResources.mappingProject.sensitivityScores==null || GlobalResources.mappingProject.sensitivityScores.size()<1)
         {
@@ -2099,6 +2170,11 @@ public class MainWindow extends javax.swing.JFrame {
 
     //export data with lower resolution
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        if(GlobalResources.mappingProject.grid==null)
+        {
+            JOptionPane.showMessageDialog(this, "No data loaded.");
+            return;
+        } 
         int reductionFactor=2;  //TODO show dialog, give option
 
         JFileChooser fileChooser = new JFileChooser();
@@ -2113,6 +2189,20 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     private void menuItemMorrisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemMorrisActionPerformed
+       
+        if(GlobalResources.mappingProject.grid==null)
+        {
+            JOptionPane.showMessageDialog(this, "No data loaded.");
+            return;
+        }
+        //check if sensitivity scores exist
+        if(GlobalResources.mappingProject.sensitivityScores==null || GlobalResources.mappingProject.sensitivityScores.size()<1)
+        {
+            JOptionPane.showMessageDialog(this,"Please load sensitivity weights.");
+            return;
+        } 
+        
+        
        MorrisDialog dialog = new MorrisDialog(this, true);
        boolean multiThreading=true;
        dialog.setVisible(true);
@@ -2274,6 +2364,11 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_menuItemAoisActionPerformed
 
     private void menuItemSensitivityIndexActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemSensitivityIndexActionPerformed
+        if(GlobalResources.mappingProject.grid==null)
+        {
+            JOptionPane.showMessageDialog(this, "No data loaded.");
+            return;
+        } 
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fileChooser.setCurrentDirectory(new File(GlobalResources.lastUsedFolder));
