@@ -1711,8 +1711,11 @@ public class MainWindow extends javax.swing.JFrame {
             return;
         }
         //check if regions exist
-        //calculate: # of times a region is among the 5 highest impacted and the 5 lowest impacted; rank range of each region; # of times each CELL is in the 10% highest 
-        //and the 10% lowest impacted; rank range of each cell
+        if(GlobalResources.mappingProject.regions==null)
+        {
+            JOptionPane.showMessageDialog(this,"Please load regions.");
+            return;
+        }
         final MCSimulationManager mcm = new MCSimulationManager();
         mcDialog.setSimulationManager(mcm);
         mcDialog.setVisible(true);

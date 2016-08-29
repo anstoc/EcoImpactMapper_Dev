@@ -1,5 +1,3 @@
-Make MC dialog foolproof - check variable ranges upon entering new values
-
 make Morris dialog, store levels in a new class??
 
 adjust Morris so that it works with the new info

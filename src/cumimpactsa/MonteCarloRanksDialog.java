@@ -144,6 +144,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
         getContentPane().add(checkBoxTransfNone, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 110, -1, -1));
 
         textFieldMissingStressorDataMin.setText("0");
+        textFieldMissingStressorDataMin.setToolTipText("<html>In each simulation run, a random proportion of stressor data sets <br>\ngiven by the min and max fields will be ommitted from the model. For example, <br>\nif min=0 and max=0.333, up to 33.3% (with the actual proportion randomly <br>\ndrawn from a uniform distribution) of all stressor data sets will be excluded <br>\nin any given simulation run. Which data sets are excluded is randomly chosen. <br> \nEach data set has the same probability of exclusion.</html>");
         textFieldMissingStressorDataMin.setName("missingmin"); // NOI18N
         textFieldMissingStressorDataMin.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
@@ -153,6 +154,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
         getContentPane().add(textFieldMissingStressorDataMin, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 100, 60, -1));
 
         textFieldMissingStressorDataMax.setText("0.333");
+        textFieldMissingStressorDataMax.setToolTipText("<html>In each simulation run, a random proportion of stressor data sets <br>\ngiven by the min and max fields will be ommitted from the model. For example, <br>\nif min=0 and max=0.333, up to 33.3% (with the actual proportion randomly <br>\ndrawn from a uniform distribution) of all stressor data sets will be excluded <br>\nin any given simulation run. Which data sets are excluded is randomly chosen. <br> \nEach data set has the same probability of exclusion.</html>");
         textFieldMissingStressorDataMax.setName("missingmax"); // NOI18N
         textFieldMissingStressorDataMax.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
@@ -167,6 +169,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
         getContentPane().add(textFieldMissingStressorDataMax, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 100, 60, 30));
 
         textFieldSensitivtyScoreErrorsMin.setText("0");
+        textFieldSensitivtyScoreErrorsMin.setToolTipText("<html>In each simulation run, random errors will be added to the sensitivity weights. <br>\nIf m is the maximum of the sensitivity weights and r is a random number <br>\ndrawn from a uniform distribution U(min,max), the errors will be drawn from <br>\na uniform distribution U(-0.5*r*m,0.5*r*m).\n");
         textFieldSensitivtyScoreErrorsMin.setName("sensmin"); // NOI18N
         textFieldSensitivtyScoreErrorsMin.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
@@ -187,6 +190,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
         getContentPane().add(checkBoxSensitivtyScoreErrors, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 130, -1, -1));
 
         textFieldSensitivtyScoreErrorMax.setText("1.0");
+        textFieldSensitivtyScoreErrorMax.setToolTipText("<html>In each simulation run, random errors will be added to the sensitivity weights. <br>\nIf m is the maximum of the sensitivity weights and r is a random number <br>\ndrawn from a uniform distribution U(min,max), the errors will be drawn from <br>\na uniform distribution U(-0.5*r*m,0.5*r*m).\n");
         textFieldSensitivtyScoreErrorMax.setName("sensmax"); // NOI18N
         textFieldSensitivtyScoreErrorMax.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
@@ -205,6 +209,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
         getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 80, -1, -1));
 
         textFieldPointStressDecayMax.setText("20000");
+        textFieldPointStressDecayMax.setToolTipText("<html>This factor is only applied to data layers to which it was assigned in the \"Assign selective factors\" dialog. It is intended for stressor layers. <br>The intensity of these stressors will linearly decay in each simulation run\nover a randomly chosen distance netween min and max,<br> given in coordinate system\nunits. For example, in UTM, the units will typically be meters.<br>Point data sets must\nfirst be identified in the Processing & data/Data types menu.</html>\n");
         textFieldPointStressDecayMax.setName("decaymax"); // NOI18N
         textFieldPointStressDecayMax.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
@@ -214,6 +219,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
         getContentPane().add(textFieldPointStressDecayMax, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 200, 60, -1));
 
         textFieldPointStressDecayMin.setText("0");
+        textFieldPointStressDecayMin.setToolTipText("<html>This factor is only applied to data layers to which it was assigned in the \"Assign selective factors\" dialog. It is intended for stressor layers. <br>The intensity of these stressors will linearly decay in each simulation run\nover a randomly chosen distance netween min and max,<br> given in coordinate system\nunits. For example, in UTM, the units will typically be meters.<br>Point data sets must\nfirst be identified in the Processing & data/Data types menu.</html>\n");
         textFieldPointStressDecayMin.setName("decaymin"); // NOI18N
         textFieldPointStressDecayMin.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
@@ -223,8 +229,8 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
         getContentPane().add(textFieldPointStressDecayMin, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 200, 60, -1));
 
         checkBoxPointStressDecay.setSelected(true);
-        checkBoxPointStressDecay.setText("Point data stress decay");
-        checkBoxPointStressDecay.setToolTipText("<html>The intensity of point stressors will linearly decay in each simulation run<br>\nover a randomly chosen distance netween min and max, given in coordinate system<br>\nunits. For example, in UTM, the units will typically be meters. Point data sets must<br>\nfirst be identified in the Processing & data/Data types menu.</html>\n");
+        checkBoxPointStressDecay.setText("Linear stress decay");
+        checkBoxPointStressDecay.setToolTipText("<html>This factor is only applied to data layers to which it was assigned in the \"Assign selective factors\" dialog. It is intended for stressor layers. <br>The intensity of these stressors will linearly decay in each simulation run\nover a randomly chosen distance netween min and max,<br> given in coordinate system\nunits. For example, in UTM, the units will typically be meters.<br>Point data sets must\nfirst be identified in the Processing & data/Data types menu.</html>\n");
         checkBoxPointStressDecay.setName("cbdecay"); // NOI18N
         getContentPane().add(checkBoxPointStressDecay, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 200, -1, -1));
 
@@ -271,13 +277,13 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
 
         checkBoxMultiAdditive.setSelected(true);
         checkBoxMultiAdditive.setText("Additive");
-        checkBoxMultiAdditive.setToolTipText("<html>In each simulation run, one of the enabled multiple effects models is<br>\nselected with equal probability. At least one multiple effects model must be selected.</html>");
+        checkBoxMultiAdditive.setToolTipText("<html>In each simulation run, one of the enabled multiple stressor effects models is<br>\nselected with equal probability. At least one multiple stressor effects model must be selected.</html>");
         checkBoxMultiAdditive.setName("cbadditive"); // NOI18N
         getContentPane().add(checkBoxMultiAdditive, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 280, -1, -1));
 
         checkBoxMultiWorst.setSelected(true);
         checkBoxMultiWorst.setText("Dominant stressor");
-        checkBoxMultiWorst.setToolTipText("<html>In each simulation run, one of the enabled multiple effects models is<br>\nselected with equal probability. At least one multiple effects model must be selected.</html>");
+        checkBoxMultiWorst.setToolTipText("<html>In each simulation run, one of the enabled multiple stressor effects models is<br>\nselected with equal probability. At least one multiple stressor effects model must be selected.</html>");
         checkBoxMultiWorst.setName("cbdominant"); // NOI18N
         checkBoxMultiWorst.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -288,11 +294,12 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
 
         checkBoxMultiDiminish.setSelected(true);
         checkBoxMultiDiminish.setText("Antagonistic impacts");
-        checkBoxMultiDiminish.setToolTipText("<html>In each simulation run, one of the enabled multiple effects models is<br>\nselected with equal probability. At least one multiple effects model must be selected.</html>");
+        checkBoxMultiDiminish.setToolTipText("<html>In each simulation run, one of the enabled multiple stressor effects models is<br>\nselected with equal probability. At least one multiple stressor effects model must be selected.</html>");
         checkBoxMultiDiminish.setName("cbantagonistic"); // NOI18N
         getContentPane().add(checkBoxMultiDiminish, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 340, -1, -1));
 
         textFieldThresholdsMax.setText("1");
+        textFieldThresholdsMax.setToolTipText("<html>In each simulation run, a proportion of ecosystem component-stressor combinations<br>\nwill be assigned an ecological threshold response function, as opposed to a linear<br>\nresponse function. The proportion (0 to 1) is randomly chosen from a uniform<br>\ndistribution U(min,max). Also the ecosystem component-stressor combinations that<br>\nget threshold instead of linear response functions are randomly chosen, with each<br>\ncombination having the same propbability to get a threshold response function.</html>");
         textFieldThresholdsMax.setName("threshmax"); // NOI18N
         textFieldThresholdsMax.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
@@ -302,6 +309,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
         getContentPane().add(textFieldThresholdsMax, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 270, 60, -1));
 
         textFieldThresholdsMin.setText("0");
+        textFieldThresholdsMin.setToolTipText("<html>In each simulation run, a proportion of ecosystem component-stressor combinations<br>\nwill be assigned an ecological threshold response function, as opposed to a linear<br>\nresponse function. The proportion (0 to 1) is randomly chosen from a uniform<br>\ndistribution U(min,max). Also the ecosystem component-stressor combinations that<br>\nget threshold instead of linear response functions are randomly chosen, with each<br>\ncombination having the same propbability to get a threshold response function.</html>");
         textFieldThresholdsMin.setName("threshmin"); // NOI18N
         textFieldThresholdsMin.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
@@ -326,7 +334,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
 
         checkBoxReducedAnalysisRes.setSelected(true);
         checkBoxReducedAnalysisRes.setText("Reduced analysis res.");
-        checkBoxReducedAnalysisRes.setToolTipText("<html>In each simulation run, the spatil resolution of the analysis will be reduced<br>\nby randomly chosen integer factor between min and max. For example, if the original<br>\nspatial resolution is 1km, min=1 and max=2, the spatial resolution of the analysis<br>\nwill be 1km in about half of the simulation runs, and 2km in the remaining simulation runs.</html>");
+        checkBoxReducedAnalysisRes.setToolTipText("<html>In each simulation run, the spatial resolution of the analysis will be reduced<br>\nby a randomly chosen integer factor between min and max. For example, if the original<br>\nspatial resolution is 1km, min=1 and max=2, the spatial resolution of the analysis<br>\nwill be 1km in about half of the simulation runs, and 2km in the remaining simulation runs.</html>");
         checkBoxReducedAnalysisRes.setName("cbredres"); // NOI18N
         getContentPane().add(checkBoxReducedAnalysisRes, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 340, -1, -1));
 
@@ -336,6 +344,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
         getContentPane().add(textFieldThreads, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 480, 30, 20));
 
         textFieldReducedAnalysisResMax.setText("2");
+        textFieldReducedAnalysisResMax.setToolTipText("<html>In each simulation run, the spatial resolution of the analysis will be reduced<br>\nby a randomly chosen integer factor between min and max. For example, if the original<br>\nspatial resolution is 1km, min=1 and max=2, the spatial resolution of the analysis<br>\nwill be 1km in about half of the simulation runs, and 2km in the remaining simulation runs.</html>");
         textFieldReducedAnalysisResMax.setName("redresmax"); // NOI18N
         textFieldReducedAnalysisResMax.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
@@ -346,7 +355,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
 
         checkBoxImprovedStressorRes.setSelected(true);
         checkBoxImprovedStressorRes.setText("Improved stressor res.");
-        checkBoxImprovedStressorRes.setToolTipText("<html>In each simulation run, stressor intensities represented by large, uniform areas<br>\nwill be replaced with fine-resolution versions that retain the general patterns. These stressors<br>\nmust first be identified as type \"polygon\" in the Processing & data/Data types menu.\n</html>");
+        checkBoxImprovedStressorRes.setToolTipText("<html>This factor only affects data layers to which it has been assigned in the \"Assign selective factors\" dialog.<br> In each simulation run,  large, uniform areas<br>\nwill be replaced with fine-resolution versions that retain the general patterns. This involves low-pass filtering, the distance for which has to be given below.<br> Typically, about 5 times the spatial resolution is a good choice.\n</html>");
         checkBoxImprovedStressorRes.setName("cbimpres"); // NOI18N
         getContentPane().add(checkBoxImprovedStressorRes, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 390, -1, -1));
 
@@ -392,7 +401,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
         getContentPane().add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 250, -1, -1));
 
         checkBoxSpatialSummary.setSelected(true);
-        checkBoxSpatialSummary.setText("Spatial summary (slower processing)");
+        checkBoxSpatialSummary.setText("** Spatial summary (slower processing)");
         checkBoxSpatialSummary.setToolTipText("<html>If this option is disabled, the simulation results will be ranks of regions,<br>\nstressors and ecosystem components. If it is enabled, the results will in addition include<br>\nper-cell spatial data like the proportion of simulation runs in which the cell was among the<br>\nmost impacted 10%.</html>\n");
         checkBoxSpatialSummary.setName("cbspatialsummary"); // NOI18N
         checkBoxSpatialSummary.addActionListener(new java.awt.event.ActionListener() {
@@ -402,7 +411,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
         });
         getContentPane().add(checkBoxSpatialSummary, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 450, -1, -1));
 
-        checkBoxAddRunsToResults.setText("Show simulation runs in project results");
+        checkBoxAddRunsToResults.setText("** Show simulation runs in project results");
         checkBoxAddRunsToResults.setToolTipText("<html>If this option is selected, the human impact map from each simulation run<br>\nis added to the project results. This option should be disabled if the number of simulation/br>\nruns is large.</html>");
         checkBoxAddRunsToResults.setName("cbshowruns"); // NOI18N
         getContentPane().add(checkBoxAddRunsToResults, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 430, -1, -1));
@@ -414,6 +423,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
         getContentPane().add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 80, -1, -1));
 
         textFieldReducedAnalysisResMin.setText("1");
+        textFieldReducedAnalysisResMin.setToolTipText("<html>In each simulation run, the spatial resolution of the analysis will be reduced<br>\nby a randomly chosen integer factor between min and max. For example, if the original<br>\nspatial resolution is 1km, min=1 and max=2, the spatial resolution of the analysis<br>\nwill be 1km in about half of the simulation runs, and 2km in the remaining simulation runs.</html>");
         textFieldReducedAnalysisResMin.setName("redresmin"); // NOI18N
         textFieldReducedAnalysisResMin.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
@@ -423,7 +433,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
         getContentPane().add(textFieldReducedAnalysisResMin, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 340, 60, -1));
 
         jLabel14.setText("Number of threads:");
-        jLabel14.setToolTipText("<html>Most modern computer processors have several cores, i.e. they can do several<br>\ncalculations at the same time. In this case, for large data sets and many simulation runs, \nyou can speed up processing by increasing the number of threads up to your number of cores.</html>");
+        jLabel14.setToolTipText("<html>Most modern computer processors have several cores, i.e. they can do several<br>\ncalculations at the same time. In this case, for large data sets and many simulation runs,<br>\nyou can speed up processing by increasing the number of threads up to your number of cores.<br>\nUsing several threads increases memory requirements, though.\n</html>");
         getContentPane().add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 480, -1, -1));
 
         buttonSave.setText("Save settings...");
@@ -442,15 +452,17 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
         });
         getContentPane().add(buttonLoad, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 520, 120, 30));
 
-        checkBoxMapStressorContributions.setText("Map stressor contributions");
-        checkBoxMapStressorContributions.setToolTipText("<html>If this option is selected, the human impact map from each simulation run<br>\nis added to the project results. This option should be disabled if the number of simulation/br>\nruns is large.</html>");
+        checkBoxMapStressorContributions.setText("** Map stressor contributions");
+        checkBoxMapStressorContributions.setToolTipText("<html>If this option is selected, the stressor's contribution to impact scores isd mapped as mean over all simulation runs in which it occurs.");
         checkBoxMapStressorContributions.setName("cbmapcontrib"); // NOI18N
         getContentPane().add(checkBoxMapStressorContributions, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 410, -1, -1));
 
         jLabel15.setText("Filter distance:");
+        jLabel15.setToolTipText("<html>This factor only affects data layers to which it has been assigned in the \"Assign selective factors\" dialog.<br> In each simulation run,  large, uniform areas<br>\nwill be replaced with fine-resolution versions that retain the general patterns. This involves low-pass filtering, the distance for which has to be given below.<br> Typically, about 5 times the spatial resolution is a good choice.\n</html>");
         getContentPane().add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 420, -1, -1));
 
         textFieldFilterDistance.setText("25000");
+        textFieldFilterDistance.setToolTipText("<html>This factor only affects data layers to which it has been assigned in the \"Assign selective factors\" dialog.<br> In each simulation run,  large, uniform areas<br>\nwill be replaced with fine-resolution versions that retain the general patterns. This involves low-pass filtering, the distance for which has to be given below.<br> Typically, about 5 times the spatial resolution is a good choice.\n</html>");
         textFieldFilterDistance.setName("filterdist"); // NOI18N
         textFieldFilterDistance.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {

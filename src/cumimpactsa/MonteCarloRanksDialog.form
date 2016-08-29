@@ -119,6 +119,7 @@
     <Component class="javax.swing.JTextField" name="textFieldMissingStressorDataMin">
       <Properties>
         <Property name="text" type="java.lang.String" value="0"/>
+        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;In each simulation run, a random proportion of stressor data sets &lt;br&gt;&#xa;given by the min and max fields will be ommitted from the model. For example, &lt;br&gt;&#xa;if min=0 and max=0.333, up to 33.3% (with the actual proportion randomly &lt;br&gt;&#xa;drawn from a uniform distribution) of all stressor data sets will be excluded &lt;br&gt;&#xa;in any given simulation run. Which data sets are excluded is randomly chosen. &lt;br&gt; &#xa;Each data set has the same probability of exclusion.&lt;/html&gt;"/>
         <Property name="name" type="java.lang.String" value="missingmin" noResource="true"/>
       </Properties>
       <Events>
@@ -133,6 +134,7 @@
     <Component class="javax.swing.JTextField" name="textFieldMissingStressorDataMax">
       <Properties>
         <Property name="text" type="java.lang.String" value="0.333"/>
+        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;In each simulation run, a random proportion of stressor data sets &lt;br&gt;&#xa;given by the min and max fields will be ommitted from the model. For example, &lt;br&gt;&#xa;if min=0 and max=0.333, up to 33.3% (with the actual proportion randomly &lt;br&gt;&#xa;drawn from a uniform distribution) of all stressor data sets will be excluded &lt;br&gt;&#xa;in any given simulation run. Which data sets are excluded is randomly chosen. &lt;br&gt; &#xa;Each data set has the same probability of exclusion.&lt;/html&gt;"/>
         <Property name="name" type="java.lang.String" value="missingmax" noResource="true"/>
       </Properties>
       <Events>
@@ -148,6 +150,7 @@
     <Component class="javax.swing.JTextField" name="textFieldSensitivtyScoreErrorsMin">
       <Properties>
         <Property name="text" type="java.lang.String" value="0"/>
+        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;In each simulation run, random errors will be added to the sensitivity weights. &lt;br&gt;&#xa;If m is the maximum of the sensitivity weights and r is a random number &lt;br&gt;&#xa;drawn from a uniform distribution U(min,max), the errors will be drawn from &lt;br&gt;&#xa;a uniform distribution U(-0.5*r*m,0.5*r*m).&#xa;"/>
         <Property name="name" type="java.lang.String" value="sensmin" noResource="true"/>
       </Properties>
       <Events>
@@ -176,6 +179,7 @@
     <Component class="javax.swing.JTextField" name="textFieldSensitivtyScoreErrorMax">
       <Properties>
         <Property name="text" type="java.lang.String" value="1.0"/>
+        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;In each simulation run, random errors will be added to the sensitivity weights. &lt;br&gt;&#xa;If m is the maximum of the sensitivity weights and r is a random number &lt;br&gt;&#xa;drawn from a uniform distribution U(min,max), the errors will be drawn from &lt;br&gt;&#xa;a uniform distribution U(-0.5*r*m,0.5*r*m).&#xa;"/>
         <Property name="name" type="java.lang.String" value="sensmax" noResource="true"/>
       </Properties>
       <Events>
@@ -204,6 +208,7 @@
     <Component class="javax.swing.JTextField" name="textFieldPointStressDecayMax">
       <Properties>
         <Property name="text" type="java.lang.String" value="20000"/>
+        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;This factor is only applied to data layers to which it was assigned in the &quot;Assign selective factors&quot; dialog. It is intended for stressor layers. &lt;br&gt;The intensity of these stressors will linearly decay in each simulation run&#xa;over a randomly chosen distance netween min and max,&lt;br&gt; given in coordinate system&#xa;units. For example, in UTM, the units will typically be meters.&lt;br&gt;Point data sets must&#xa;first be identified in the Processing &amp; data/Data types menu.&lt;/html&gt;&#xa;"/>
         <Property name="name" type="java.lang.String" value="decaymax" noResource="true"/>
       </Properties>
       <Events>
@@ -218,6 +223,7 @@
     <Component class="javax.swing.JTextField" name="textFieldPointStressDecayMin">
       <Properties>
         <Property name="text" type="java.lang.String" value="0"/>
+        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;This factor is only applied to data layers to which it was assigned in the &quot;Assign selective factors&quot; dialog. It is intended for stressor layers. &lt;br&gt;The intensity of these stressors will linearly decay in each simulation run&#xa;over a randomly chosen distance netween min and max,&lt;br&gt; given in coordinate system&#xa;units. For example, in UTM, the units will typically be meters.&lt;br&gt;Point data sets must&#xa;first be identified in the Processing &amp; data/Data types menu.&lt;/html&gt;&#xa;"/>
         <Property name="name" type="java.lang.String" value="decaymin" noResource="true"/>
       </Properties>
       <Events>
@@ -232,8 +238,8 @@
     <Component class="javax.swing.JCheckBox" name="checkBoxPointStressDecay">
       <Properties>
         <Property name="selected" type="boolean" value="true"/>
-        <Property name="text" type="java.lang.String" value="Point data stress decay"/>
-        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;The intensity of point stressors will linearly decay in each simulation run&lt;br&gt;&#xa;over a randomly chosen distance netween min and max, given in coordinate system&lt;br&gt;&#xa;units. For example, in UTM, the units will typically be meters. Point data sets must&lt;br&gt;&#xa;first be identified in the Processing &amp; data/Data types menu.&lt;/html&gt;&#xa;"/>
+        <Property name="text" type="java.lang.String" value="Linear stress decay"/>
+        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;This factor is only applied to data layers to which it was assigned in the &quot;Assign selective factors&quot; dialog. It is intended for stressor layers. &lt;br&gt;The intensity of these stressors will linearly decay in each simulation run&#xa;over a randomly chosen distance netween min and max,&lt;br&gt; given in coordinate system&#xa;units. For example, in UTM, the units will typically be meters.&lt;br&gt;Point data sets must&#xa;first be identified in the Processing &amp; data/Data types menu.&lt;/html&gt;&#xa;"/>
         <Property name="name" type="java.lang.String" value="cbdecay" noResource="true"/>
       </Properties>
       <Constraints>
@@ -340,7 +346,7 @@
       <Properties>
         <Property name="selected" type="boolean" value="true"/>
         <Property name="text" type="java.lang.String" value="Additive"/>
-        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;In each simulation run, one of the enabled multiple effects models is&lt;br&gt;&#xa;selected with equal probability. At least one multiple effects model must be selected.&lt;/html&gt;"/>
+        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;In each simulation run, one of the enabled multiple stressor effects models is&lt;br&gt;&#xa;selected with equal probability. At least one multiple stressor effects model must be selected.&lt;/html&gt;"/>
         <Property name="name" type="java.lang.String" value="cbadditive" noResource="true"/>
       </Properties>
       <Constraints>
@@ -353,7 +359,7 @@
       <Properties>
         <Property name="selected" type="boolean" value="true"/>
         <Property name="text" type="java.lang.String" value="Dominant stressor"/>
-        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;In each simulation run, one of the enabled multiple effects models is&lt;br&gt;&#xa;selected with equal probability. At least one multiple effects model must be selected.&lt;/html&gt;"/>
+        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;In each simulation run, one of the enabled multiple stressor effects models is&lt;br&gt;&#xa;selected with equal probability. At least one multiple stressor effects model must be selected.&lt;/html&gt;"/>
         <Property name="name" type="java.lang.String" value="cbdominant" noResource="true"/>
       </Properties>
       <Events>
@@ -369,7 +375,7 @@
       <Properties>
         <Property name="selected" type="boolean" value="true"/>
         <Property name="text" type="java.lang.String" value="Antagonistic impacts"/>
-        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;In each simulation run, one of the enabled multiple effects models is&lt;br&gt;&#xa;selected with equal probability. At least one multiple effects model must be selected.&lt;/html&gt;"/>
+        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;In each simulation run, one of the enabled multiple stressor effects models is&lt;br&gt;&#xa;selected with equal probability. At least one multiple stressor effects model must be selected.&lt;/html&gt;"/>
         <Property name="name" type="java.lang.String" value="cbantagonistic" noResource="true"/>
       </Properties>
       <Constraints>
@@ -381,6 +387,7 @@
     <Component class="javax.swing.JTextField" name="textFieldThresholdsMax">
       <Properties>
         <Property name="text" type="java.lang.String" value="1"/>
+        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;In each simulation run, a proportion of ecosystem component-stressor combinations&lt;br&gt;&#xa;will be assigned an ecological threshold response function, as opposed to a linear&lt;br&gt;&#xa;response function. The proportion (0 to 1) is randomly chosen from a uniform&lt;br&gt;&#xa;distribution U(min,max). Also the ecosystem component-stressor combinations that&lt;br&gt;&#xa;get threshold instead of linear response functions are randomly chosen, with each&lt;br&gt;&#xa;combination having the same propbability to get a threshold response function.&lt;/html&gt;"/>
         <Property name="name" type="java.lang.String" value="threshmax" noResource="true"/>
       </Properties>
       <Events>
@@ -395,6 +402,7 @@
     <Component class="javax.swing.JTextField" name="textFieldThresholdsMin">
       <Properties>
         <Property name="text" type="java.lang.String" value="0"/>
+        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;In each simulation run, a proportion of ecosystem component-stressor combinations&lt;br&gt;&#xa;will be assigned an ecological threshold response function, as opposed to a linear&lt;br&gt;&#xa;response function. The proportion (0 to 1) is randomly chosen from a uniform&lt;br&gt;&#xa;distribution U(min,max). Also the ecosystem component-stressor combinations that&lt;br&gt;&#xa;get threshold instead of linear response functions are randomly chosen, with each&lt;br&gt;&#xa;combination having the same propbability to get a threshold response function.&lt;/html&gt;"/>
         <Property name="name" type="java.lang.String" value="threshmin" noResource="true"/>
       </Properties>
       <Events>
@@ -449,7 +457,7 @@
       <Properties>
         <Property name="selected" type="boolean" value="true"/>
         <Property name="text" type="java.lang.String" value="Reduced analysis res."/>
-        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;In each simulation run, the spatil resolution of the analysis will be reduced&lt;br&gt;&#xa;by randomly chosen integer factor between min and max. For example, if the original&lt;br&gt;&#xa;spatial resolution is 1km, min=1 and max=2, the spatial resolution of the analysis&lt;br&gt;&#xa;will be 1km in about half of the simulation runs, and 2km in the remaining simulation runs.&lt;/html&gt;"/>
+        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;In each simulation run, the spatial resolution of the analysis will be reduced&lt;br&gt;&#xa;by a randomly chosen integer factor between min and max. For example, if the original&lt;br&gt;&#xa;spatial resolution is 1km, min=1 and max=2, the spatial resolution of the analysis&lt;br&gt;&#xa;will be 1km in about half of the simulation runs, and 2km in the remaining simulation runs.&lt;/html&gt;"/>
         <Property name="name" type="java.lang.String" value="cbredres" noResource="true"/>
       </Properties>
       <Constraints>
@@ -473,6 +481,7 @@
     <Component class="javax.swing.JTextField" name="textFieldReducedAnalysisResMax">
       <Properties>
         <Property name="text" type="java.lang.String" value="2"/>
+        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;In each simulation run, the spatial resolution of the analysis will be reduced&lt;br&gt;&#xa;by a randomly chosen integer factor between min and max. For example, if the original&lt;br&gt;&#xa;spatial resolution is 1km, min=1 and max=2, the spatial resolution of the analysis&lt;br&gt;&#xa;will be 1km in about half of the simulation runs, and 2km in the remaining simulation runs.&lt;/html&gt;"/>
         <Property name="name" type="java.lang.String" value="redresmax" noResource="true"/>
       </Properties>
       <Events>
@@ -488,7 +497,7 @@
       <Properties>
         <Property name="selected" type="boolean" value="true"/>
         <Property name="text" type="java.lang.String" value="Improved stressor res."/>
-        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;In each simulation run, stressor intensities represented by large, uniform areas&lt;br&gt;&#xa;will be replaced with fine-resolution versions that retain the general patterns. These stressors&lt;br&gt;&#xa;must first be identified as type &quot;polygon&quot; in the Processing &amp; data/Data types menu.&#xa;&lt;/html&gt;"/>
+        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;This factor only affects data layers to which it has been assigned in the &quot;Assign selective factors&quot; dialog.&lt;br&gt; In each simulation run,  large, uniform areas&lt;br&gt;&#xa;will be replaced with fine-resolution versions that retain the general patterns. This involves low-pass filtering, the distance for which has to be given below.&lt;br&gt; Typically, about 5 times the spatial resolution is a good choice.&#xa;&lt;/html&gt;"/>
         <Property name="name" type="java.lang.String" value="cbimpres" noResource="true"/>
       </Properties>
       <Constraints>
@@ -581,7 +590,7 @@
     <Component class="javax.swing.JCheckBox" name="checkBoxSpatialSummary">
       <Properties>
         <Property name="selected" type="boolean" value="true"/>
-        <Property name="text" type="java.lang.String" value="Spatial summary (slower processing)"/>
+        <Property name="text" type="java.lang.String" value="** Spatial summary (slower processing)"/>
         <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;If this option is disabled, the simulation results will be ranks of regions,&lt;br&gt;&#xa;stressors and ecosystem components. If it is enabled, the results will in addition include&lt;br&gt;&#xa;per-cell spatial data like the proportion of simulation runs in which the cell was among the&lt;br&gt;&#xa;most impacted 10%.&lt;/html&gt;&#xa;"/>
         <Property name="name" type="java.lang.String" value="cbspatialsummary" noResource="true"/>
       </Properties>
@@ -596,7 +605,7 @@
     </Component>
     <Component class="javax.swing.JCheckBox" name="checkBoxAddRunsToResults">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Show simulation runs in project results"/>
+        <Property name="text" type="java.lang.String" value="** Show simulation runs in project results"/>
         <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;If this option is selected, the human impact map from each simulation run&lt;br&gt;&#xa;is added to the project results. This option should be disabled if the number of simulation/br&gt;&#xa;runs is large.&lt;/html&gt;"/>
         <Property name="name" type="java.lang.String" value="cbshowruns" noResource="true"/>
       </Properties>
@@ -629,6 +638,7 @@
     <Component class="javax.swing.JTextField" name="textFieldReducedAnalysisResMin">
       <Properties>
         <Property name="text" type="java.lang.String" value="1"/>
+        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;In each simulation run, the spatial resolution of the analysis will be reduced&lt;br&gt;&#xa;by a randomly chosen integer factor between min and max. For example, if the original&lt;br&gt;&#xa;spatial resolution is 1km, min=1 and max=2, the spatial resolution of the analysis&lt;br&gt;&#xa;will be 1km in about half of the simulation runs, and 2km in the remaining simulation runs.&lt;/html&gt;"/>
         <Property name="name" type="java.lang.String" value="redresmin" noResource="true"/>
       </Properties>
       <Events>
@@ -643,7 +653,7 @@
     <Component class="javax.swing.JLabel" name="jLabel14">
       <Properties>
         <Property name="text" type="java.lang.String" value="Number of threads:"/>
-        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;Most modern computer processors have several cores, i.e. they can do several&lt;br&gt;&#xa;calculations at the same time. In this case, for large data sets and many simulation runs, &#xa;you can speed up processing by increasing the number of threads up to your number of cores.&lt;/html&gt;"/>
+        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;Most modern computer processors have several cores, i.e. they can do several&lt;br&gt;&#xa;calculations at the same time. In this case, for large data sets and many simulation runs,&lt;br&gt;&#xa;you can speed up processing by increasing the number of threads up to your number of cores.&lt;br&gt;&#xa;Using several threads increases memory requirements, though.&#xa;&lt;/html&gt;"/>
       </Properties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
@@ -679,8 +689,8 @@
     </Component>
     <Component class="javax.swing.JCheckBox" name="checkBoxMapStressorContributions">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Map stressor contributions"/>
-        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;If this option is selected, the human impact map from each simulation run&lt;br&gt;&#xa;is added to the project results. This option should be disabled if the number of simulation/br&gt;&#xa;runs is large.&lt;/html&gt;"/>
+        <Property name="text" type="java.lang.String" value="** Map stressor contributions"/>
+        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;If this option is selected, the stressor&apos;s contribution to impact scores isd mapped as mean over all simulation runs in which it occurs."/>
         <Property name="name" type="java.lang.String" value="cbmapcontrib" noResource="true"/>
       </Properties>
       <Constraints>
@@ -692,6 +702,7 @@
     <Component class="javax.swing.JLabel" name="jLabel15">
       <Properties>
         <Property name="text" type="java.lang.String" value="Filter distance:"/>
+        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;This factor only affects data layers to which it has been assigned in the &quot;Assign selective factors&quot; dialog.&lt;br&gt; In each simulation run,  large, uniform areas&lt;br&gt;&#xa;will be replaced with fine-resolution versions that retain the general patterns. This involves low-pass filtering, the distance for which has to be given below.&lt;br&gt; Typically, about 5 times the spatial resolution is a good choice.&#xa;&lt;/html&gt;"/>
       </Properties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
@@ -702,6 +713,7 @@
     <Component class="javax.swing.JTextField" name="textFieldFilterDistance">
       <Properties>
         <Property name="text" type="java.lang.String" value="25000"/>
+        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;This factor only affects data layers to which it has been assigned in the &quot;Assign selective factors&quot; dialog.&lt;br&gt; In each simulation run,  large, uniform areas&lt;br&gt;&#xa;will be replaced with fine-resolution versions that retain the general patterns. This involves low-pass filtering, the distance for which has to be given below.&lt;br&gt; Typically, about 5 times the spatial resolution is a good choice.&#xa;&lt;/html&gt;"/>
         <Property name="name" type="java.lang.String" value="filterdist" noResource="true"/>
       </Properties>
       <Events>
