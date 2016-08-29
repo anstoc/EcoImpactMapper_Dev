@@ -365,7 +365,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
                 buttonCancelActionPerformed(evt);
             }
         });
-        getContentPane().add(buttonCancel, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 520, 80, 30));
+        getContentPane().add(buttonCancel, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 520, 100, 30));
 
         buttonRunSimulation.setText("Run simulation");
         buttonRunSimulation.addActionListener(new java.awt.event.ActionListener() {
@@ -373,7 +373,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
                 buttonRunSimulationActionPerformed(evt);
             }
         });
-        getContentPane().add(buttonRunSimulation, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 520, 130, 30));
+        getContentPane().add(buttonRunSimulation, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 520, 160, 30));
 
         jLabel10.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
         jLabel10.setText("Impacts on ecosystem components");
@@ -442,7 +442,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
                 buttonSaveActionPerformed(evt);
             }
         });
-        getContentPane().add(buttonSave, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 520, 120, 30));
+        getContentPane().add(buttonSave, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 520, 150, 30));
 
         buttonLoad.setText("Load settings...");
         buttonLoad.addActionListener(new java.awt.event.ActionListener() {
@@ -450,7 +450,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
                 buttonLoadActionPerformed(evt);
             }
         });
-        getContentPane().add(buttonLoad, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 520, 120, 30));
+        getContentPane().add(buttonLoad, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 520, 140, 30));
 
         checkBoxMapStressorContributions.setText("** Map stressor contributions");
         checkBoxMapStressorContributions.setToolTipText("<html>If this option is selected, the stressor's contribution to impact scores isd mapped as mean over all simulation runs in which it occurs.");
