@@ -1,12 +1,6 @@
+replace all System.out.printlns
 
-
-update  swingworkers (the 6 impact indices)
-
-remove status bar from main window
-
-update  swingworkers (MC, Morris)
-
-implement logging
+make Morris dialog
 
 testing
 

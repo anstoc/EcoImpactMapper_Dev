@@ -43,28 +43,23 @@ public class MCSimulationWorker extends SwingWorker<MCSimulationManager,Void>
                 mcm.simulationRuns=sampleSize;
                 mcm.runMCSimulation();  
                 //working=false;
-                System.out.println("Background thread "+workerNr+ "is done. ");
+                GlobalResources.statusWindow.println("Worker thread "+workerNr+ "is done. ");
                 return mcm;
     }
     
      @Override 
      protected void done()
      {
-        System.out.println(this.workerNr + ": Background thread has reached done() method.");
+        GlobalResources.statusWindow.println(this.workerNr + ": Background thread has reached done() method.");
         working=false;
         try    
         {
            MCSimulationManager mcm = get();            
         }
-        catch(Throwable e)
+        catch(Exception e)
         {
-             System.out.println("!!!!!!!!!!!!!! Error retrieving results from multi-threaded Monte Carlo Simulation.");
-             System.out.println(e.getMessage());
-             for(int i=0;i<Math.min(e.getStackTrace().length,5); i++)
-             {
-                 System.out.println(e.getStackTrace()[i].toString());
-             }
-             
+             GlobalResources.statusWindow.println("Error retrieving thread results from Monte Carlo Simulation.");
+             GlobalResources.statusWindow.println(e);             
         }
 
       }

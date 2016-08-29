@@ -245,11 +245,12 @@ public class MCSimulationManager
         }
         try
         {
-            System.out.println(this.prefix+" found "+cellInfos.size()+" grid cells with data.");
+            GlobalResources.statusWindow.setProgress(0);
+            GlobalResources.statusWindow.println(this.prefix+" found "+cellInfos.size()+" grid cells with data.");
             //run simulation the specified number of times
             for(int run=0;run<simulationRuns;run++)
             {
-                System.out.println(prefix+": Simulation run: " + run);
+                 GlobalResources.statusWindow.println(prefix+": Simulation run: " + run);
                 //make deep copies of model inputs   
                 ArrayList<SpatialDataLayer> stressors = makeLayerListClone(GlobalResources.mappingProject.stressors);
                 eraseProcessingChains(stressors);
@@ -281,13 +282,14 @@ public class MCSimulationManager
 
         } 
         catch (Exception e) {
-            System.out.println("ERROR IN THREAD: "+this.prefix);
-            System.out.println(e.getStackTrace().toString());
+             GlobalResources.statusWindow.println("ERROR IN THREAD: "+this.prefix);
+             GlobalResources.statusWindow.println(e);
         }
     }
 
     public void writeResults()
     {
+             GlobalResources.statusWindow.println("Writing Monte Carlo simulation results...");
             writeRegionResults(regionInfos);
             writeStressorResults(stressorInfos);
             writeEcocompResults(ecocompInfos);
@@ -314,7 +316,7 @@ public class MCSimulationManager
             if(scores.getAllScores().get(i).getSensitivityScore()>scores.getMax()) {scores.getAllScores().get(i).changeSensitivtyScore(scores.getMax());}
         }
        
-        System.out.println("    "+prefix+"Changed sensitivity scores with errors up to: " + (parameter*0.5*scores.getMax()-scores.getMin()));
+         GlobalResources.statusWindow.println("    "+prefix+"Changed sensitivity weights with errors up to: " + (parameter*0.5*scores.getMax()-scores.getMin()));
     }
     
     //returns a random set of parameter values
@@ -343,7 +345,7 @@ public class MCSimulationManager
         
         //randomly select number of stressors to be removed 0.1 0.3 -->
         int removeNr = (int) Math.round((missingStressorDataMin+Math.random()*(missingStressorDataMax-missingStressorDataMin))*stressors.size());
-        System.out.println("    "+prefix+": Removing "+removeNr +" stressor layers out of " +stressors.size());
+         GlobalResources.statusWindow.println("    "+prefix+": Removing "+removeNr +" stressor layers out of " +stressors.size());
         for(int r=0;r<removeNr;r++)
         {
             //randomly select an item to remove; but set to inactive, rather than removing the stressor!
@@ -384,7 +386,7 @@ public class MCSimulationManager
                 stressors.get(i).getProcessingChain().add(spreader);
             }
         }
-        System.out.println("    "+prefix+": Stressor decay distance: "+rDistance+"; for all "+layerCount+" data layers.");
+         GlobalResources.statusWindow.println("    "+prefix+": Stressor decay distance: "+rDistance+"; for all "+layerCount+" data layers.");
     }
 
     private int getImpactModel() 
@@ -399,7 +401,7 @@ public class MCSimulationManager
             if(r<0.5) {model = Simulator.IMPACTS_SUM;name="sum";}
             else {model = Simulator.IMPACTS_AVG;name="mean";}
         }
-        System.out.println("    "+prefix+": Impact model: "+name);
+         GlobalResources.statusWindow.println("    "+prefix+": Using impact model: "+name);
         return model;
     }
 
@@ -407,7 +409,7 @@ public class MCSimulationManager
     {
         if(!this.ecologicalThresholds) {return;}
         int impactsToChange = (int) Math.round((ecologicalThresholdMin+Math.random()*(ecologicalThresholdMax-ecologicalThresholdMin))*scores.size());
-        System.out.println("    "+prefix+": Changing " + impactsToChange + " out of " + scores.size() + " response functions to thresholds.");
+         GlobalResources.statusWindow.println("    "+prefix+": Changing " + impactsToChange + " out of " + scores.size() + " response functions to thresholds.");
         Collections.shuffle(scores.getAllScores()); //shuffling creates a random permutation. Thresholds are assigned to the first impactsToChange entries after shuffling.
         for(int i=0;i<impactsToChange;i++)
         {
@@ -427,7 +429,7 @@ public class MCSimulationManager
         if(transformationPercentile) {options.add(new PercentileTransformer());}
         
         int selected = (int) Math.floor(Math.random()*options.size());
-        System.out.println("    "+prefix+": Transformation: " + options.get(selected).getName());
+         GlobalResources.statusWindow.println("    "+prefix+": Transformation: " + options.get(selected).getName());
         for(int i=0; i<stressors.size();i++)
         {
             stressors.get(i).getProcessingChain().add(options.get(selected).clone());
@@ -443,9 +445,9 @@ public class MCSimulationManager
         
         int selection = (int) Math.floor(Math.random()*options.size());
         
-        if(options.get(selection)==Simulator.MEM_ADDITIVE) {System.out.println("    "+prefix+": MEM: Additive");}
-        else if(options.get(selection)==Simulator.MEM_DOMINANT) {System.out.println("    "+prefix+": MEM: Dominant");}
-        else if(options.get(selection)==Simulator.MEM_DIMINISHING) {System.out.println("    "+prefix+"MEM: Diminishing");}
+        if(options.get(selection)==Simulator.MEM_ADDITIVE) { GlobalResources.statusWindow.println("    "+prefix+": MEM: Additive");}
+        else if(options.get(selection)==Simulator.MEM_DOMINANT) { GlobalResources.statusWindow.println("    "+prefix+": MEM: Dominant");}
+        else if(options.get(selection)==Simulator.MEM_DIMINISHING) { GlobalResources.statusWindow.println("    "+prefix+"MEM: Diminishing");}
         return options.get(selection);
         
     }
@@ -464,7 +466,7 @@ public class MCSimulationManager
                 stressors.get(i).getProcessingChain().add(refiner);
             }
         }
-        System.out.println("    "+prefix+": Improved resolution for " + layerCount +" data layers.");
+         GlobalResources.statusWindow.println("    "+prefix+": Improved resolution for " + layerCount +" data layers.");
     }
 
     private void setReducedAnalysisRes(ArrayList<SpatialDataLayer> stressors, ArrayList<SpatialDataLayer> ecocomps) 
@@ -472,7 +474,7 @@ public class MCSimulationManager
         if(!this.reducedAnalysisRes) {return;}
         int factor = (int) Math.round(reducedAnalysisResMin + Math.random() * (reducedAnalysisResMax-reducedAnalysisResMin));
         if(!this.reducedAnalysisRes) {return;}
-        System.out.println("    "+prefix+": Reducing analysis resolution by factor " + factor);
+         GlobalResources.statusWindow.println("    "+prefix+": Reducing analysis resolution by factor " + factor);
         if(factor>1) 
         {
             
@@ -514,7 +516,7 @@ public class MCSimulationManager
             row.add(info.inBottom25p/(0.01*simulationRuns)+"");
             table.addRow(row);
         }
-        
+        GlobalResources.statusWindow.println("Writing uncertainty analysis results for regions to:" + new File(outputFolder,"regionranks.csv").getAbsolutePath());
         table.writeToFile(new File(outputFolder,"regionranks.csv").getAbsolutePath());
          
     }
@@ -548,7 +550,7 @@ public class MCSimulationManager
             }
             table.addRow(row);
         }
-        
+        GlobalResources.statusWindow.println("Writing uncertainty analysis results for stressors to: "+new File(outputFolder,"stressor_region_contributions.csv").getAbsolutePath());
         table.writeToFile(new File(outputFolder,"stressor_region_contributions.csv").getAbsolutePath());
          
     }
@@ -614,7 +616,7 @@ public class MCSimulationManager
 
     private ArrayList<RegionRankInfo> initializeRegions() 
     {
-        System.out.println(prefix+ ": Setting up analysis regions;");
+        GlobalResources.statusWindow.println(prefix+ ": Setting up analysis regions;");
         ArrayList<Float> regionCodes = GlobalResources.mappingProject.regions.grid.getUniqueDataValues();
         ArrayList<RegionRankInfo> regionInfos = new ArrayList<RegionRankInfo>();
         float[][] regionData = GlobalResources.mappingProject.regions.grid.getData();
@@ -714,7 +716,7 @@ public class MCSimulationManager
             row.add(info.inLeastImportant25p/(0.01*simulationRuns)+"");
             table.addRow(row);
         }
-        
+        GlobalResources.statusWindow.println("Writing uncertainty analysis results for ecosystem components to: "+new File(outputFolder,"ecocompranks.csv").getAbsolutePath());
         table.writeToFile(new File(outputFolder,"ecocompranks.csv").getAbsolutePath());
     }
 
@@ -850,6 +852,7 @@ public class MCSimulationManager
         DataGrid quintileVotesGrid= new DataGrid(quintileVotes, 100, 0, GlobalResources.NODATAVALUE);
         DataGrid meanQuantileGrid= new DataGrid(meanQuantile, 100, 0, GlobalResources.NODATAVALUE);
         
+        GlobalResources.statusWindow.println("Writing uncertainty analysis results as regular grids to folder: "+outputFolder);
         DataSourceInfo maxPInfo = new DataSourceInfo();
         maxPInfo.sourceFile=new File(outputFolder, "maxp.csv").getAbsolutePath();
         maxPInfo.valueField="value";
@@ -1063,21 +1066,6 @@ public StressorRankInfo getStressorInfoByName(String name)
         //for spatial results
         if(createSpatialOutputs)
         {
-            /*for(int i=0; i<cellInfos.size();i++)
-            {
-                for(int j=0; j<mcm2.cellInfos.size(); j++)
-                {
-                    if(cellInfos.get(i).x == mcm2.cellInfos.get(j).x && cellInfos.get(i).y == mcm2.cellInfos.get(j).y)
-                    {
-                        cellInfos.get(i).inHighest10p = cellInfos.get(i).inHighest10p + mcm2.cellInfos.get(j).inHighest10p;
-                        cellInfos.get(i).inLowest10p = cellInfos.get(i).inLowest10p + mcm2.cellInfos.get(j).inLowest10p;  
-                        cellInfos.get(i).inHighest25p = cellInfos.get(i).inHighest25p + mcm2.cellInfos.get(j).inHighest25p;
-                        cellInfos.get(i).inLowest25p = cellInfos.get(i).inLowest25p + mcm2.cellInfos.get(j).inLowest25p;  
-                        if(mcm2.cellInfos.get(j).maxPerc>cellInfos.get(i).maxPerc) {cellInfos.get(i).maxPerc=cellInfos.get(j).maxPerc;}
-                        if(mcm2.cellInfos.get(j).minPerc<cellInfos.get(i).minPerc) {cellInfos.get(i).minPerc=cellInfos.get(j).maxPerc;}
-                    }
-                }
-            } */
             
             //sort both by x and y coordinates
             Collections.sort(cellInfos,new CellComparatorXY());
@@ -1147,26 +1135,6 @@ public StressorRankInfo getStressorInfoByName(String name)
                }
            } 
         
-        //TODO remove again - check if around 100%
-        int problemCells=0;
-        float[][] totalImpactsPerc = GlobalResources.mappingProject.grid.getEmptyGrid();
-        for(int x=0; x<totalImpactsPerc.length; x++)
-           for(int y=0; y<totalImpactsPerc[0].length; y++)
-           {   
-               if(totalImpactsPerc[x][y]!=GlobalResources.NODATAVALUE)
-               {
-                    for(int s=0;s<stressorInfos.size();s++)
-                    {
-                        StressorRankInfo info = stressorInfos.get(s);
-                        totalImpactsPerc[x][y]+=info.contributionMap[x][y];
-                    }
-                    if(totalImpactsPerc[x][y]<99.9 || totalImpactsPerc[x][y]>100.1)
-                    {
-                        problemCells++;
-                    }
-               }
-           }  
-        System.out.println("**** PROBLEM CELLS with contribution sum <99.9 or >100.1: "+ problemCells + " ****"); 
         
         //create data grids and write to CSV
         for(int i=0; i<stressorInfos.size();i++)
@@ -1179,7 +1147,7 @@ public StressorRankInfo getStressorInfoByName(String name)
             sourceInfo.yField="y";
             SpatialDataLayer contLayer = new SpatialDataLayer("Contributions from "+stressorInfos.get(i).name, contGrid, GlobalResources.DATATYPE_SPATIAL, sourceInfo);        
             CsvTableGeneral table = GlobalResources.mappingProject.grid.createTableFromLayer(contLayer, false);
-            //System.out.println("Writing sc: "+sourceInfo.sourceFile);
+            GlobalResources.statusWindow.println("Writing stressor contributions to: "+sourceInfo.sourceFile);
             table.writeToFile(sourceInfo.sourceFile); 
         }
         

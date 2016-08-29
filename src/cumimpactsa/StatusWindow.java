@@ -5,22 +5,32 @@
  */
 package cumimpactsa;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author andy
  */
 public class StatusWindow extends javax.swing.JDialog {
 
+    private BufferedWriter bw=null;
+    
     /**
      * Creates new form StatusWindow
      */
-    public StatusWindow(java.awt.Frame parent, boolean modal) {
+    public StatusWindow(java.awt.Frame parent, boolean modal) 
+    {
         super(parent, modal);
         initComponents();
     }
 
-    
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -87,69 +97,51 @@ public class StatusWindow extends javax.swing.JDialog {
         this.jButton1.setEnabled(false);
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(StatusWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(StatusWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(StatusWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(StatusWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
 
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                StatusWindow dialog = new StatusWindow(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-    }
     
     public void setNewText(String s)
     {
         this.textArea.setText(s);
+        
+        if(bw!=null) try
+        {
+            bw.write(s);
+        }
+        catch(Exception e) {println("Logging failed.");println(e);};
     }
 
-    public void print(String s)
+    public synchronized void print(String s)
     {
         this.textArea.append(s);
+        if(bw!=null) try
+        {
+            bw.write(s);
+        }
+        catch(Exception e) {println("Logging failed.");println(e);};
     }
     
-    public void println()
+    public synchronized void println()
     {
         this.textArea.append("\n");
+        if(bw!=null) try
+        {
+            bw.newLine();
+        }
+        catch(Exception e) {println("Logging failed.");println(e);};
     }
     
-    public void println(String s)
+    public synchronized void println(String s)
     {
         this.textArea.append("\n"+s);
+        if(bw!=null) try
+        {
+            bw.write(s);
+            bw.newLine();
+        }
+        catch(Exception e) {println("Logging failed.");println(e);};
     }
     
-    public void setProgress(int percent)
+    public synchronized void setProgress(int percent)
     {
         label.setText("Progress: "+percent+"%");
     }
@@ -157,6 +149,13 @@ public class StatusWindow extends javax.swing.JDialog {
     //enables the OK button
     public void ready2bClosed()
     {
+        if(bw!=null) {try {
+            bw.flush();
+            } catch (Exception ex) {
+                println("Lost connection to log file.");
+                println(ex);
+            }
+}
         this.jButton1.setEnabled(true);
     }
 
@@ -167,13 +166,65 @@ public class StatusWindow extends javax.swing.JDialog {
     private javax.swing.JTextArea textArea;
     // End of variables declaration//GEN-END:variables
 
-    void println(Exception e) 
+    public synchronized void println(Exception e) 
     {
         textArea.append("\n\n");
+        
+        
         textArea.append(e.getMessage()+"\n\n");
         for(int i=0;i<Math.min(e.getStackTrace().length,10);i++)
         {
             textArea.append(e.getStackTrace()[i].toString()+"\n");
+        }
+        
+        if(bw!=null) try
+        {
+            bw.newLine();
+            bw.newLine();
+            bw.write(e.getMessage());
+            bw.newLine();
+            for(int i=0;i<Math.min(e.getStackTrace().length,10);i++)
+            {
+                bw.write(e.getStackTrace()[i].toString());
+                bw.newLine();
+            }
+            bw.flush();
+        }
+        catch(Exception ex)
+        {
+            println("Logging of exception failed");
+            println(ex);
+        }
+        
+    }
+
+    void setLogFile(File logfile) 
+    {
+        
+        FileWriter fw;
+        try 
+        {
+            fw = new FileWriter(logfile.getAbsoluteFile());
+            bw = new BufferedWriter(fw);
+        } 
+        catch (IOException ex) 
+        {
+            String message =ex.getMessage()+"\n";
+            for(int i=0;i<Math.min(ex.getStackTrace().length,10);i++)
+            {
+                message=message+ex.getStackTrace()[i].toString()+"\n";
+            }
+            JOptionPane.showMessageDialog(null, message);
+        }
+	
+    }
+
+    public void closeLogWriter() 
+    {
+        try {
+            bw.close();
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, "Error closing log file.");
         }
     }
 

@@ -11,9 +11,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.concurrent.locks.LockSupport;
 import java.util.logging.Level;
@@ -65,40 +69,60 @@ public class MainWindow extends javax.swing.JFrame {
         group.add(this.radioButtonProcessedLayer);
         group.add(this.radioButtonRawLayer);
         
+        //find folder that executable resides in
+        File settingsFile;
+        File logFile;
+        final CodeSource codeSource = MainWindow.class.getProtectionDomain().getCodeSource();
         GlobalResources.statusWindow=new StatusWindow(this,true);
-        GlobalResources.statusWindow.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        
-        GlobalResources.mappingProject.initializeProcessors();
-        
-        //progressBar.setVisible(false);
-        progressBar.setMinimum(0);
-        progressBar.setMaximum(100);
-      
-        
-        
-        //progressBar.setStringPainted(true);
-        
-        
-        //try to load settings (currently: only last used folder)
-        File settingsFile = new File("settings.csv");
-        if(settingsFile.exists())
+        try 
         {
-            CsvTableGeneral settings = new CsvTableGeneral();
-            settings.readFromFile(settingsFile);
-            ArrayList<String> settingNames = settings.getColumn("setting");
-            ArrayList<String> settingValues = settings.getColumn("value");
-            for(int i=0; i<settingNames.size();i++)
+            File exFile = new File(codeSource.getLocation().toURI().getPath());
+            String exDir = exFile.getParentFile().getPath();
+            // if logging directory doesnt exist, create it
+            File dir = new File(exDir+"/Logs");
+            if (!dir.exists()) 
+            {        
+                dir.mkdir();
+            }
+            logFile = new File(dir+"/log"+GlobalResources.getDateTime()+".csv");
+            GlobalResources.statusWindow.setLogFile(logFile);
+            
+            
+            //try to load settings (currently: only last used folder)
+            settingsFile = new File(exDir+"/settings.csv");
+            if(settingsFile.exists())
             {
-                if(settingNames.get(i).equals("lastfolder"))
+                CsvTableGeneral settings = new CsvTableGeneral();
+                settings.readFromFile(settingsFile);
+                ArrayList<String> settingNames = settings.getColumn("setting");
+                ArrayList<String> settingValues = settings.getColumn("value");
+                for(int i=0; i<settingNames.size();i++)
                 {
-                    File folder = new File(settingValues.get(i));
-                    if(folder.exists() && folder.isDirectory())
+                    if(settingNames.get(i).equals("lastfolder"))
                     {
-                        GlobalResources.lastUsedFolder=folder.getAbsolutePath();
+                        File folder = new File(settingValues.get(i));
+                        if(folder.exists() && folder.isDirectory())
+                        {
+                            GlobalResources.lastUsedFolder=folder.getAbsolutePath();
+                        }
                     }
                 }
             }
+            
+            
+        } 
+        catch (URISyntaxException ex) 
+        {
+           JOptionPane.showMessageDialog(null, "Exception while attempting to read program settings and setting up log file.");
         }
+        
+        
+        
+        GlobalResources.statusWindow.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        
+        GlobalResources.mappingProject.initializeProcessors();
+
+
         
         //make sure user settings (at the moment only last used folder) are saved when window closes
         this.addWindowListener(new WindowAdapter() 
@@ -106,17 +130,33 @@ public class MainWindow extends javax.swing.JFrame {
             @Override
             public void windowClosing(WindowEvent e) 
             {
-                CsvTableGeneral settings=new CsvTableGeneral();
-                settings.addColumn("setting");
-                settings.addColumn("value");
-                ArrayList<String> line = new ArrayList<>();
-                line.add("lastfolder");
-                line.add(GlobalResources.lastUsedFolder);
-                settings.addRow(line);
-                settings.writeToFile("settings.csv");
+                File exFile;
+                try 
+                {
+                    exFile = new File(codeSource.getLocation().toURI().getPath());
+                    String exDir = exFile.getParentFile().getPath();
+                    CsvTableGeneral settings=new CsvTableGeneral();
+                    settings.addColumn("setting");
+                    settings.addColumn("value");
+                    ArrayList<String> line = new ArrayList<>();
+                    line.add("lastfolder");
+                    line.add(GlobalResources.lastUsedFolder);
+                    settings.addRow(line);
+                    settings.writeToFile(exDir+"/settings.csv");   
+                }
+                catch(Exception ex)
+                {
+                    JOptionPane.showMessageDialog(null, "Could not save settings.");
+                }
+                finally
+                {
+                    GlobalResources.statusWindow.closeLogWriter();
+                }
             }
         } );
 
+
+        
     }
 
     /**
@@ -146,7 +186,6 @@ public class MainWindow extends javax.swing.JFrame {
         radioButtonProcessedLayer = new javax.swing.JRadioButton();
         jLabel1 = new javax.swing.JLabel();
         buttonResultsMinus = new javax.swing.JButton();
-        progressBar = new javax.swing.JProgressBar();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
         menuBarMain = new javax.swing.JMenuBar();
@@ -325,9 +364,6 @@ public class MainWindow extends javax.swing.JFrame {
                 buttonResultsMinusActionPerformed(evt);
             }
         });
-
-        progressBar.setBackground(new java.awt.Color(204, 204, 204));
-        progressBar.setString("\"No processing\"");
 
         menuProject.setText("Project");
 
@@ -520,7 +556,7 @@ public class MainWindow extends javax.swing.JFrame {
         });
         jMenu3.add(jMenuItem2);
 
-        menuItemDiminishingImpactsSum.setText("Diminishing impact model, sum");
+        menuItemDiminishingImpactsSum.setText("Antagonistic impact model, sum");
         menuItemDiminishingImpactsSum.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuItemDiminishingImpactsSumActionPerformed(evt);
@@ -528,7 +564,7 @@ public class MainWindow extends javax.swing.JFrame {
         });
         jMenu3.add(menuItemDiminishingImpactsSum);
 
-        menuItemDiminishingImpactMean.setText("Diminishing impact model, mean");
+        menuItemDiminishingImpactMean.setText("Antagonistic impact model, mean");
         menuItemDiminishingImpactMean.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuItemDiminishingImpactMeanActionPerformed(evt);
@@ -542,7 +578,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         jMenu2.setText("Stressors");
 
-        menuItemAreaPlots.setText("High-diversity area plots");
+        menuItemAreaPlots.setText("Overlay with diversity index...");
         menuItemAreaPlots.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuItemAreaPlotsActionPerformed(evt);
@@ -634,7 +670,6 @@ public class MainWindow extends javax.swing.JFrame {
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                         .add(jLabel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
                         .add(249, 249, 249))
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, progressBar, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(jLabel1)
@@ -649,14 +684,11 @@ public class MainWindow extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
+                .add(5, 5, 5)
+                .add(jLabel3)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
-                        .add(9, 9, 9)
-                        .add(jLabel3)
-                        .add(2, 2, 2)
-                        .add(progressBar, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                         .add(drawingPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jLabel1)
@@ -670,7 +702,7 @@ public class MainWindow extends javax.swing.JFrame {
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(layout.createSequentialGroup()
-                                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
+                                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                 .add(labelEcologicalComponents)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -914,18 +946,8 @@ public class MainWindow extends javax.swing.JFrame {
                 GlobalResources.mappingProject.projectFolder=Paths.get(selectedFile.getAbsolutePath()).getParent().toString();
                 timer.start();
                 GlobalResources.mappingProject.createFromTable(table);
-                this.setEnabled(false);
                 GlobalResources.statusWindow.setVisible(true);
                 timer.stop();
-                this.setEnabled(true);
-                
-                 /*    while(GlobalResources.mappingProject.processing)
-                {
-                   
-                    progressBar.setValue(GlobalResources.mappingProject.getProcessingProgressPercent());
-                    progressBar.update(progressBar.getGraphics());
-                    Thread.sleep(500);
-                }*/
                 
                 //update GUI
                 float[][] hasData=GlobalResources.mappingProject.grid.isFilled();
@@ -944,8 +966,6 @@ public class MainWindow extends javax.swing.JFrame {
                 this.listEcocomps.setModel(model);
                 
                 updateResultsList();
-                progressBar.setValue(0);
-                progressBar.setString("Processing completed");
             }
             catch(Exception e)
             {
@@ -955,10 +975,8 @@ public class MainWindow extends javax.swing.JFrame {
             finally
             {
                 GlobalResources.mappingProject.setProcessingProgressPercent(0);
-                progressBar.setValue(0);
                 this.setResizable(true);
                 this.setFocusable(true);
-                progressBar.setValue(0);
             }
 
             
@@ -1071,7 +1089,7 @@ public class MainWindow extends javax.swing.JFrame {
         //check if sensitivity scores exist
         if(GlobalResources.mappingProject.sensitivityScores==null || GlobalResources.mappingProject.sensitivityScores.size()<1)
         {
-            JOptionPane.showMessageDialog(this,"To calculate an impact index, you must first load sensitivity scores.");
+            JOptionPane.showMessageDialog(this,"To calculate an impact index, you must first load sensitivity weights.");
             return;
         }
 
@@ -1086,89 +1104,74 @@ public class MainWindow extends javax.swing.JFrame {
             
             //calculate index in worker thread
             GlobalResources.mappingProject.processing=true;
-            this.setFocusable(false);
-            this.setResizable(false);
-            this.progressBar.setValue(5);
-            this.progressBar.update(progressBar.getGraphics());
+            
             SwingWorker<ImpactIndexAdditive, Void> worker = new SwingWorker<ImpactIndexAdditive, Void>() 
             {
                  @Override
                  protected ImpactIndexAdditive doInBackground() throws Exception 
                  {
-                    //System.out.println("**** Started background thread...");
+                    GlobalResources.statusWindow.println("Started worker thread...");
                     ImpactIndexAdditive index = new ImpactIndexAdditive(selectedFile.getAbsolutePath(),GlobalResources.mappingProject.sensitivityScores, true);
                     GlobalResources.mappingProject.processing=false;
+
                     return index;
                 }
                  
                  @Override 
                  protected void done()
                  {
-                     //System.out.println("Background thread is done.");
-                     GlobalResources.mappingProject.setProcessingProgressPercent(0);
+                     GlobalResources.statusWindow.println("Worker thread is done.");
+                     GlobalResources.mappingProject.setProcessingProgressPercent(100);
                      try    
                      {
                         ImpactIndexAdditive index = get();
-                     
+                        GlobalResources.statusWindow.println("Writing results to file:"+selectedFile.getAbsolutePath());
+                        CsvTableGeneral table = GlobalResources.mappingProject.grid.createTableFromLayer(index, false);
+                        table.writeToFile(selectedFile.getAbsolutePath());
+
+                        //write contributions
+                        CsvTableGeneral cTable = index.getScores().getContributionsAsTable();
+                        String basepath;
+                        int pos=selectedFile.getAbsolutePath().lastIndexOf(".");
+                        if(pos<1) {basepath=selectedFile.getAbsolutePath();}
+                        else {basepath = selectedFile.getAbsolutePath().substring(0,pos);}
+                        GlobalResources.statusWindow.println("Writing stressor and ecosystem component contributions to file:"+basepath+"_contributions.csv");
+                        cTable.writeToFile(basepath+"_contributions.csv");
                      }
                      catch(Exception e)
                      {
-                         JOptionPane.showMessageDialog(null, "Error retriving results from diversity index calculation thread.");
+                         GlobalResources.statusWindow.println("Error retrieving results from additive impact index (mean) thread.");
+                         GlobalResources.statusWindow.println(e);
+                     }
+                     finally
+                     {
+                         GlobalResources.statusWindow.ready2bClosed();
                      }
 
                  }
             };
-            try
-            {
+
+            try{
+                GlobalResources.statusWindow.setNewText("Calculating additive impact index as mean...");
+                timer.start();
                 worker.execute();
-
-                //block whil processing, but update progress bar
-                while(GlobalResources.mappingProject.processing)
-                {
-
-                    //System.out.println("Main thread is waiting...");
-                    progressBar.setValue(GlobalResources.mappingProject.getProcessingProgressPercent());
-                    progressBar.update(progressBar.getGraphics());
-                    Thread.sleep(500);
-
-                }
-
-                    Thread.sleep(100); //
-                    ImpactIndexAdditive index = worker.get();
-            
- 
+                GlobalResources.statusWindow.setVisible(true);
+                timer.stop();
+                GlobalResources.mappingProject.setProcessingProgressPercent(0);
+                ImpactIndexAdditive index = worker.get();
                 //show in drawing pane;
-
                 drawingPaneShows = index;
                 updateGraphics();
-
-                CsvTableGeneral table = GlobalResources.mappingProject.grid.createTableFromLayer(index, false);
-                table.writeToFile(selectedFile.getAbsolutePath());
-
-                 //write contributions
-                CsvTableGeneral cTable = index.getScores().getContributionsAsTable();
-                String basepath;
-                int pos=selectedFile.getAbsolutePath().lastIndexOf(".");
-                if(pos<1) {basepath=selectedFile.getAbsolutePath();}
-                 else {basepath = selectedFile.getAbsolutePath().substring(0,pos);}
-                cTable.writeToFile(basepath+"_contributions.csv");
-
                 GlobalResources.mappingProject.results.add(index);
                 updateResultsList();
             
             }
             catch(Exception e)
             {
-                JOptionPane.showMessageDialog(this, "Error retrieving unweighted stressor index from worker thread.");
+                GlobalResources.statusWindow.println("Error retrieving unweighted stressor index from worker thread.");
+                GlobalResources.statusWindow.println(e);
             }
-            finally
-            {
-                this.setResizable(true);
-                this.setFocusable(true);
-                GlobalResources.mappingProject.setProcessingProgressPercent(0);
-                progressBar.setValue(0);
-                updateGraphics();
-            }
+            
 
         }
     }//GEN-LAST:event_menuImpactIndex1ActionPerformed
@@ -1178,7 +1181,7 @@ public class MainWindow extends javax.swing.JFrame {
         //check if sensitivity scores exist
         if(GlobalResources.mappingProject.sensitivityScores==null || GlobalResources.mappingProject.sensitivityScores.size()<1)
         {
-            JOptionPane.showMessageDialog(this,"To calculate an impact index, you must first load sensitivity scores.");
+            JOptionPane.showMessageDialog(this,"To calculate an impact index, you must first load sensitivity weights.");
             return;
         }
 
@@ -1193,18 +1196,13 @@ public class MainWindow extends javax.swing.JFrame {
             
             //calculate index in worker thread
             GlobalResources.mappingProject.processing=true;
-            this.setFocusable(false);
-            this.setResizable(false);
-            
-            this.progressBar.setValue(5);
-            this.progressBar.update(progressBar.getGraphics());
             
             SwingWorker<ImpactIndexAdditive, Void> worker = new SwingWorker<ImpactIndexAdditive, Void>() 
             {
                  @Override
                  protected ImpactIndexAdditive doInBackground() throws Exception 
                  {
-                    //System.out.println("**** Started background thread...");
+                    GlobalResources.statusWindow.println("Started worker thread...");
                     ImpactIndexAdditive index = new ImpactIndexAdditive(selectedFile.getAbsolutePath(),GlobalResources.mappingProject.sensitivityScores, false);
                     GlobalResources.mappingProject.processing=false;
                     return index;
@@ -1213,54 +1211,46 @@ public class MainWindow extends javax.swing.JFrame {
                  @Override 
                  protected void done()
                  {
-                     //System.out.println("Background thread is done.");
-                     GlobalResources.mappingProject.setProcessingProgressPercent(0);
+                     GlobalResources.statusWindow.println("Worker thread is done.");
+                     GlobalResources.mappingProject.setProcessingProgressPercent(100);
                      try    
                      {
                         ImpactIndexAdditive index = get();
-                     
+                        GlobalResources.statusWindow.println("Writing results to file: "+selectedFile.getAbsolutePath());
+                        CsvTableGeneral table = GlobalResources.mappingProject.grid.createTableFromLayer(index, false);
+                        table.writeToFile(selectedFile.getAbsolutePath());
+
+                        //write contributions
+                        CsvTableGeneral cTable = index.getScores().getContributionsAsTable();
+                        String basepath;
+                        int pos=selectedFile.getAbsolutePath().lastIndexOf(".");
+                        if(pos<1) {basepath=selectedFile.getAbsolutePath();}
+                        else {basepath = selectedFile.getAbsolutePath().substring(0,pos);}
+                        GlobalResources.statusWindow.println("Writing stressor and ecosystem component contributions to file: "+basepath+"_contributions.csv");
+                        cTable.writeToFile(basepath+"_contributions.csv");
                      }
                      catch(Exception e)
                      {
-                         JOptionPane.showMessageDialog(null, "Error retriving results from diversity index calculation thread.");
+                         GlobalResources.statusWindow.println("Error retrieving results from additive impact index (mean) thread.");
+                         GlobalResources.statusWindow.println(e);
                      }
-
+                     finally
+                     {
+                         GlobalResources.statusWindow.ready2bClosed();
+                     }
                  }
             };
             try
             {
+                GlobalResources.statusWindow.setNewText("Calculating additive impact index as sum...");
+                timer.start();
                 worker.execute();
-
-                //block whil processing, but update progress bar
-                while(GlobalResources.mappingProject.processing)
-                {
-
-                    //System.out.println("Main thread is waiting...");
-                    progressBar.setValue(GlobalResources.mappingProject.getProcessingProgressPercent());
-                    progressBar.update(progressBar.getGraphics());
-                    Thread.sleep(500);
-
-                }
-
-                    Thread.sleep(100); //
-                    ImpactIndexAdditive index = worker.get();            
-            
-           
-                //show in drawing pane;
+                GlobalResources.statusWindow.setVisible(true);
+                timer.stop();
+                
+                ImpactIndexAdditive index = worker.get();            
                 drawingPaneShows = index;
                 updateGraphics();
-
-                CsvTableGeneral table = GlobalResources.mappingProject.grid.createTableFromLayer(index, false);
-                table.writeToFile(selectedFile.getAbsolutePath());
-
-                //write contributions
-                CsvTableGeneral cTable = index.getScores().getContributionsAsTable();
-                String basepath;
-                int pos=selectedFile.getAbsolutePath().lastIndexOf(".");
-                if(pos<1) {basepath=selectedFile.getAbsolutePath();}
-                 else {basepath = selectedFile.getAbsolutePath().substring(0,pos);}
-                cTable.writeToFile(basepath+"_contributions.csv");
-
 
                 GlobalResources.mappingProject.results.add(index);
 
@@ -1270,15 +1260,7 @@ public class MainWindow extends javax.swing.JFrame {
             catch(Exception e)
             {
                 JOptionPane.showMessageDialog(this, "Error retrieving unweighted stressor index from worker thread.");
-            }
-            finally
-            {
-                this.setResizable(true);
-                this.setFocusable(true);
-                GlobalResources.mappingProject.setProcessingProgressPercent(0);
-                progressBar.setValue(0);
-                updateGraphics();
-            }     
+            }   
         }
 
     }//GEN-LAST:event_menuImpactIndexActionPerformed
@@ -1303,10 +1285,6 @@ public class MainWindow extends javax.swing.JFrame {
             
              //calculate index in worker thread
             GlobalResources.mappingProject.processing=true;
-            this.setFocusable(false);
-            this.setResizable(false);
-            this.progressBar.setValue(5);
-            this.progressBar.update(progressBar.getGraphics());
             SwingWorker<WeightedStressorIndex, Void> worker = new SwingWorker<WeightedStressorIndex, Void>() 
             {
                  @Override
@@ -1335,7 +1313,7 @@ public class MainWindow extends javax.swing.JFrame {
                      }
                      catch(Exception e)
                      {
-                         GlobalResources.statusWindow.println("Error retriving results from diversity index calculation thread.");
+                         GlobalResources.statusWindow.println("Error retriving results from weighted stressor index calculation thread.");
                          GlobalResources.statusWindow.println(e);
                      }
                      finally
@@ -1368,14 +1346,6 @@ public class MainWindow extends javax.swing.JFrame {
             catch(Exception e)
             {
                 JOptionPane.showMessageDialog(this, "Error retrieving unweighted stressor index from worker thread.");
-            }
-            finally
-            {
-                this.setResizable(true);
-                this.setFocusable(true);
-                GlobalResources.mappingProject.setProcessingProgressPercent(0);
-                progressBar.setValue(0);
-                updateGraphics();
             }
         }
     }//GEN-LAST:event_menuWeightedStressorIndexActionPerformed
@@ -1421,7 +1391,7 @@ public class MainWindow extends javax.swing.JFrame {
                      }
                      catch(Exception e)
                      {
-                         JOptionPane.showMessageDialog(null, "Error retriving results from diversity index calculation thread.");
+                         JOptionPane.showMessageDialog(null, "Error retriving results from unweighted stressor index calculation thread.");
                      }
                      finally
                      {
@@ -1447,21 +1417,12 @@ public class MainWindow extends javax.swing.JFrame {
                 updateGraphics();
 
                 GlobalResources.mappingProject.results.add(index);
-                updateResultsList();
-
-                
+                updateResultsList();  
             }
             catch(Exception e)
             {
-                JOptionPane.showMessageDialog(this, "Error retrieving unweighted stressor index from worker thread.");
-            }
-            finally
-            {
-                this.setResizable(true);
-                this.setFocusable(true);
-                GlobalResources.mappingProject.setProcessingProgressPercent(0);
-                progressBar.setValue(0);
-                updateGraphics();
+                GlobalResources.statusWindow.println("Error retrieving unweighted stressor index from worker thread.");
+                GlobalResources.statusWindow.println(e);
             }
             
         }
@@ -1562,14 +1523,12 @@ public class MainWindow extends javax.swing.JFrame {
 
             //calculation in worker thread
             GlobalResources.mappingProject.processing=true;
-            this.setFocusable(false);
-            this.setResizable(false);
             SwingWorker<StressorAreaRelationships, Void> worker = new SwingWorker<StressorAreaRelationships, Void>() 
             {
                  @Override
                  protected StressorAreaRelationships doInBackground() throws Exception 
                  {
-                    //System.out.println("**** Started background thread...");
+                    GlobalResources.statusWindow.println("Started worker thread...");
                     StressorAreaRelationships output = new StressorAreaRelationships();
                     GlobalResources.mappingProject.processing=false;
                     return output;
@@ -1578,49 +1537,38 @@ public class MainWindow extends javax.swing.JFrame {
                  @Override 
                  protected void done()
                  {
-                     //System.out.println("Background thread is done.");
-                     
-                     try    {
+                     GlobalResources.statusWindow.println("Worker thread is done.");
+                     try    
+                     {
+                        GlobalResources.mappingProject.setProcessingProgressPercent(100);
                         StressorAreaRelationships output = get();
+                        GlobalResources.statusWindow.println("Writing results to file: "+selectedFile.getAbsolutePath());
+                        output.writeToFile(selectedFile.getAbsolutePath());
                      }
                      catch(Exception e)
                      {
-                         JOptionPane.showMessageDialog(null, "Error retriving results from diversity index calculation thread.");
+                         GlobalResources.statusWindow.println("Error retrieving results from worker thread.");
+                         GlobalResources.statusWindow.println(e);
                      }
-                     GlobalResources.mappingProject.setProcessingProgressPercent(0);
-                     
+                     finally
+                     {
+                         GlobalResources.statusWindow.ready2bClosed();
+                     }
                  }
             };
             try
             {
+                GlobalResources.statusWindow.setNewText("Calculating overlap between stressor intensities and diversity index.");
+                timer.start();
                 worker.execute();
-
-                //block whil processing, but update progress bar
-                while(GlobalResources.mappingProject.processing)
-                {
-
-                    //System.out.println("Main thread is waiting...");
-                    progressBar.setValue(GlobalResources.mappingProject.getProcessingProgressPercent());
-                    progressBar.update(progressBar.getGraphics());
-                    Thread.sleep(500);
-
-                }
-
-                Thread.sleep(100);
-                StressorAreaRelationships output = worker.get();
-                output.writeToFile(selectedFile.getAbsolutePath());
+                GlobalResources.statusWindow.setVisible(true);
+                timer.stop();
+                GlobalResources.mappingProject.setProcessingProgressPercent(0);
             }
             catch(Exception e)
             {
-                JOptionPane.showMessageDialog(this, "Error retrieving results from worker thread for stressor-area relationships.");
-            }
-            finally
-            {
-                this.setResizable(true);
-                this.setFocusable(true);
-                GlobalResources.mappingProject.setProcessingProgressPercent(0);
-                progressBar.setValue(0);
-                updateGraphics();
+                GlobalResources.statusWindow.println("Error retrieving results from worker thread for stressor-area relationships.");
+                GlobalResources.statusWindow.println(e);
             }
         }
     }//GEN-LAST:event_menuItemAreaPlotsActionPerformed
@@ -1723,26 +1671,31 @@ public class MainWindow extends javax.swing.JFrame {
        
         //calculate: # of times a region is among the 5 highest impacted and the 5 lowest impacted; rank range of each region; # of times each CELL is in the 10% highest 
         //and the 10% lowest impacted; rank range of each cell
-        MCSimulationManager mcm = new MCSimulationManager();
+        final MCSimulationManager mcm = new MCSimulationManager();
         mcDialog.setSimulationManager(mcm);
         mcDialog.setVisible(true);
         if(mcDialog.isSimulationReady())
         {
-           long startTime=System.currentTimeMillis();
+           final long startTime=System.currentTimeMillis();
            if(GlobalResources.mappingProject.aois!=null) {GlobalResources.mappingProject.aois.getGrid().getUniqueDataValues();} //do here to avoid thread conflict
       
-           if(mcm.threads<=1)
-           {
+          /* if(mcm.threads<=1)
+           {    
+                GlobalResources.statusWindow.setProgress(0);
+                GlobalResources.statusWindow.setNewText("Started Monte Carlo simulations with one thread.");
                 mcm.runMCSimulation();
                 mcm.writeResults();
                 long duration=System.currentTimeMillis()-startTime;
-                System.out.println("Completed Monte Carlo simulation with  "+mcm.simulationRuns+" runs in "+duration*0.001*(1.0/60)*(1.0/60)+" hours.");
+                GlobalResources.statusWindow.println("Completed Monte Carlo simulation with  "+mcm.simulationRuns+" runs in "+duration*0.001*(1.0/60)*(1.0/60)+" hours.");
+                GlobalResources.statusWindow.ready2bClosed();
            }
 
            else
-           {
+           {*/
                //create simulation workers
-               MCSimulationWorker[] mcWorkers = new MCSimulationWorker[mcm.threads];
+               final MCSimulationWorker[] mcWorkers = new MCSimulationWorker[mcm.threads];
+               GlobalResources.statusWindow.println("Starting Monte Carlo simulations with "+mcm.simulationRuns+" runs and "+mcm.threads+" threads");
+               GlobalResources.statusWindow.println("Setting up worker threads...");
                for(int i=0; i<mcWorkers.length; i++)
                {
                    mcWorkers[i]=new MCSimulationWorker();
@@ -1755,71 +1708,51 @@ public class MainWindow extends javax.swing.JFrame {
   
               try
               {
+                  GlobalResources.statusWindow.println("Starting worker threads...");
                    for(int i=0; i<mcWorkers.length; i++)
                    {
                        mcWorkers[i].execute();
                    }
-                    
-                    //block while processing
-                 /*   boolean processing=true; 
-                    while(processing)
-                    {
-                        processing=false;
-                        int workingThreads=0;
-                        for(int i=0; i<mcWorkers.length; i++)
+                   
+                   //this thread will only wait fhe simulation threads to end, and once that's done, make the status window closable, which in turn allows the GUI thread to continue.
+                   SwingWorker<Void, Void> waitingThread = new SwingWorker<Void, Void>() 
+                   {
+                        @Override
+                        protected Void doInBackground() throws Exception 
                         {
-                            System.out.println("** State of worker "+mcWorkers[i].workerNr+": " + mcWorkers[i].getState());
-                            if(mcWorkers[i].working)
+                            GlobalResources.statusWindow.println("Helper thread waits for simulations to finish...");
+                            MCSimulationManager[] mcManagers = new MCSimulationManager[mcWorkers.length];
+                            for(int i =0; i<mcWorkers.length; i++)
                             {
-                                workingThreads++;
-                                processing=true;
+                                mcManagers[i]=mcWorkers[i].get();
                             }
+                            GlobalResources.statusWindow.println("Merging thread results...");
+                            for(int i=mcManagers.length-2; i>=0; i--)
+                            {
+                                mcManagers[i].mergeResults(mcManagers[i+1]);
+                            }
+                            GlobalResources.statusWindow.println("Writing thread results...");
+                            Thread.sleep(500);
+                            mcManagers[0].writeResults();
+                            long duration=System.currentTimeMillis()-startTime;
+                            GlobalResources.statusWindow.println("Completed Monte Carlo simulation with  "+mcm.simulationRuns+" runs in "+duration*0.001*(1.0/60)*(1.0/60)+" hours.");
+                            GlobalResources.statusWindow.ready2bClosed();
+                            return null;
                         }
-                        System.out.println("Working threads: "+workingThreads);
-                        int[] codes=GlobalResources.getWorkerCodes();
-                        /*if(mc1.getState().equals(StateValue.DONE)) 
-                        {
-                            System.out.println("THREAD 1 STATE: "+mc1.getState());
-                        }
-                        if(mc2.getState().equals(StateValue.DONE)) 
-                        {
-                            System.out.println("THREAD 2 STATE: "+mc2.getState());
-                        }
-                        
-                        //System.out.println("Main thread: Waiting for worker threads to finish.");*/
-            //            Thread.sleep(5000);                       
-            //        }
-            //        System.out.println("Threads completed.");
-                    //all threads are done
-                    //Thread.sleep(500); //*/
-                    
-                    MCSimulationManager[] mcManagers = new MCSimulationManager[mcWorkers.length];
-                    for(int i =0; i<mcWorkers.length; i++)
-                    {
-                        mcManagers[i]=mcWorkers[i].get();
-                    }
-                    
-                    Thread.sleep(5000);
-                    System.out.println("Merging thread results...");
-                    for(int i=mcManagers.length-2; i>=0; i--)
-                    {
-                        mcManagers[i].mergeResults(mcManagers[i+1]);
-                    }
-                    System.out.println("Writing thread results...");
-                    Thread.sleep(1000);
-                    mcManagers[0].writeResults();
-                    long duration=System.currentTimeMillis()-startTime;
-                    System.out.println("Completed Monte Carlo simulation with  "+mcm.simulationRuns+" runs in "+duration*0.001*(1.0/60)*(1.0/60)+" hours.");
+ 
+                };
+                   
+                   waitingThread.execute();
+                   timer.start();
+                   GlobalResources.statusWindow.setVisible(true);
+                   timer.stop();
               }
-              catch(Throwable e)
+              catch(Exception e)
               {
-                  JOptionPane.showMessageDialog(this, "Multithreading error: "+e.getMessage());
-                  System.out.println("Multithreading error: "+e.getMessage());
-                  System.out.println(e.getStackTrace()[0]);
-                  System.out.println(e.getStackTrace()[1]);
-                  System.out.println(e.getStackTrace()[2]);
+                  GlobalResources.statusWindow.println("Error in Monte Carlo simulations.");
+                  GlobalResources.statusWindow.println(e);
               }
-           }
+           //}
         }
        
     }//GEN-LAST:event_menuItemMonteCarloRanksActionPerformed
@@ -1828,7 +1761,7 @@ public class MainWindow extends javax.swing.JFrame {
             //check if sensitivity scores exist
         if(GlobalResources.mappingProject.sensitivityScores==null || GlobalResources.mappingProject.sensitivityScores.size()<1)
         {
-            JOptionPane.showMessageDialog(this,"To calculate an impact index, you must first load sensitivity scores.");
+            JOptionPane.showMessageDialog(this,"To calculate an impact index, you must first load sensitivity weights.");
             return;
         }
 
@@ -1843,18 +1776,13 @@ public class MainWindow extends javax.swing.JFrame {
             
             //calculate index in worker thread
             GlobalResources.mappingProject.processing=true;
-            this.setFocusable(false);
-            this.setResizable(false);
-            
-            this.progressBar.setValue(5);
-            this.progressBar.update(progressBar.getGraphics());
-            
+ 
             SwingWorker<ImpactIndexDominant, Void> worker = new SwingWorker<ImpactIndexDominant, Void>() 
             {
                  @Override
                  protected ImpactIndexDominant doInBackground() throws Exception 
                  {
-                    //System.out.println("**** Started background thread...");
+                    GlobalResources.statusWindow.println("Started worker thread...");
                     ImpactIndexDominant index = new ImpactIndexDominant(selectedFile.getAbsolutePath(),GlobalResources.mappingProject.sensitivityScores, false);
                     GlobalResources.mappingProject.processing=false;
                     return index;
@@ -1863,72 +1791,56 @@ public class MainWindow extends javax.swing.JFrame {
                  @Override 
                  protected void done()
                  {
-                     //System.out.println("Background thread is done.");
-                     GlobalResources.mappingProject.setProcessingProgressPercent(0);
+                     GlobalResources.statusWindow.println("Worker thread is done.");
+                     GlobalResources.mappingProject.setProcessingProgressPercent(100);
                      try    
                      {
                         ImpactIndexDominant index = get();
-                     
+                        GlobalResources.statusWindow.println("Writing results to file: "+selectedFile.getAbsolutePath());
+                        CsvTableGeneral table = GlobalResources.mappingProject.grid.createTableFromLayer(index, false);
+                        table.writeToFile(selectedFile.getAbsolutePath());
+
+                        //write contributions
+                        CsvTableGeneral cTable = index.getScores().getContributionsAsTable();
+                        String basepath;
+                        int pos=selectedFile.getAbsolutePath().lastIndexOf(".");
+                        if(pos<1) {basepath=selectedFile.getAbsolutePath();}
+                         else {basepath = selectedFile.getAbsolutePath().substring(0,pos);}
+                        GlobalResources.statusWindow.println("Writing stressor and ecosystem contributions to: "+basepath+"_contributions.csv");
+                        cTable.writeToFile(basepath+"_contributions.csv");
                      }
                      catch(Exception e)
                      {
-                         JOptionPane.showMessageDialog(null, "Error retriving results from diversity index calculation thread.");
+                         GlobalResources.statusWindow.println("Error retriving results from dominant impact index (sum) calculation thread.");
+                         GlobalResources.statusWindow.println(e);
                      }
-
+                     finally
+                     {
+                         GlobalResources.statusWindow.ready2bClosed();
+                     }
                  }
             };
             try
             {
+                GlobalResources.statusWindow.setNewText("Calculating dominant impact index as sum...");
+                timer.start();
                 worker.execute();
-
-                //block whil processing, but update progress bar
-                while(GlobalResources.mappingProject.processing)
-                {
-
-                    //System.out.println("Main thread is waiting...");
-                    progressBar.setValue(GlobalResources.mappingProject.getProcessingProgressPercent());
-                    progressBar.update(progressBar.getGraphics());
-                    Thread.sleep(500);
-
-                }
-
-                    Thread.sleep(100); //
-                    ImpactIndexDominant index = worker.get();            
-            
-           
-                //show in drawing pane;
+                GlobalResources.statusWindow.setVisible(true);
+                timer.stop();
+                GlobalResources.mappingProject.setProcessingProgressPercent(0);
+                
+                ImpactIndexDominant index = worker.get();            
                 drawingPaneShows = index;
                 updateGraphics();
-
-                CsvTableGeneral table = GlobalResources.mappingProject.grid.createTableFromLayer(index, false);
-                table.writeToFile(selectedFile.getAbsolutePath());
-
-                //write contributions
-                CsvTableGeneral cTable = index.getScores().getContributionsAsTable();
-                String basepath;
-                int pos=selectedFile.getAbsolutePath().lastIndexOf(".");
-                if(pos<1) {basepath=selectedFile.getAbsolutePath();}
-                 else {basepath = selectedFile.getAbsolutePath().substring(0,pos);}
-                cTable.writeToFile(basepath+"_contributions.csv");
-
-
                 GlobalResources.mappingProject.results.add(index);
-
                 updateResultsList();
-                
             }
             catch(Exception e)
             {
-                JOptionPane.showMessageDialog(this, "Error retrieving unweighted stressor index from worker thread.");
+                GlobalResources.statusWindow.println("Error retrieving impact index from worker thread.");
+                GlobalResources.statusWindow.println(e);
             }
-            finally
-            {
-                this.setResizable(true);
-                this.setFocusable(true);
-                GlobalResources.mappingProject.setProcessingProgressPercent(0);
-                progressBar.setValue(0);
-                updateGraphics();
-            }     
+   
         }
     }//GEN-LAST:event_menuItemImpactIndexDominantSumActionPerformed
 
@@ -1936,7 +1848,7 @@ public class MainWindow extends javax.swing.JFrame {
         //check if sensitivity scores exist
         if(GlobalResources.mappingProject.sensitivityScores==null || GlobalResources.mappingProject.sensitivityScores.size()<1)
         {
-            JOptionPane.showMessageDialog(this,"To calculate an impact index, you must first load sensitivity scores.");
+            JOptionPane.showMessageDialog(this,"To calculate an impact index, you must first load sensitivity weights.");
             return;
         }
 
@@ -1951,18 +1863,13 @@ public class MainWindow extends javax.swing.JFrame {
             
             //calculate index in worker thread
             GlobalResources.mappingProject.processing=true;
-            this.setFocusable(false);
-            this.setResizable(false);
-            
-            this.progressBar.setValue(5);
-            this.progressBar.update(progressBar.getGraphics());
-            
+           
             SwingWorker<ImpactIndexDominant, Void> worker = new SwingWorker<ImpactIndexDominant, Void>() 
             {
                  @Override
                  protected ImpactIndexDominant doInBackground() throws Exception 
                  {
-                    //System.out.println("**** Started background thread...");
+                    GlobalResources.statusWindow.println("Started worker thread...");
                     ImpactIndexDominant index = new ImpactIndexDominant(selectedFile.getAbsolutePath(),GlobalResources.mappingProject.sensitivityScores, true);
                     GlobalResources.mappingProject.processing=false;
                     return index;
@@ -1971,72 +1878,54 @@ public class MainWindow extends javax.swing.JFrame {
                  @Override 
                  protected void done()
                  {
-                     //System.out.println("Background thread is done.");
-                     GlobalResources.mappingProject.setProcessingProgressPercent(0);
+                     GlobalResources.statusWindow.println("Worker thread is done.");
+                     GlobalResources.mappingProject.setProcessingProgressPercent(100);
                      try    
                      {
                         ImpactIndexDominant index = get();
+                        CsvTableGeneral table = GlobalResources.mappingProject.grid.createTableFromLayer(index, false);
+                        GlobalResources.statusWindow.println("Writing results to file: "+selectedFile.getAbsolutePath());
+                        table.writeToFile(selectedFile.getAbsolutePath());
+
+                        //write contributions
+                        CsvTableGeneral cTable = index.getScores().getContributionsAsTable();
+                        String basepath;
+                        int pos=selectedFile.getAbsolutePath().lastIndexOf(".");
+                        if(pos<1) {basepath=selectedFile.getAbsolutePath();}
+                         else {basepath = selectedFile.getAbsolutePath().substring(0,pos);}
+                        GlobalResources.statusWindow.println("Writing stressor and ecosystem component contributions to: "+basepath+"_contributions.csv");
+                        cTable.writeToFile(basepath+"_contributions.csv");
                      
                      }
                      catch(Exception e)
                      {
-                         JOptionPane.showMessageDialog(null, "Error retriving results from diversity index calculation thread.");
+                         GlobalResources.statusWindow.println("Error retrieving results from stressor - diversity index overlap calculation thread.");
+                         GlobalResources.statusWindow.println(e);
                      }
-
+                     finally {GlobalResources.statusWindow.ready2bClosed();}
                  }
             };
             try
             {
+                GlobalResources.statusWindow.setNewText("Calculating dominant impact index as mean...");
+                timer.start();
                 worker.execute();
-
-                //block whil processing, but update progress bar
-                while(GlobalResources.mappingProject.processing)
-                {
-
-                    //System.out.println("Main thread is waiting...");
-                    progressBar.setValue(GlobalResources.mappingProject.getProcessingProgressPercent());
-                    progressBar.update(progressBar.getGraphics());
-                    Thread.sleep(500);
-
-                }
-
-                    Thread.sleep(100); //
-                    ImpactIndexDominant index = worker.get();            
-            
-           
-                //show in drawing pane;
+                GlobalResources.statusWindow.setVisible(true);
+                timer.stop();
+                GlobalResources.mappingProject.setProcessingProgressPercent(0);
+                
+                ImpactIndexDominant index = worker.get();            
                 drawingPaneShows = index;
                 updateGraphics();
-
-                CsvTableGeneral table = GlobalResources.mappingProject.grid.createTableFromLayer(index, false);
-                table.writeToFile(selectedFile.getAbsolutePath());
-
-                //write contributions
-                CsvTableGeneral cTable = index.getScores().getContributionsAsTable();
-                String basepath;
-                int pos=selectedFile.getAbsolutePath().lastIndexOf(".");
-                if(pos<1) {basepath=selectedFile.getAbsolutePath();}
-                 else {basepath = selectedFile.getAbsolutePath().substring(0,pos);}
-                cTable.writeToFile(basepath+"_contributions.csv");
-
-
                 GlobalResources.mappingProject.results.add(index);
-
                 updateResultsList();
-                
+
            }
             catch(Exception e)
             {
-                JOptionPane.showMessageDialog(this, "Error retrieving unweighted stressor index from worker thread.");
-            }
-            finally
-            {
-                this.setResizable(true);
-                this.setFocusable(true);
-                GlobalResources.mappingProject.setProcessingProgressPercent(0);
-                progressBar.setValue(0);
-                updateGraphics();
-            }     
+                GlobalResources.statusWindow.println("Error retrieving index from worker thread.");
+                GlobalResources.statusWindow.println(e);
+            }    
         }
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
@@ -2044,7 +1933,7 @@ public class MainWindow extends javax.swing.JFrame {
                 //check if sensitivity scores exist
         if(GlobalResources.mappingProject.sensitivityScores==null || GlobalResources.mappingProject.sensitivityScores.size()<1)
         {
-            JOptionPane.showMessageDialog(this,"To calculate an impact index, you must first load sensitivity scores.");
+            JOptionPane.showMessageDialog(this,"To calculate an impact index, you must first load sensitivity weights.");
             return;
         }
 
@@ -2059,18 +1948,13 @@ public class MainWindow extends javax.swing.JFrame {
             
             //calculate index in worker thread
             GlobalResources.mappingProject.processing=true;
-            this.setFocusable(false);
-            this.setResizable(false);
-            
-            this.progressBar.setValue(5);
-            this.progressBar.update(progressBar.getGraphics());
             
             SwingWorker<ImpactIndexDiminishing, Void> worker = new SwingWorker<ImpactIndexDiminishing, Void>() 
             {
                  @Override
                  protected ImpactIndexDiminishing doInBackground() throws Exception 
                  {
-                    //System.out.println("**** Started background thread...");
+                    GlobalResources.statusWindow.println("Started worker thread...");
                     ImpactIndexDiminishing index = new ImpactIndexDiminishing(selectedFile.getAbsolutePath(),GlobalResources.mappingProject.sensitivityScores, false);
                     GlobalResources.mappingProject.processing=false;
                     return index;
@@ -2079,79 +1963,64 @@ public class MainWindow extends javax.swing.JFrame {
                  @Override 
                  protected void done()
                  {
-                     //System.out.println("Background thread is done.");
-                     GlobalResources.mappingProject.setProcessingProgressPercent(0);
+                     GlobalResources.statusWindow.println("Worker thread is done.");
+                     GlobalResources.mappingProject.setProcessingProgressPercent(100);
                      try    
                      {
                         ImpactIndexDiminishing index = get();
+                        
+                        CsvTableGeneral table = GlobalResources.mappingProject.grid.createTableFromLayer(index, false);
+                        table.writeToFile(selectedFile.getAbsolutePath());
+                        GlobalResources.statusWindow.println("Writing results to file: "+selectedFile.getAbsolutePath());
+                        //write contributions
+                        CsvTableGeneral cTable = index.getScores().getContributionsAsTable();
+                        String basepath;
+                        int pos=selectedFile.getAbsolutePath().lastIndexOf(".");
+                        if(pos<1) {basepath=selectedFile.getAbsolutePath();}
+                         else {basepath = selectedFile.getAbsolutePath().substring(0,pos);}
+                        GlobalResources.statusWindow.println("Writing stressor and ecosystem component contributions to: "+basepath+"_contributions.csv");
+                        cTable.writeToFile(basepath+"_contributions.csv");
                      }
                      catch(Exception e)
                      {
-                         JOptionPane.showMessageDialog(null, "Error retriving results from diversity index calculation thread.");
+                         GlobalResources.statusWindow.println("Error retriving results from antagonistic impact index calculation thread.");
+                         GlobalResources.statusWindow.println(e);
+                     }
+                     finally
+                     {
+                         GlobalResources.statusWindow.ready2bClosed();
                      }
 
                  }
             };
             try
             {
+                GlobalResources.statusWindow.setNewText("Calculating antagonistic impact index as sum...");
+                timer.start();
                 worker.execute();
-
-                //block whil processing, but update progress bar
-                while(GlobalResources.mappingProject.processing)
-                {
-
-                    //System.out.println("Main thread is waiting...");
-                    progressBar.setValue(GlobalResources.mappingProject.getProcessingProgressPercent());
-                    progressBar.update(progressBar.getGraphics());
-                    Thread.sleep(500);
-
-                }
-
-                    Thread.sleep(100); //
-                    ImpactIndexDiminishing index = worker.get();            
-            
-           
-                //show in drawing pane;
+                GlobalResources.statusWindow.setVisible(true);
+                timer.stop();
+                GlobalResources.mappingProject.setProcessingProgressPercent(0);
+ 
+                ImpactIndexDiminishing index = worker.get();            
                 drawingPaneShows = index;
                 updateGraphics();
-
-                CsvTableGeneral table = GlobalResources.mappingProject.grid.createTableFromLayer(index, false);
-                table.writeToFile(selectedFile.getAbsolutePath());
-
-                //write contributions
-                CsvTableGeneral cTable = index.getScores().getContributionsAsTable();
-                String basepath;
-                int pos=selectedFile.getAbsolutePath().lastIndexOf(".");
-                if(pos<1) {basepath=selectedFile.getAbsolutePath();}
-                 else {basepath = selectedFile.getAbsolutePath().substring(0,pos);}
-                cTable.writeToFile(basepath+"_contributions.csv");
-
-
                 GlobalResources.mappingProject.results.add(index);
-
                 updateResultsList();
-                
            }
             catch(Exception e)
             {
-                JOptionPane.showMessageDialog(this, "Error retrieving sptial data from worker thread.");
-            }
-            finally
-            {
-                this.setResizable(true);
-                this.setFocusable(true);
-                GlobalResources.mappingProject.setProcessingProgressPercent(0);
-                progressBar.setValue(0);
-                updateGraphics();
-            }     
+                GlobalResources.statusWindow.println("Error retrieving sptial data from worker thread.");
+                GlobalResources.statusWindow.println(e);
+            } 
         }
     }//GEN-LAST:event_menuItemDiminishingImpactsSumActionPerformed
 
     private void menuItemDiminishingImpactMeanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemDiminishingImpactMeanActionPerformed
-                       //check if sensitivity scores exist
+        //check if sensitivity weights exist
         if(GlobalResources.mappingProject.sensitivityScores==null || GlobalResources.mappingProject.sensitivityScores.size()<1)
         {
-            JOptionPane.showMessageDialog(this,"To calculate an impact index, you must first load sensitivity scores.");
+            JOptionPane.showMessageDialog(this,"To calculate an impact index, you must first load sensitivity weights.");
             return;
         }
 
@@ -2166,18 +2035,12 @@ public class MainWindow extends javax.swing.JFrame {
             
             //calculate index in worker thread
             GlobalResources.mappingProject.processing=true;
-            this.setFocusable(false);
-            this.setResizable(false);
-            
-            this.progressBar.setValue(5);
-            this.progressBar.update(progressBar.getGraphics());
-            
             SwingWorker<ImpactIndexDiminishing, Void> worker = new SwingWorker<ImpactIndexDiminishing, Void>() 
             {
                  @Override
                  protected ImpactIndexDiminishing doInBackground() throws Exception 
                  {
-                    //System.out.println("**** Started background thread...");
+                    GlobalResources.statusWindow.println("Started worker thread...");
                     ImpactIndexDiminishing index = new ImpactIndexDiminishing(selectedFile.getAbsolutePath(),GlobalResources.mappingProject.sensitivityScores, true);
                     GlobalResources.mappingProject.processing=false;
                     return index;
@@ -2186,71 +2049,55 @@ public class MainWindow extends javax.swing.JFrame {
                  @Override 
                  protected void done()
                  {
-                     //System.out.println("Background thread is done.");
-                     GlobalResources.mappingProject.setProcessingProgressPercent(0);
+                     GlobalResources.statusWindow.println("Background thread is done.");
+                     GlobalResources.mappingProject.setProcessingProgressPercent(100);
                      try    
                      {
                         ImpactIndexDiminishing index = get();
+                        GlobalResources.statusWindow.println("Writing results to: "+selectedFile.getAbsolutePath());
+                        CsvTableGeneral table = GlobalResources.mappingProject.grid.createTableFromLayer(index, false);
+                        table.writeToFile(selectedFile.getAbsolutePath());
+
+                        //write contributions
+                        CsvTableGeneral cTable = index.getScores().getContributionsAsTable();
+                        String basepath;
+                        int pos=selectedFile.getAbsolutePath().lastIndexOf(".");
+                        if(pos<1) {basepath=selectedFile.getAbsolutePath();}
+                         else {basepath = selectedFile.getAbsolutePath().substring(0,pos);}
+                        GlobalResources.statusWindow.println("Writing stressor and ecosystem component contributions to: "+basepath+"_contributions.csv");
+                        cTable.writeToFile(basepath+"_contributions.csv");
                      }
                      catch(Exception e)
                      {
-                         JOptionPane.showMessageDialog(null, "Error retriving results from diversity index calculation thread.");
+                         GlobalResources.statusWindow.println("Error retrieving results from antagonistic impact index calculation thread.");
+                         GlobalResources.statusWindow.println(e);
+                     }
+                     finally
+                     {
+                         GlobalResources.statusWindow.ready2bClosed();
                      }
 
                  }
             };
             try
             {
+                GlobalResources.statusWindow.setNewText("Calculating antagonistic impact index as mean...");
+                timer.start();
                 worker.execute();
-
-                //block whil processing, but update progress bar
-                while(GlobalResources.mappingProject.processing)
-                {
-
-                    //System.out.println("Main thread is waiting...");
-                    progressBar.setValue(GlobalResources.mappingProject.getProcessingProgressPercent());
-                    progressBar.update(progressBar.getGraphics());
-                    Thread.sleep(500);
-
-                }
-
-                    Thread.sleep(100); //
-                    ImpactIndexDiminishing index = worker.get();            
-            
-           
-                //show in drawing pane;
+                GlobalResources.statusWindow.setVisible(true);
+                timer.stop();
+                GlobalResources.mappingProject.setProcessingProgressPercent(100);
+               
+                ImpactIndexDiminishing index = worker.get();            
                 drawingPaneShows = index;
                 updateGraphics();
-
-                CsvTableGeneral table = GlobalResources.mappingProject.grid.createTableFromLayer(index, false);
-                table.writeToFile(selectedFile.getAbsolutePath());
-
-                //write contributions
-                CsvTableGeneral cTable = index.getScores().getContributionsAsTable();
-                String basepath;
-                int pos=selectedFile.getAbsolutePath().lastIndexOf(".");
-                if(pos<1) {basepath=selectedFile.getAbsolutePath();}
-                 else {basepath = selectedFile.getAbsolutePath().substring(0,pos);}
-                cTable.writeToFile(basepath+"_contributions.csv");
-
-
                 GlobalResources.mappingProject.results.add(index);
-
-                updateResultsList();
-                
+                updateResultsList();       
            }
             catch(Exception e)
             {
-                JOptionPane.showMessageDialog(this, "Error retrieving sptial data from worker thread.");
+                GlobalResources.statusWindow.println("Error retrieving sptial data from worker thread.");
             }
-            finally
-            {
-                this.setResizable(true);
-                this.setFocusable(true);
-                GlobalResources.mappingProject.setProcessingProgressPercent(0);
-                progressBar.setValue(0);
-                updateGraphics();
-            }     
         }
     }//GEN-LAST:event_menuItemDiminishingImpactMeanActionPerformed
 
@@ -2471,7 +2318,7 @@ public class MainWindow extends javax.swing.JFrame {
                      }
                      catch(Exception e)
                      {
-                         GlobalResources.statusWindow.println( "Error retriving results from diversity index calculation thread.");
+                         GlobalResources.statusWindow.println( "Error retriving results from sensitivity index calculation thread.");
                          GlobalResources.statusWindow.println(e);
                      }
                      finally
@@ -2497,15 +2344,8 @@ public class MainWindow extends javax.swing.JFrame {
             }
             catch(Exception e)
             {
-                JOptionPane.showMessageDialog(this, "Error retrieving results from worker thread for sensitivty index.");
-            }
-            finally
-            {
-                this.setResizable(true);
-                this.setFocusable(true);
-                GlobalResources.mappingProject.setProcessingProgressPercent(0);
-                progressBar.setValue(0);
-                updateGraphics();
+                GlobalResources.statusWindow.println("Error retrieving results from worker thread for sensitivty index.");
+                GlobalResources.statusWindow.println(e);
             }
         }
     }//GEN-LAST:event_menuItemSensitivityIndexActionPerformed
@@ -2608,7 +2448,6 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem menuStressorIndex;
     private javax.swing.JMenu menuUncertainty;
     private javax.swing.JMenuItem menuWeightedStressorIndex;
-    private javax.swing.JProgressBar progressBar;
     private javax.swing.JRadioButtonMenuItem radioButtonMenuItemLinearStretch;
     private javax.swing.JRadioButtonMenuItem radioButtonMenuItemQuantileStretch;
     private javax.swing.JRadioButton radioButtonProcessedLayer;
