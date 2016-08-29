@@ -84,7 +84,7 @@ public class MainWindow extends javax.swing.JFrame {
             {        
                 dir.mkdir();
             }
-            logFile = new File(dir+"/log"+GlobalResources.getDateTime()+".csv");
+            logFile = new File(dir+"/log"+GlobalResources.getDateTime()+".txt");
             GlobalResources.statusWindow.setLogFile(logFile);
             
             
@@ -1721,22 +1721,9 @@ public class MainWindow extends javax.swing.JFrame {
            final long startTime=System.currentTimeMillis();
            if(GlobalResources.mappingProject.aois!=null) {GlobalResources.mappingProject.aois.getGrid().getUniqueDataValues();} //do here to avoid thread conflict
       
-          /* if(mcm.threads<=1)
-           {    
-                GlobalResources.statusWindow.setProgress(0);
-                GlobalResources.statusWindow.setNewText("Started Monte Carlo simulations with one thread.");
-                mcm.runMCSimulation();
-                mcm.writeResults();
-                long duration=System.currentTimeMillis()-startTime;
-                GlobalResources.statusWindow.println("Completed Monte Carlo simulation with  "+mcm.simulationRuns+" runs in "+duration*0.001*(1.0/60)*(1.0/60)+" hours.");
-                GlobalResources.statusWindow.ready2bClosed();
-           }
-
-           else
-           {*/
                //create simulation workers
                final MCSimulationWorker[] mcWorkers = new MCSimulationWorker[mcm.threads];
-               GlobalResources.statusWindow.println("Starting Monte Carlo simulations with "+mcm.simulationRuns+" runs and "+mcm.threads+" threads");
+               GlobalResources.statusWindow.setNewText("Starting Monte Carlo simulations with "+mcm.simulationRuns+" runs and "+mcm.threads+" threads");
                GlobalResources.statusWindow.println("Setting up worker threads...");
                for(int i=0; i<mcWorkers.length; i++)
                {
@@ -1794,7 +1781,6 @@ public class MainWindow extends javax.swing.JFrame {
                   GlobalResources.statusWindow.println("Error in Monte Carlo simulations.");
                   GlobalResources.statusWindow.println(e);
               }
-           //}
         }
        
     }//GEN-LAST:event_menuItemMonteCarloRanksActionPerformed

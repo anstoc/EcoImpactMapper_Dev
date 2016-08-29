@@ -444,14 +444,14 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
 
         checkBoxMapStressorContributions.setText("Map stressor contributions");
         checkBoxMapStressorContributions.setToolTipText("<html>If this option is selected, the human impact map from each simulation run<br>\nis added to the project results. This option should be disabled if the number of simulation/br>\nruns is large.</html>");
-        checkBoxMapStressorContributions.setName("cbshowruns"); // NOI18N
+        checkBoxMapStressorContributions.setName("cbmapcontrib"); // NOI18N
         getContentPane().add(checkBoxMapStressorContributions, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 410, -1, -1));
 
         jLabel15.setText("Filter distance:");
         getContentPane().add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 420, -1, -1));
 
         textFieldFilterDistance.setText("25000");
-        textFieldFilterDistance.setName("threshmin"); // NOI18N
+        textFieldFilterDistance.setName("filterdist"); // NOI18N
         textFieldFilterDistance.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 textFieldFilterDistanceFocusLost(evt);
@@ -587,6 +587,9 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
        if(error.equals(""))
        {
            this.simulationReady=true;
+           File settingsFile = new File(mcm.outputFolder+"/simulationsettings.csv");
+           CsvTableGeneral table = createSettingsTable();
+           table.writeToFile(settingsFile.getAbsolutePath()); 
            this.setVisible(false);
        }
        else
