@@ -1,22 +1,19 @@
 /*
- * To change this template, choose Tools | Templates
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 package cumimpactsa;
 
-import java.io.File;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
+import javax.swing.DefaultListModel;
 
 /**
  *
- * @author ast
+ * @author andy
  */
 public class MorrisDialog extends javax.swing.JDialog {
 
-    private int sampleSize;
-    private String outputFolder;
-    private boolean wasCanceled=true;
+    boolean isCanceled=true;
     
     /**
      * Creates new form MorrisDialog
@@ -24,6 +21,12 @@ public class MorrisDialog extends javax.swing.JDialog {
     public MorrisDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        
+        //fill factor list
+        String[] factorNames=GlobalResources.mappingProject.getMorrisFactorNamesAndLevels();
+        DefaultListModel model = new DefaultListModel();
+        for(int i=0; i<factorNames.length; i++) {model.addElement(factorNames[i]);}
+        this.listFactors.setModel(model);
     }
 
     /**
@@ -36,30 +39,38 @@ public class MorrisDialog extends javax.swing.JDialog {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        textFieldSampleSize = new javax.swing.JTextField();
-        textFieldOutputFolder = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        listFactors = new javax.swing.JList<>();
+        comboBoxAddValue = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
-        buttonChooseOutputFolder = new javax.swing.JButton();
+        buttonAddLevel = new javax.swing.JButton();
+        buttonRemoveLevel = new javax.swing.JButton();
+        buttonSave = new javax.swing.JButton();
+        buttonLoad = new javax.swing.JButton();
         buttonCancel = new javax.swing.JButton();
-        buttonOk = new javax.swing.JButton();
+        buttonCalculate = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        textFieldThreads = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        textFieldFilterDistance = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
 
-        jLabel1.setText("Sample size");
+        jLabel1.setText("Factors");
 
-        textFieldSampleSize.setText("50");
+        listFactors.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jScrollPane1.setViewportView(listFactors);
 
-        textFieldOutputFolder.setEditable(false);
-        textFieldOutputFolder.setText("none selected");
+        jLabel2.setText("Select level:");
 
-        jLabel2.setText("Output folder");
+        buttonAddLevel.setText("Add");
 
-        buttonChooseOutputFolder.setText("...");
-        buttonChooseOutputFolder.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonChooseOutputFolderActionPerformed(evt);
-            }
-        });
+        buttonRemoveLevel.setText("Remove");
+
+        buttonSave.setText("Save...");
+
+        buttonLoad.setText("Load...");
 
         buttonCancel.setText("Cancel");
         buttonCancel.addActionListener(new java.awt.event.ActionListener() {
@@ -68,121 +79,107 @@ public class MorrisDialog extends javax.swing.JDialog {
             }
         });
 
-        buttonOk.setText("OK");
-        buttonOk.addActionListener(new java.awt.event.ActionListener() {
+        buttonCalculate.setText("Calculate elementary effects...");
+        buttonCalculate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonOkActionPerformed(evt);
+                buttonCalculateActionPerformed(evt);
             }
         });
 
-        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
+        jLabel3.setText("Threads:");
+
+        textFieldThreads.setText("1");
+
+        jLabel4.setText("Low pass filter distance for improving resolution:");
+
+        textFieldFilterDistance.setText("25000");
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jLabel1)
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .add(layout.createSequentialGroup()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(textFieldSampleSize, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 124, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(jLabel2))
-                    .add(layout.createSequentialGroup()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                                .add(buttonCancel)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED))
-                            .add(layout.createSequentialGroup()
-                                .add(textFieldOutputFolder, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 354, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                .add(1, 1, 1)))
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
-                            .add(buttonChooseOutputFolder, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .add(buttonOk, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .add(0, 19, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(buttonSave, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(buttonLoad, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(buttonCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(35, 35, 35)
+                            .addComponent(buttonCalculate, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                    .addComponent(jLabel2)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jLabel3)
+                                    .addGap(35, 35, 35)))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(comboBoxAddValue, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(buttonAddLevel, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(buttonRemoveLevel, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(0, 0, Short.MAX_VALUE))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(textFieldThreads, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(jLabel4)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(textFieldFilterDistance))))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jLabel1)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(textFieldSampleSize, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jLabel2)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(textFieldOutputFolder, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(buttonChooseOutputFolder))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(buttonCancel)
-                    .add(buttonOk))
-                .addContainerGap(8, Short.MAX_VALUE))
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(comboBoxAddValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(buttonAddLevel)
+                    .addComponent(buttonRemoveLevel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(textFieldThreads, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
+                    .addComponent(textFieldFilterDistance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(buttonSave)
+                    .addComponent(buttonLoad)
+                    .addComponent(buttonCancel)
+                    .addComponent(buttonCalculate))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void buttonChooseOutputFolderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonChooseOutputFolderActionPerformed
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        fileChooser.setCurrentDirectory(new File(GlobalResources.lastUsedFolder));//"/Users/ast/Desktop/E-IPER/Projects/CumImpactSA/GlobalResources.mappingProjects")); //TODO make adjustable
-        int result = fileChooser.showSaveDialog(this);
-        if (result == JFileChooser.APPROVE_OPTION)
-        {
-
-            File selectedFile = fileChooser.getSelectedFile();
-            GlobalResources.lastUsedFolder=selectedFile.getParent();
-            this.textFieldOutputFolder.setText(selectedFile.getAbsolutePath());
-        }
-    }//GEN-LAST:event_buttonChooseOutputFolderActionPerformed
-
     private void buttonCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonCancelActionPerformed
-        wasCanceled=true;
         this.setVisible(false);
     }//GEN-LAST:event_buttonCancelActionPerformed
 
-    private void buttonOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonOkActionPerformed
-       String error="";
-       try
-       {
-           sampleSize = Integer.parseInt(textFieldSampleSize.getText());
-       }
-       catch(Exception e)
-       {
-           error = "Sample size must be an integer.";
-       }
-       File f = new File(textFieldOutputFolder.getText());
-       if(!f.isDirectory()) {error="Please select a valid output folder.";}
-       
-       if(error!="")
-       {
-           JOptionPane.showMessageDialog(this, error);
-       }
-       else
-       {
-           this.outputFolder = textFieldOutputFolder.getText();
-           wasCanceled=false;
-           this.setVisible(false);
-       }
-       
-    }//GEN-LAST:event_buttonOkActionPerformed
+    private void buttonCalculateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonCalculateActionPerformed
+        isCanceled=false;
+        this.setVisible(false);
+    }//GEN-LAST:event_buttonCalculateActionPerformed
 
-    public int getSampleSize()
+    public boolean isCanceled()
     {
-        return sampleSize;
+        return isCanceled;
     }
-    public String getOutputFolder()
-    {
-        return outputFolder;
-    }
-    public boolean wasCanceled()
-    {
-        return wasCanceled;
-    }
-    
     
     /**
      * @param args the command line arguments
@@ -225,13 +222,22 @@ public class MorrisDialog extends javax.swing.JDialog {
             }
         });
     }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton buttonAddLevel;
+    private javax.swing.JButton buttonCalculate;
     private javax.swing.JButton buttonCancel;
-    private javax.swing.JButton buttonChooseOutputFolder;
-    private javax.swing.JButton buttonOk;
+    private javax.swing.JButton buttonLoad;
+    private javax.swing.JButton buttonRemoveLevel;
+    private javax.swing.JButton buttonSave;
+    private javax.swing.JComboBox<String> comboBoxAddValue;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JTextField textFieldOutputFolder;
-    private javax.swing.JTextField textFieldSampleSize;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JList<String> listFactors;
+    private javax.swing.JTextField textFieldFilterDistance;
+    private javax.swing.JTextField textFieldThreads;
     // End of variables declaration//GEN-END:variables
 }

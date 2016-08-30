@@ -1,10 +1,14 @@
-make Morris dialog, store levels in a new class??
+make Morris dialog work
+    -so far, only loads factor names and levels - all other functions are still missing
+    -make sure level ordering is correct (numerical, not alphabetical, for quantitative factors!)
 
-adjust Morris so that it works with the new info
+load/save Morris settings
+
+How to set up low pass filter in this case?
 
 testing
 
-remove functions that are marked with ** (dev version only)
+make functions that are marked with ** (dev version only) invisible
 
 write new tutorial and trim away unused functions, e.g. the Morris analysis and regions and aois
     

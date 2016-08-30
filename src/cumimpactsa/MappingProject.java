@@ -46,6 +46,8 @@ public class MappingProject
     public boolean processing = false;
     private int processingProgressPercent=-1;
     
+    public MorrisFactor[] morrisFactors=MorrisFactor.getDefaultImplementedFactors();
+    
     public void reset()
     {
         grid=null;
@@ -776,6 +778,16 @@ public class MappingProject
         }
         
         return layers;
+    }
+
+    public String[] getMorrisFactorNamesAndLevels() 
+    {
+        String[] names = new String[this.morrisFactors.length];
+        for(int i=0; i<names.length;i++)
+        {
+            names[i]=morrisFactors[i].toString();
+        }
+        return names;
     }
 
     

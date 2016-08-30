@@ -2179,7 +2179,8 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void menuItemMorrisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemMorrisActionPerformed
        
-        if(GlobalResources.mappingProject.grid==null)
+        //TODO uncomment
+        /*if(GlobalResources.mappingProject.grid==null)
         {
             JOptionPane.showMessageDialog(this, "No data loaded.");
             return;
@@ -2189,12 +2190,15 @@ public class MainWindow extends javax.swing.JFrame {
         {
             JOptionPane.showMessageDialog(this,"Please load sensitivity weights.");
             return;
-        } 
+        } */
         
         
        MorrisDialog dialog = new MorrisDialog(this, true);
-       boolean multiThreading=true;
        dialog.setVisible(true);
+       
+       
+       /*
+       boolean multiThreading=true;
        if(!dialog.wasCanceled())
        {
        
@@ -2269,7 +2273,7 @@ public class MainWindow extends javax.swing.JFrame {
            }
 
            
-       }
+       }*/
     }//GEN-LAST:event_menuItemMorrisActionPerformed
 
     private void menuItemRunCurrentTestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemRunCurrentTestActionPerformed

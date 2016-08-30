@@ -384,7 +384,7 @@ public class MCSimulationManager
                 stressors.get(i).getProcessingChain().add(spreader);
             }
         }
-         GlobalResources.statusWindow.println("    "+prefix+": Stressor decay distance: "+rDistance+"; for all "+layerCount+" data layers.");
+         GlobalResources.statusWindow.println("    "+prefix+": Stressor decay distance: "+rDistance+"; for "+layerCount+" data layers.");
     }
 
     private int getImpactModel() 

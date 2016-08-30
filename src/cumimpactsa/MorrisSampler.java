@@ -30,8 +30,8 @@ import javax.swing.JOptionPane;
 public class MorrisSampler
 {
     
-    public String[] parameterNames=new String[]{"0Missing stressor data","1Sensitivity score errors","2Spreading of point stressors","3Ecological thresholds",
-                                    "4Reduced analysis resolution", "5Improved stressor resolution","6Impact model","7Transformation","8Multiple effects model"};
+    public String[] parameterNames=new String[]{"0: Missing stressor data","1: Sensitivity weight errors","2: Linear stress decay","3: Ecological thresholds",
+                                    "4: Reduced analysis resolution", "5: Improved stressor resolution","6: Impact model","7: Transformation","8: Multiple stressor effects model"};
 
     private double[] parameterValues=new double[]{0,0,0,0,0,0,0,0,0};
     //public final double[] deltas = new double[]{1.0/3,1.0/3,1.0/3,1.0/3,1,1,1,1};
@@ -43,7 +43,7 @@ public class MorrisSampler
     protected double[][][] ecocompEEMatrices=null;
     
     //stochastic model parts - must be changed before processing an orientation matrix, but not during processing it,
-    //because otherwise 
+    //because otherwise they would confound elementary effects
     double[] scoreErrors;
     private ArrayList<Integer> stressorRemoveOrder;
     private ArrayList<Integer> thresholdResponseOrder;
@@ -125,7 +125,7 @@ public class MorrisSampler
                 indicesToChange.remove(h);
             }                                                                               
             
-            //this is necessary to exclude x0 from trajectory - Saltelly et al. stress that the model is never evaluated for x0
+            //this is necessary to exclude x0 from trajectory - Saltelli et al. stress that the model is never evaluated for x0
             //now change the parameter for the new line
             double[] x;
             if(c>0) {x = matrix[c-1].clone();}
