@@ -1,10 +1,9 @@
-make Morris dialog work
-    -so far, only loads factor names and levels - all other functions are still missing
-    -make sure level ordering is correct (numerical, not alphabetical, for quantitative factors!)
+Morris dialog
+    -load 
 
-load/save Morris settings
+per default, save MC and Morris settings with project
 
-How to set up low pass filter in this case?
+make actual elementary effects calculation work
 
 testing
 

@@ -5,7 +5,10 @@
  */
 package cumimpactsa;
 
+import java.io.File;
 import javax.swing.DefaultListModel;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -14,19 +17,22 @@ import javax.swing.DefaultListModel;
 public class MorrisDialog extends javax.swing.JDialog {
 
     boolean isCanceled=true;
+    MorrisFactor selectedFactor=null;
+    
     
     /**
      * Creates new form MorrisDialog
      */
-    public MorrisDialog(java.awt.Frame parent, boolean modal) {
+    public MorrisDialog(java.awt.Frame parent, boolean modal) 
+    {
         super(parent, modal);
         initComponents();
         
         //fill factor list
-        String[] factorNames=GlobalResources.mappingProject.getMorrisFactorNamesAndLevels();
-        DefaultListModel model = new DefaultListModel();
-        for(int i=0; i<factorNames.length; i++) {model.addElement(factorNames[i]);}
-        this.listFactors.setModel(model);
+        updateFactorList();
+        
+        //update other fields
+        
     }
 
     /**
@@ -53,22 +59,51 @@ public class MorrisDialog extends javax.swing.JDialog {
         textFieldThreads = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         textFieldFilterDistance = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        textFieldOutputFolder = new javax.swing.JTextField();
+        buttonSelectOutputFolder = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
 
-        jLabel1.setText("Factors");
+        jLabel1.setText("Factors and levels");
 
         listFactors.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        listFactors.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                listFactorsValueChanged(evt);
+            }
+        });
         jScrollPane1.setViewportView(listFactors);
+
+        comboBoxAddValue.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                comboBoxAddValueItemStateChanged(evt);
+            }
+        });
 
         jLabel2.setText("Select level:");
 
         buttonAddLevel.setText("Add");
+        buttonAddLevel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonAddLevelActionPerformed(evt);
+            }
+        });
 
         buttonRemoveLevel.setText("Remove");
+        buttonRemoveLevel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonRemoveLevelActionPerformed(evt);
+            }
+        });
 
         buttonSave.setText("Save...");
+        buttonSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonSaveActionPerformed(evt);
+            }
+        });
 
         buttonLoad.setText("Load...");
 
@@ -89,10 +124,31 @@ public class MorrisDialog extends javax.swing.JDialog {
         jLabel3.setText("Threads:");
 
         textFieldThreads.setText("1");
+        textFieldThreads.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                textFieldThreadsFocusLost(evt);
+            }
+        });
 
         jLabel4.setText("Low pass filter distance for improving resolution:");
 
         textFieldFilterDistance.setText("25000");
+        textFieldFilterDistance.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                textFieldFilterDistanceFocusLost(evt);
+            }
+        });
+
+        jLabel5.setText("Output folder");
+
+        textFieldOutputFolder.setEditable(false);
+
+        buttonSelectOutputFolder.setText("...");
+        buttonSelectOutputFolder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonSelectOutputFolderActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -101,8 +157,19 @@ public class MorrisDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(jLabel5)
+                            .addGap(18, 18, 18)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(comboBoxAddValue, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(textFieldOutputFolder, javax.swing.GroupLayout.PREFERRED_SIZE, 508, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(buttonSelectOutputFolder, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                             .addComponent(buttonSave, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -110,8 +177,8 @@ public class MorrisDialog extends javax.swing.JDialog {
                             .addComponent(buttonLoad, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                             .addComponent(buttonCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(35, 35, 35)
-                            .addComponent(buttonCalculate, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(buttonCalculate, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(layout.createSequentialGroup()
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -122,8 +189,7 @@ public class MorrisDialog extends javax.swing.JDialog {
                                     .addGap(35, 35, 35)))
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(layout.createSequentialGroup()
-                                    .addComponent(comboBoxAddValue, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(18, 18, 18)
+                                    .addGap(355, 355, 355)
                                     .addComponent(buttonAddLevel, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(buttonRemoveLevel, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -134,7 +200,7 @@ public class MorrisDialog extends javax.swing.JDialog {
                                     .addComponent(jLabel4)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(textFieldFilterDistance))))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(26, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -142,20 +208,25 @@ public class MorrisDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(comboBoxAddValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(buttonAddLevel)
                     .addComponent(buttonRemoveLevel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(28, 28, 28)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(textFieldOutputFolder, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(buttonSelectOutputFolder))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(textFieldThreads, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
                     .addComponent(textFieldFilterDistance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(buttonSave)
                     .addComponent(buttonLoad)
@@ -172,9 +243,122 @@ public class MorrisDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_buttonCancelActionPerformed
 
     private void buttonCalculateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonCalculateActionPerformed
-        isCanceled=false;
-        this.setVisible(false);
+        File outputFolder = new File(this.textFieldOutputFolder.getText());
+        if(!outputFolder.exists() || !outputFolder.isDirectory())
+        {
+            JOptionPane.showMessageDialog(this, "Please select a valid output folder.");
+        }
+        else
+        {
+            isCanceled=false;
+            this.setVisible(false);
+        }
     }//GEN-LAST:event_buttonCalculateActionPerformed
+
+    private void listFactorsValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listFactorsValueChanged
+        //get factor object
+        String factorString=listFactors.getSelectedValue();
+        if(factorString==null) return;
+        for(int i=0; i<GlobalResources.mappingProject.morrisFactors.length; i++)
+        {
+            if(factorString.equals(GlobalResources.mappingProject.morrisFactors[i].toString())) selectedFactor=GlobalResources.mappingProject.morrisFactors[i];
+        }
+        //set up combo box
+        if(selectedFactor==null) return;
+        else if(selectedFactor.isQualitative())
+        {
+            this.comboBoxAddValue.setEditable(false);
+            this.comboBoxAddValue.removeAllItems();
+            for(int i=0; i<selectedFactor.getNrOfPossibleLevels();i++)
+            {
+                comboBoxAddValue.addItem(selectedFactor.getPossibleLevels()[i]);
+            }
+        }
+        else //quantitative
+        {
+            this.comboBoxAddValue.setEditable(true);
+            this.comboBoxAddValue.removeAllItems();
+            for(int i=0; i<selectedFactor.getLevelNames().size();i++)
+            {
+                comboBoxAddValue.addItem(selectedFactor.getLevelNames().get(i));
+            }
+        }
+        
+    }//GEN-LAST:event_listFactorsValueChanged
+
+    private void comboBoxAddValueItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_comboBoxAddValueItemStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_comboBoxAddValueItemStateChanged
+
+    private void buttonAddLevelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAddLevelActionPerformed
+        if(selectedFactor==null) return;
+        int index=listFactors.getSelectedIndex();
+        selectedFactor.addLevel(comboBoxAddValue.getSelectedItem().toString());
+        this.updateFactorList();
+        listFactors.setSelectedIndex(index);
+        this.update(this.getGraphics());
+    }//GEN-LAST:event_buttonAddLevelActionPerformed
+
+    private void buttonRemoveLevelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRemoveLevelActionPerformed
+        if(selectedFactor==null) return;
+        int index=listFactors.getSelectedIndex();
+        selectedFactor.removeLevel(comboBoxAddValue.getSelectedItem().toString());
+        this.updateFactorList();
+        listFactors.setSelectedIndex(index);
+        this.update(this.getGraphics());
+    }//GEN-LAST:event_buttonRemoveLevelActionPerformed
+
+    private void buttonSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSaveActionPerformed
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fileChooser.setCurrentDirectory(new File(GlobalResources.lastUsedFolder));
+        int result = fileChooser.showSaveDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION)
+        {
+            File selectedFile = fileChooser.getSelectedFile();
+            MorrisFactor.saveFactorsToCsv(selectedFile.getAbsolutePath());
+        }
+    }//GEN-LAST:event_buttonSaveActionPerformed
+
+    private void textFieldThreadsFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_textFieldThreadsFocusLost
+        try
+        {
+            int nr=Integer.parseInt(textFieldThreads.getText());
+            if(nr<1 || nr>32) throw new Exception();
+            GlobalResources.nrOfThreads=nr;
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(null, "Please enter an integer between 1 and 32.");
+            textFieldThreads.setText(GlobalResources.nrOfThreads+"");
+        }
+    }//GEN-LAST:event_textFieldThreadsFocusLost
+
+    private void textFieldFilterDistanceFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_textFieldFilterDistanceFocusLost
+        try
+        {
+            float nr=Float.parseFloat(textFieldFilterDistance.getText());
+            if(nr<0) throw new Exception();
+            GlobalResources.lowPassFilterDistance=nr;
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(null, "Please enter a number greater than or equal to 0.");
+            textFieldFilterDistance.setText(GlobalResources.lowPassFilterDistance+"");
+        }
+    }//GEN-LAST:event_textFieldFilterDistanceFocusLost
+
+    private void buttonSelectOutputFolderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSelectOutputFolderActionPerformed
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        fileChooser.setCurrentDirectory(new File(GlobalResources.lastUsedFolder));
+        int result = fileChooser.showSaveDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION)
+        {
+            File selectedFile = fileChooser.getSelectedFile();
+            this.textFieldOutputFolder.setText(selectedFile.getAbsolutePath());
+        }
+    }//GEN-LAST:event_buttonSelectOutputFolderActionPerformed
 
     public boolean isCanceled()
     {
@@ -230,14 +414,24 @@ public class MorrisDialog extends javax.swing.JDialog {
     private javax.swing.JButton buttonLoad;
     private javax.swing.JButton buttonRemoveLevel;
     private javax.swing.JButton buttonSave;
+    private javax.swing.JButton buttonSelectOutputFolder;
     private javax.swing.JComboBox<String> comboBoxAddValue;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JList<String> listFactors;
     private javax.swing.JTextField textFieldFilterDistance;
+    private javax.swing.JTextField textFieldOutputFolder;
     private javax.swing.JTextField textFieldThreads;
     // End of variables declaration//GEN-END:variables
+
+    private void updateFactorList() 
+    {
+        DefaultListModel model = new DefaultListModel();
+        for(int i=0; i<GlobalResources.mappingProject.morrisFactors.length; i++) {model.addElement(GlobalResources.mappingProject.morrisFactors[i].toString());}
+        this.listFactors.setModel(model);
+    }
 }

@@ -441,7 +441,17 @@ public class MappingProject
         maxRow.add(ImageCreator.maxColor.getRGB()+""); midRow.add(ImageCreator.midColor.getRGB()+""); minRow.add(ImageCreator.minColor.getRGB()+"");
         table.addRow(maxRow);table.addRow(midRow);table.addRow(minRow);
         
+        //save low pass filter distance
+        ArrayList<String> line = new ArrayList<String>();
+        line.add("lpfdistance"); line.add("n/a"); line.add("n/a"); line.add("n/a"); line.add("n/a");
+        line.add(GlobalResources.lowPassFilterDistance+"");
+        table.addRow(line);
         
+        //save nr of threads
+        line = new ArrayList<String>();
+        line.add("threads"); line.add("n/a"); line.add("n/a"); line.add("n/a"); line.add("n/a");
+        line.add(GlobalResources.nrOfThreads+"");
+        table.addRow(line);
         
         table.writeToFile(filename);
         
@@ -647,6 +657,24 @@ public class MappingProject
                    {
                        sensitivityScores=new SensitivityScoreSet();
                        sensitivityScores.createFromFile(getAbsolutePath(file.get(row)));
+                   }
+                   else if(resType.get(row).equals("lpfdistance"))
+                   {
+                       try
+                       {
+                           float nr=Float.parseFloat(valueField.get(row));
+                           GlobalResources.lowPassFilterDistance=nr;
+                       }
+                       catch(Exception e) {}
+                   }
+                   else if(resType.get(row).equals("threads"))
+                   {
+                       try
+                       {
+                           int nr=Integer.parseInt(valueField.get(row));
+                           GlobalResources.nrOfThreads=nr;
+                       }
+                       catch(Exception e) {}
                    }
                     
                     

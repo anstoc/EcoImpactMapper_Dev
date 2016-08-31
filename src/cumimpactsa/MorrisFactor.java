@@ -17,71 +17,74 @@ import javax.swing.JOptionPane;
 public class MorrisFactor 
 {
     private String name = new String();
-    private ArrayList<String> optionNames=new ArrayList<String>();
-    private float[] possibleOptionCodes=null;
-    private String[] possibleOptionNames=null;
+    private ArrayList<String> levelNames=new ArrayList<String>();
+    private float[] possibleLevelCodes=null;
+    private String[] possibleLevelNames=null;
     private boolean qualitative=true;
+    private boolean forceNumericalSorting=false;
     float min=0;
     float max=1;
     /*
     @summary Constructor. Takes the name and a list of possible options. If possibleOptionNames is null, will assume it's a quantitative factor taking any value between 0 and 1.
     */ 
-    public MorrisFactor(String name, String[] possibleOptions, float[] possibleOptionCodes, float min, float max)
+    public MorrisFactor(String name, String[] possibleLevels, float[] possibleLevelCodes, float min, float max)
     {
         this.name=name;
-        this.possibleOptionNames=possibleOptions;
+        this.possibleLevelNames=possibleLevels;
+        this.possibleLevelCodes=possibleLevelCodes;
         this.min=min;
         this.max=max;
-        if(possibleOptions==null) qualitative=false;
+        if(possibleLevels==null) qualitative=false;
     }
     
     public String getName() {return name;}
     
-    public String[] getPossibleOptions() {return possibleOptionNames;}
+    public String[] getPossibleLevels() {return possibleLevelNames;}
  
     public boolean isQualitative()
     {
         return qualitative;
     }
     
-    public ArrayList<String> getOptionNames()
+    public ArrayList<String> getLevelNames()
     {
-        return optionNames;
+        return levelNames;
     }
     
-    public void addOption(String optionName)
+    public void addLevel(String levelName)
     {
         //make sure not yet contained
         boolean contained=false;
-        for(int i=0; i<optionNames.size();i++)
+        for(int i=0; i<levelNames.size();i++)
         {
-            if(optionNames.get(i).equals(optionName)) contained=true;
+            if(levelNames.get(i).equals(levelName)) contained=true;
         }
         
         //qualitative factor - make sure it's a valid option
-        if(!contained && possibleOptionNames!=null)
+        if(!contained && possibleLevelNames!=null)
         {
             boolean isPossible=false;
-            for(int i=0; i<possibleOptionNames.length; i++)
+            for(int i=0; i<possibleLevelNames.length; i++)
             {
-                if(possibleOptionNames[i].equals(optionName)) isPossible=true;
+                if(possibleLevelNames[i].equals(levelName)) isPossible=true;
             }
-            if(isPossible) optionNames.add(optionName);
-            Collections.sort(optionNames);
+            if(isPossible) levelNames.add(levelName);
+            if(forceNumericalSorting) Collections.sort(levelNames,new FloatStringComparator());
+            else Collections.sort(levelNames);
         }
         //quantitative - make sure it's a number between min and max
         else if(!contained)
         {
             try
             {
-               float number=Float.parseFloat(optionName);
+               float number=Float.parseFloat(levelName);
                if(number<min || number>max) throw new Exception();
-               optionNames.add(optionName);
-               Collections.sort(optionNames);
+               levelNames.add(levelName);
+               Collections.sort(levelNames,new FloatStringComparator());
             }
             catch(Exception e)
             {
-                JOptionPane.showMessageDialog(null, "This factor must be a number between "+min+" and "+max);
+                JOptionPane.showMessageDialog(null, "This factor level must be a number between "+min+" and "+max);
             }
         }
     }
@@ -89,53 +92,53 @@ public class MorrisFactor
     public String toString()
     {
         String text=name+": ";
-        for(int i=0;i<optionNames.size();i++) 
+        for(int i=0;i<levelNames.size();i++) 
         {
-            text=text+optionNames.get(i);
-            if(i<optionNames.size()-1) text=text+";";
+            text=text+levelNames.get(i);
+            if(i<levelNames.size()-1) text=text+";";
         }
         return text;
     }
     
-    public int getNrOfOptions()
+    public int getNrOfLevels()
     {
-        return optionNames.size();
+        return levelNames.size();
     }
     
     //returns the numbers actually used by the MorrisSampler
-    public float[] getOptionCodes()
+    public float[] getLevelCodes()
     {
-        float[] optionCodes=new float[optionNames.size()];
+        float[] levelCodes=new float[levelNames.size()];
      
         
         if(qualitative)
         {
-            for(int i=0; i<optionCodes.length; i++)
+            for(int i=0; i<levelCodes.length; i++)
             {
-                String name=optionNames.get(i);
+                String name=levelNames.get(i);
                 int index=-1;
-                for(int j=0; j<possibleOptionNames.length; j++)
+                for(int j=0; j<possibleLevelNames.length; j++)
                 {
-                    if(possibleOptionNames[j].equals(name)) index=j;
+                    if(possibleLevelNames[j].equals(name)) index=j;
                 }
-                optionCodes[i]=possibleOptionCodes[index];
+                levelCodes[i]=possibleLevelCodes[index];
             }
         }
         else
         {
-            for(int i=0; i<optionCodes.length; i++)
+            for(int i=0; i<levelCodes.length; i++)
             {
                 try
                 {
-                    float code=Float.parseFloat(optionNames.get(i));
+                    float code=Float.parseFloat(levelNames.get(i));
                 }
                 catch(Exception e)
                 {
-                    JOptionPane.showMessageDialog(null, "This factor must be a number between "+min+" and "+max);
+                    JOptionPane.showMessageDialog(null, "This factor level must be a number between "+min+" and "+max);
                 }
             }    
         }
-        return optionCodes;
+        return levelCodes;
     }
     
     public static MorrisFactor[] getDefaultImplementedFactors()
@@ -148,49 +151,125 @@ public class MorrisFactor
         //factor 0: Missing stressor data
         factors[0]=new MorrisFactor("0: Missing stressor data", 
                         null, null, 0, 1);  
-        factors[0].addOption("0.0000"); factors[0].addOption("0.1111");factors[0].addOption("0.2222");factors[0].addOption("0.3333"); //default options
+        factors[0].addLevel("0.0000"); factors[0].addLevel("0.1111");factors[0].addLevel("0.2222");factors[0].addLevel("0.3333"); //default options
         
         //factor 1: Sensitivity weight errors
         factors[1]=new MorrisFactor("1: Sensitivity weight errors", 
                         null, null, 0, 1); 
-        factors[1].addOption("0.0000"); factors[1].addOption("0.1667");factors[1].addOption("0.3333");factors[1].addOption("0.5000");
+        factors[1].addLevel("0.0000"); factors[1].addLevel("0.1667");factors[1].addLevel("0.3333");factors[1].addLevel("0.5000");
         
         //factor 2: Linear stress decay
         factors[2]=new MorrisFactor("2: Linear stress decay", 
                         null, null, 0, Float.MAX_VALUE); 
-        factors[2].addOption("0");factors[2].addOption("7000");factors[2].addOption("14000");factors[2].addOption("20000");
+        factors[2].addLevel("0");factors[2].addLevel("7000");factors[2].addLevel("14000");factors[2].addLevel("20000");
         
         //factor 3: Ecological thresholds
         factors[3]=new MorrisFactor("3: Ecological thresholds", 
                         null, null, 0, 1);
-        factors[3].addOption("0");factors[3].addOption("0.3333");factors[3].addOption("0.6667");factors[3].addOption("1.0000");
+        factors[3].addLevel("0");factors[3].addLevel("0.3333");factors[3].addLevel("0.6667");factors[3].addLevel("1.0000");
         
         //factor "4: Reduced analysis resolution"
         factors[4]=new MorrisFactor("4: Reduced analysis resolution", 
                         new String[]{"1","2","4","6","8","10","12","14","16","18","20"}, new float[]{1,2,4,6,8,10,12,14,16,18,20}, -1, -1);
-        factors[4].addOption("1");factors[4].addOption("2");
+        factors[4].addLevel("1");factors[4].addLevel("2");
+        factors[4].forceNumericalSorting(true);
         
         //factor "5: Improved stressor resolution"
         factors[5]=new MorrisFactor("5: Improved stressor resolution", 
                         new String[]{"No","Yes"}, new float[]{0,1}, -1, -1);
-        factors[5].addOption("No");factors[5].addOption("Yes");
+        factors[5].addLevel("No");factors[5].addLevel("Yes");
         
         //factor "6: Impact model"
         factors[6]=new MorrisFactor("6: Impact model", 
                         new String[]{"Sum","Mean"}, new float[]{0,1}, -1, -1);
-        factors[6].addOption("Sum"); factors[6].addOption("Mean");
+        factors[6].addLevel("Sum"); factors[6].addLevel("Mean");
         
         //factor "7: Transformation"
         factors[7]=new MorrisFactor("7: Transformation", 
                         new String[]{"Log[X+1]","CDF","Cut at 99-Percentile","None"}, new float[]{0,1,2,3}, -1, -1);
-        factors[7].addOption("Log[X+1]");factors[7].addOption("CDF");factors[7].addOption("Cut at 99-Percentile");
+        factors[7].addLevel("Log[X+1]");factors[7].addLevel("CDF");factors[7].addLevel("Cut at 99-Percentile");
         
         //factor "8: Multiple stressor effects model"
         factors[8]=new MorrisFactor("8: Multiple stressor effects model", 
                         new String[]{"Additive","Dominant","Antagonistic"}, new float[]{0,1,2}, -1, -1);
-        factors[8].addOption("Additive");factors[8].addOption("Dominant");factors[8].addOption("Antagonistic");
+        factors[8].addLevel("Additive");factors[8].addLevel("Dominant");factors[8].addLevel("Antagonistic");
         
         return factors;
+    }
+    
+    //use in cases like resolution reduction factor that take selected integers; makes sure that sorting in the MorrisDialog will be numerical,
+    //not alphabetical
+    public void forceNumericalSorting(boolean b)
+    {
+        this.forceNumericalSorting=b;
+    }
+
+    int getNrOfPossibleLevels() 
+    {
+        return possibleLevelNames.length;
+    }
+    
+    //does nothing if level given by name is not assigned
+    public void removeLevel(String levelName)
+    {
+        if(levelNames.size()==1)
+        {
+            JOptionPane.showMessageDialog(null, "Each factor must have at least one level.");
+            return;
+        }    
+            
+        for(int i=0; i<levelNames.size();i++)
+        {
+            if(qualitative)
+            {
+                if(levelNames.get(i).equals(levelName))
+                {
+                    levelNames.remove(i);
+                    return;
+                }
+            }
+            else
+            {
+                float f1 = Float.parseFloat(levelNames.get(i));
+                float f2 = Float.parseFloat(levelName);
+                if(f1==f2) 
+                {    
+                    levelNames.remove(i);
+                    return;
+                }
+            }
+        }
+    }
+    
+    public ArrayList<String>[] getCsvTableLines()
+    {
+        ArrayList<String>[] lines = (ArrayList<String>[]) new ArrayList[levelNames.size()];
+        
+        for(int i=0; i<levelNames.size();i++)
+        {
+            ArrayList<String> newline = new ArrayList<String>();
+            newline.add(this.name);
+            newline.add(this.levelNames.get(i));
+            lines[i]=newline;
+        }
+        
+        return lines;
+    }
+    
+    public static void saveFactorsToCsv(String filename)
+    {
+        CsvTableGeneral table=new CsvTableGeneral();
+        table.addColumn("Factor");
+        table.addColumn("Level");
+        for(int i=0;i<GlobalResources.mappingProject.morrisFactors.length;i++)
+        {
+            ArrayList<String>[] lines = GlobalResources.mappingProject.morrisFactors[i].getCsvTableLines();
+            for(int j=0;j<lines.length;j++)
+            {
+                table.addRow(lines[j]);
+            }
+        }
+        table.writeToFile(filename);
     }
     
 }

@@ -31,7 +31,7 @@ public abstract class GlobalResources
     public static String lastOpenedTableFile = "";
     
     public static float lowPassFilterDistance=25000;
-    
+    public static int nrOfThreads=1;
 
     
     public static String getDateTime()

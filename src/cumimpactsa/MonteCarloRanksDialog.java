@@ -102,6 +102,11 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                formComponentShown(evt);
+            }
+        });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
@@ -832,6 +837,11 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
             textFieldReducedAnalysisResMax.setText("2");
         }
     }//GEN-LAST:event_textFieldReducedAnalysisResMaxFocusLost
+
+    private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
+        this.textFieldThreads.setText(GlobalResources.nrOfThreads+"");
+        this.textFieldFilterDistance.setText(GlobalResources.lowPassFilterDistance+"");
+    }//GEN-LAST:event_formComponentShown
 
     private Component getComponentByName(String name)
     {

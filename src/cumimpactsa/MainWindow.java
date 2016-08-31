@@ -106,6 +106,32 @@ public class MainWindow extends javax.swing.JFrame {
                             GlobalResources.lastUsedFolder=folder.getAbsolutePath();
                         }
                     }
+                    else if(settingNames.get(i).equals("lpfdistance"))
+                    {
+                        try
+                        {
+                            Float nr = Float.parseFloat(settingValues.get(i));
+                            if(nr<0) throw new Exception();
+                            GlobalResources.lowPassFilterDistance=nr;
+                        }
+                        catch(Exception e)
+                        {
+                            JOptionPane.showMessageDialog(null, "Failed to load low pass filter distance from settings file.");
+                        }
+                    }
+                    else if(settingNames.get(i).equals("threads"))
+                    {
+                        try
+                        {
+                            int nr = Integer.parseInt(settingValues.get(i));
+                            if(nr<1 || nr>32) throw new Exception();
+                            GlobalResources.nrOfThreads=nr;
+                        }
+                        catch(Exception e)
+                        {
+                            JOptionPane.showMessageDialog(null, "Failed to load low pass filter distance from settings file.");
+                        }
+                    }
                 }
             }
             
@@ -141,6 +167,14 @@ public class MainWindow extends javax.swing.JFrame {
                     ArrayList<String> line = new ArrayList<>();
                     line.add("lastfolder");
                     line.add(GlobalResources.lastUsedFolder);
+                    settings.addRow(line);
+                    line = new ArrayList<>();
+                    line.add("lpfdistance");
+                    line.add(GlobalResources.lowPassFilterDistance+"");
+                    settings.addRow(line);
+                    line = new ArrayList<>();
+                    line.add("threads");
+                    line.add(GlobalResources.nrOfThreads+"");
                     settings.addRow(line);
                     settings.writeToFile(exDir+"/settings.csv");   
                 }
