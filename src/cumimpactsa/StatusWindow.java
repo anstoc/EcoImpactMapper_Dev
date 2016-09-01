@@ -198,6 +198,36 @@ public class StatusWindow extends javax.swing.JDialog {
         
     }
 
+    public synchronized void systemOutPrintln(Exception e) 
+    {
+
+        System.out.println(e.getMessage()+"\n");
+        for(int i=0;i<Math.min(e.getStackTrace().length,10);i++)
+        {
+            System.out.println(e.getStackTrace()[i].toString()+"\n");
+        }
+        
+        if(bw!=null) try
+        {
+            bw.newLine();
+            bw.newLine();
+            bw.write(e.getMessage());
+            bw.newLine();
+            for(int i=0;i<Math.min(e.getStackTrace().length,10);i++)
+            {
+                bw.write(e.getStackTrace()[i].toString());
+                bw.newLine();
+            }
+            bw.flush();
+        }
+        catch(Exception ex)
+        {
+            println("Logging of exception failed");
+            println(ex);
+        }
+        
+    }
+    
     void setLogFile(File logfile) 
     {
         

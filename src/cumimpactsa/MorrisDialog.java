@@ -106,6 +106,11 @@ public class MorrisDialog extends javax.swing.JDialog {
         });
 
         buttonLoad.setText("Load...");
+        buttonLoad.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonLoadActionPerformed(evt);
+            }
+        });
 
         buttonCancel.setText("Cancel");
         buttonCancel.addActionListener(new java.awt.event.ActionListener() {
@@ -359,6 +364,34 @@ public class MorrisDialog extends javax.swing.JDialog {
             this.textFieldOutputFolder.setText(selectedFile.getAbsolutePath());
         }
     }//GEN-LAST:event_buttonSelectOutputFolderActionPerformed
+
+    private void buttonLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonLoadActionPerformed
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fileChooser.setCurrentDirectory(new File(GlobalResources.lastUsedFolder));
+        int result = fileChooser.showOpenDialog(this);
+        
+        if (result == JFileChooser.APPROVE_OPTION)
+        {
+            File selectedFile = fileChooser.getSelectedFile();
+            CsvTableGeneral table = new CsvTableGeneral();
+            try
+            {
+                table.readFromFile(selectedFile);
+                MorrisFactor.setFactorLevelsFromTable(table);
+            }
+            catch(Exception e)
+            {
+                JOptionPane.showMessageDialog(this, "Could not read CSV file: "+selectedFile.getAbsolutePath());
+                GlobalResources.statusWindow.systemOutPrintln(e);
+                
+            }
+            finally
+            {
+                this.updateFactorList();
+            }
+        }             
+    }//GEN-LAST:event_buttonLoadActionPerformed
 
     public boolean isCanceled()
     {

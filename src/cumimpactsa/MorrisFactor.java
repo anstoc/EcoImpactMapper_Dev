@@ -272,4 +272,31 @@ public class MorrisFactor
         table.writeToFile(filename);
     }
     
+    public static void setFactorLevelsFromTable(CsvTableGeneral table)
+    {
+        ArrayList<String> factors=table.getColumn("Factor");
+        ArrayList<String> levels=table.getColumn("Level");
+        boolean[] isReset = new boolean[GlobalResources.mappingProject.morrisFactors.length]; //first time a factor appears in the table, its levels have to be set to an empty array list
+                                                                                              //for subsequent adding of listed factors from the table - but only the first time
+        for(int i=0; i<factors.size(); i++)
+        {
+            //find the right factor in the mapping project
+            MorrisFactor currentFactor=null;
+            for(int j=0; j<GlobalResources.mappingProject.morrisFactors.length; j++)
+            {
+                if(GlobalResources.mappingProject.morrisFactors[j].name.equals(factors.get(i)))
+                {
+                    currentFactor=GlobalResources.mappingProject.morrisFactors[j];
+                    if(!isReset[j])
+                    {
+                        currentFactor.levelNames=new ArrayList<String>();
+                        isReset[j]=true;
+                    }
+                }
+            }
+            if(currentFactor!=null) currentFactor.addLevel(levels.get(i));  
+        }    
+        
+    }    
+    
 }
