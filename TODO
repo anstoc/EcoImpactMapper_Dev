@@ -1,14 +1,13 @@
-Morris dialog
-    -load 
+Thu: make actual elementary effects calculation work
 
-per default, save MC and Morris settings with project
+Fri: per default, save MC and Morris settings with project
 
-make actual elementary effects calculation work
+Fri: make list of test
 
-testing
+Fri, Sat: run tests
 
-make functions that are marked with ** (dev version only) invisible
+Sun: make functions that are marked with ** (dev version only) invisible
 
-write new tutorial and trim away unused functions, e.g. the Morris analysis and regions and aois
+Sun, Mon: write new tutorial
     
-publish, add comments to GEB and JORS?
+When back: Re-check tutorial, upload new version to Figshare
