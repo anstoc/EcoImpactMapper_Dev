@@ -50,7 +50,7 @@ public class MCSimulationWorker extends SwingWorker<MCSimulationManager,Void>
      @Override 
      protected void done()
      {
-        GlobalResources.statusWindow.println(this.workerNr + ": Background thread has reached done() method.");
+        GlobalResources.statusWindow.println(this.workerNr + ": Worker thread has reached done() method.");
         working=false;
         try    
         {

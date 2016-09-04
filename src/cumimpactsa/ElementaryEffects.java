@@ -10,7 +10,7 @@ package cumimpactsa;
  */
 public class ElementaryEffects 
 {
-    public double[][] regionEEffects;
-    public double[][] stressorEEffects;
-    public double[][] ecocompEEffects;
+    public float[][] regionEEffects;
+    public float[][] stressorEEffects;
+    public float[][] ecocompEEffects;
 }

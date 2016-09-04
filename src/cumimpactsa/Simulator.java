@@ -63,7 +63,7 @@ class Simulator
         {   
             regionInfos.get(i).currentMeanImpact=0; 
             regionInfos.get(i).currentTotalImpact=0;
-            regionInfos.get(i).currentStressorImpact=new double[GlobalResources.mappingProject.stressors.size()];
+            //regionInfos.get(i).currentStressorImpact=new double[GlobalResources.mappingProject.stressors.size()];
         }
         if(mem==Simulator.MEM_ADDITIVE) {calculateWithAdditiveMEM();}
         else if(mem==Simulator.MEM_DOMINANT) {calculateWithDominantMEM();}
@@ -168,7 +168,7 @@ class Simulator
                             {
                                 RegionRankInfo rInfo = getRegionInfoByCode(code);
                                 rInfo.currentTotalImpact += summand;
-                                rInfo.currentStressorImpact[impact.getStressorIndex()]+=summand;
+                                //rInfo.currentStressorImpact[impact.getStressorIndex()]+=summand;
                             }
                 
                             data[x][y]=data[x][y]+summand;    
@@ -251,7 +251,7 @@ class Simulator
                         {
                             RegionRankInfo rInfo = getRegionInfoByCode(code);
                             rInfo.currentTotalImpact += largestSummand;
-                            rInfo.currentStressorImpact[eImpacts.get(largestIndex).getStressorIndex()]+=largestSummand;
+                            //rInfo.currentStressorImpact[eImpacts.get(largestIndex).getStressorIndex()]+=largestSummand;
                         }
                         
                         values[x][y] = values[x][y] + largestSummand;
@@ -333,7 +333,7 @@ class Simulator
                             {
                                 RegionRankInfo rInfo = getRegionInfoByCode(code);
                                 rInfo.currentTotalImpact += weightedSummand;
-                                rInfo.currentStressorImpact[eImpacts.get(i).getStressorIndex()]+=weightedSummand;
+                                //rInfo.currentStressorImpact[eImpacts.get(i).getStressorIndex()]+=weightedSummand;
                             }
                             
                         }

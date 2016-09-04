@@ -18,7 +18,7 @@ public class MorrisDialog extends javax.swing.JDialog {
 
     boolean isCanceled=true;
     MorrisFactor selectedFactor=null;
-    
+    static int sampleSize=1000;
     
     /**
      * Creates new form MorrisDialog
@@ -32,6 +32,8 @@ public class MorrisDialog extends javax.swing.JDialog {
         updateFactorList();
         
         //update other fields
+        this.textFieldFilterDistance.setText(GlobalResources.lowPassFilterDistance+"");
+        this.textFieldSampleSize.setText(sampleSize+"");
         
     }
 
@@ -62,9 +64,16 @@ public class MorrisDialog extends javax.swing.JDialog {
         jLabel5 = new javax.swing.JLabel();
         textFieldOutputFolder = new javax.swing.JTextField();
         buttonSelectOutputFolder = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
+        textFieldSampleSize = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentHidden(java.awt.event.ComponentEvent evt) {
+                formComponentHidden(evt);
+            }
+        });
 
         jLabel1.setText("Factors and levels");
 
@@ -126,7 +135,7 @@ public class MorrisDialog extends javax.swing.JDialog {
             }
         });
 
-        jLabel3.setText("Threads:");
+        jLabel3.setText("Threads");
 
         textFieldThreads.setText("1");
         textFieldThreads.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -135,7 +144,7 @@ public class MorrisDialog extends javax.swing.JDialog {
             }
         });
 
-        jLabel4.setText("Low pass filter distance for improving resolution:");
+        jLabel4.setText("Low pass filter distance");
 
         textFieldFilterDistance.setText("25000");
         textFieldFilterDistance.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -152,6 +161,15 @@ public class MorrisDialog extends javax.swing.JDialog {
         buttonSelectOutputFolder.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonSelectOutputFolderActionPerformed(evt);
+            }
+        });
+
+        jLabel6.setText("Sample size");
+
+        textFieldSampleSize.setText("100");
+        textFieldSampleSize.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                textFieldSampleSizeFocusLost(evt);
             }
         });
 
@@ -177,34 +195,38 @@ public class MorrisDialog extends javax.swing.JDialog {
                                     .addComponent(buttonSelectOutputFolder, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                    .addComponent(jLabel2)
+                                    .addGap(45, 45, 45))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jLabel3)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(textFieldThreads, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGap(322, 322, 322)
+                                    .addComponent(buttonAddLevel, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(buttonRemoveLevel, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGap(35, 35, 35)
+                                    .addComponent(jLabel4)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(textFieldFilterDistance, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jLabel6)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(textFieldSampleSize, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGap(0, 0, Short.MAX_VALUE))
+                        .addGroup(layout.createSequentialGroup()
                             .addComponent(buttonSave, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                             .addComponent(buttonLoad, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                             .addComponent(buttonCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(buttonCalculate, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                    .addComponent(jLabel2)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(jLabel3)
-                                    .addGap(35, 35, 35)))
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addGap(355, 355, 355)
-                                    .addComponent(buttonAddLevel, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(buttonRemoveLevel, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(0, 0, Short.MAX_VALUE))
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(textFieldThreads, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(jLabel4)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(textFieldFilterDistance))))))
+                            .addComponent(buttonCalculate, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(26, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -230,7 +252,9 @@ public class MorrisDialog extends javax.swing.JDialog {
                     .addComponent(jLabel3)
                     .addComponent(textFieldThreads, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
-                    .addComponent(textFieldFilterDistance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(textFieldFilterDistance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6)
+                    .addComponent(textFieldSampleSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(buttonSave)
@@ -393,6 +417,24 @@ public class MorrisDialog extends javax.swing.JDialog {
         }             
     }//GEN-LAST:event_buttonLoadActionPerformed
 
+    private void formComponentHidden(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentHidden
+        // TODO add your handling code here:
+    }//GEN-LAST:event_formComponentHidden
+
+    private void textFieldSampleSizeFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_textFieldSampleSizeFocusLost
+       try
+        {
+            int nr=Integer.parseInt(textFieldSampleSize.getText());
+            if(nr<1) throw new Exception();
+            sampleSize=nr;
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(null, "Please enter an integer greater than 0.");
+            this.textFieldSampleSize.setText(sampleSize+"");
+        }
+    }//GEN-LAST:event_textFieldSampleSizeFocusLost
+
     public boolean isCanceled()
     {
         return isCanceled;
@@ -454,10 +496,12 @@ public class MorrisDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JList<String> listFactors;
     private javax.swing.JTextField textFieldFilterDistance;
     private javax.swing.JTextField textFieldOutputFolder;
+    private javax.swing.JTextField textFieldSampleSize;
     private javax.swing.JTextField textFieldThreads;
     // End of variables declaration//GEN-END:variables
 
@@ -466,5 +510,15 @@ public class MorrisDialog extends javax.swing.JDialog {
         DefaultListModel model = new DefaultListModel();
         for(int i=0; i<GlobalResources.mappingProject.morrisFactors.length; i++) {model.addElement(GlobalResources.mappingProject.morrisFactors[i].toString());}
         this.listFactors.setModel(model);
+    }
+
+    public int getSampleSize() 
+    {
+        return sampleSize;
+    }
+
+    public String getOutputFolder() 
+    {
+        return this.textFieldOutputFolder.getText();
     }
 }

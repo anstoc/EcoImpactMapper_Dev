@@ -22,8 +22,10 @@ public class MorrisFactor
     private String[] possibleLevelNames=null;
     private boolean qualitative=true;
     private boolean forceNumericalSorting=false;
-    float min=0;
-    float max=1;
+    private float min=0;
+    private float max=1;
+    private float minLevel=1;
+    private float maxLevel=0;
     /*
     @summary Constructor. Takes the name and a list of possible options. If possibleOptionNames is null, will assume it's a quantitative factor taking any value between 0 and 1.
     */ 
@@ -34,6 +36,8 @@ public class MorrisFactor
         this.possibleLevelCodes=possibleLevelCodes;
         this.min=min;
         this.max=max;
+        this.minLevel=Float.MAX_VALUE;
+        this.maxLevel=Float.MIN_VALUE;
         if(possibleLevels==null) qualitative=false;
     }
     
@@ -87,6 +91,9 @@ public class MorrisFactor
                 JOptionPane.showMessageDialog(null, "This factor level must be a number between "+min+" and "+max);
             }
         }
+        
+        updateMinMaxLevel();
+        
     }
     
     public String toString()
@@ -131,6 +138,7 @@ public class MorrisFactor
                 try
                 {
                     float code=Float.parseFloat(levelNames.get(i));
+                    levelCodes[i]=code;
                 }
                 catch(Exception e)
                 {
@@ -169,10 +177,12 @@ public class MorrisFactor
         factors[3].addLevel("0");factors[3].addLevel("0.3333");factors[3].addLevel("0.6667");factors[3].addLevel("1.0000");
         
         //factor "4: Reduced analysis resolution"
-        factors[4]=new MorrisFactor("4: Reduced analysis resolution", 
-                        new String[]{"1","2","4","6","8","10","12","14","16","18","20"}, new float[]{1,2,4,6,8,10,12,14,16,18,20}, -1, -1);
-        factors[4].addLevel("1");factors[4].addLevel("2");
-        factors[4].forceNumericalSorting(true);
+        factors[4]=new MorrisFactor("4: Half analysis resolution", 
+                        new String[]{/*"1","2","4","6","8","10","12","14","16","18","20"*/"No","Yes"}, 
+                        new float[]{/*1,2,4,6,8,10,12,14,16,18,20*/1,2}, -1, -1);
+        //factors[4].forceNumericalSorting(true);
+        factors[4].addLevel("No");factors[4].addLevel("Yes");
+        
         
         //factor "5: Improved stressor resolution"
         factors[5]=new MorrisFactor("5: Improved stressor resolution", 
@@ -202,6 +212,11 @@ public class MorrisFactor
     public void forceNumericalSorting(boolean b)
     {
         this.forceNumericalSorting=b;
+    }
+    
+    public boolean isNumericalSortingForced()
+    {
+        return this.forceNumericalSorting;
     }
 
     int getNrOfPossibleLevels() 
@@ -298,5 +313,43 @@ public class MorrisFactor
         }    
         
     }    
+    
+    public static String[] getFactorNames()
+    {
+        String[] names = new String[GlobalResources.mappingProject.morrisFactors.length];
+        for(int i=0; i<names.length; i++)
+        {
+            names[i]=GlobalResources.mappingProject.morrisFactors[i].getName();
+        }
+        return names;
+    }
+
+    float getRange() 
+    {
+        if(this.isQualitative() && !this.forceNumericalSorting)
+        {
+            return -1;
+        }
+        else
+        {
+            return maxLevel-minLevel;
+        }
+    }
+
+    private void updateMinMaxLevel() 
+    {
+       if(isQualitative() && !forceNumericalSorting)
+       {
+           minLevel=0; maxLevel=0;
+       }
+       else
+       {
+           for(int i=0; i<this.getLevelCodes().length; i++)
+           {
+               if(this.getLevelCodes()[i]<minLevel) {minLevel=getLevelCodes()[i];}
+               if(this.getLevelCodes()[i]>maxLevel) {maxLevel=getLevelCodes()[i];}
+           }
+       }
+    }
     
 }

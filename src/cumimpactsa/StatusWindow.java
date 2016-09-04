@@ -202,7 +202,7 @@ public class StatusWindow extends javax.swing.JDialog {
     {
 
         System.out.println(e.getMessage()+"\n");
-        for(int i=0;i<Math.min(e.getStackTrace().length,10);i++)
+        for(int i=0;i<Math.min(e.getStackTrace().length,20);i++)
         {
             System.out.println(e.getStackTrace()[i].toString()+"\n");
         }

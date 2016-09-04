@@ -14,39 +14,45 @@ import javax.swing.SwingWorker;
 public class MorrisWorker extends SwingWorker<MorrisSampler,Void>
 {
     public boolean working = false;
-    public boolean initialized=false;
+    //public boolean initialized=false;
     public int sampleSize = 0;
     public int workerNr=0;
-    //private MorrisSampler ms;
+    private MorrisSampler ms=null;
     
+        
+    public MorrisSampler getMorrisSampler()
+    {
+        if(!working) return ms;
+        else return null;
+    }
     
     @Override
     protected MorrisSampler doInBackground() throws Exception 
     {
                 working=true;
-                MorrisSampler ms = new MorrisSampler();
+                ms=new MorrisSampler();
                 ms.setup();
-                initialized=true;
+                //initialized=true;
                 ms.prefix="Thread "+workerNr+": ";
                 ms.processTrajectories(sampleSize);  
-                //ms.saveResults(outputFolder);
-                working=false;
+                GlobalResources.statusWindow.println("Worker thread "+workerNr+ "is done. ");
                 return ms;
     }
     
      @Override 
      protected void done()
      {
-        System.out.println("Background thread is done.");
+        GlobalResources.statusWindow.println(this.workerNr + ": Worker thread has reached done() method.");
         working=false;
         try    
         {
            MorrisSampler ms = get();
                      
         }
-        catch(Throwable e)
+        catch(Exception e)
         {
-             System.out.println("!!!!!!!!!!!!!! Error retrieving results from multi-threaded elementary effects calculation.");
+             GlobalResources.statusWindow.println("Error retrieving thread results from elementary effects calculation.");
+             GlobalResources.statusWindow.println(e);     
         }
 
       }

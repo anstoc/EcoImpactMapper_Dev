@@ -173,8 +173,8 @@ public class MCSimulationManager
                     if(regionData[x][y] == code) {newInfo.nrOfCells++;}
                 }
             }
-            newInfo.currentStressorImpact=new double[GlobalResources.mappingProject.stressors.size()];
-            newInfo.stressorPercentSum=new double[GlobalResources.mappingProject.stressors.size()];
+            //newInfo.currentStressorImpact=new double[GlobalResources.mappingProject.stressors.size()];
+            //newInfo.stressorPercentSum=new double[GlobalResources.mappingProject.stressors.size()];
             regionInfos.add(newInfo);
         } 
     }
@@ -528,7 +528,7 @@ public class MCSimulationManager
             table.addColumn(GlobalResources.mappingProject.stressors.get(i).getName());
         }
         
-        for(int r=0; r<regionInfos.size(); r++)
+        /*for(int r=0; r<regionInfos.size(); r++)
         {
             RegionRankInfo info = regionInfos.get(r);
             ArrayList<String> row = new ArrayList<String>();
@@ -549,7 +549,7 @@ public class MCSimulationManager
             table.addRow(row);
         }
         GlobalResources.statusWindow.println("Writing uncertainty analysis results for stressors to: "+new File(outputFolder,"stressor_region_contributions.csv").getAbsolutePath());
-        table.writeToFile(new File(outputFolder,"stressor_region_contributions.csv").getAbsolutePath());
+        table.writeToFile(new File(outputFolder,"stressor_region_contributions.csv").getAbsolutePath());*/
          
     }
     
@@ -633,8 +633,8 @@ public class MCSimulationManager
                 }
             }
             //add arrays for stressor contributions in the region
-            newInfo.currentStressorImpact=new double[GlobalResources.mappingProject.stressors.size()];
-            newInfo.stressorPercentSum=new double[GlobalResources.mappingProject.stressors.size()];
+            //newInfo.currentStressorImpact=new double[GlobalResources.mappingProject.stressors.size()];
+            //newInfo.stressorPercentSum=new double[GlobalResources.mappingProject.stressors.size()];
             
             regionInfos.add(newInfo);
         } 
@@ -664,14 +664,14 @@ public class MCSimulationManager
        }
        
        //calculate and store stressor percent contributions
-       for(int i=0; i<regionInfos.size();i++)
+       /*for(int i=0; i<regionInfos.size();i++)
        {
           for(int s=0;s<GlobalResources.mappingProject.stressors.size();s++)
           {
               RegionRankInfo info = regionInfos.get(i);
               info.stressorPercentSum[s]+=100*(info.currentStressorImpact[s]/info.currentTotalImpact);
           }
-       }
+       }*/
 
     }
 
@@ -1053,10 +1053,10 @@ public StressorRankInfo getStressorInfoByName(String name)
                     regionInfos.get(i).inBottom25p = regionInfos.get(i).inBottom25p + mcm2.regionInfos.get(j).inBottom25p;   
                     if(mcm2.regionInfos.get(j).maxRank>regionInfos.get(i).maxRank) {regionInfos.get(i).maxRank=regionInfos.get(j).maxRank;}
                     if(mcm2.regionInfos.get(j).minRank<regionInfos.get(i).minRank) {regionInfos.get(i).minRank=regionInfos.get(j).minRank;}
-                    for(int s=0;s<GlobalResources.mappingProject.stressors.size();s++)
+                    /*for(int s=0;s<GlobalResources.mappingProject.stressors.size();s++)
                     {
                         regionInfos.get(i).stressorPercentSum[s]+=mcm2.regionInfos.get(i).stressorPercentSum[s];
-                    }
+                    }*/
                 }
             }
         }        

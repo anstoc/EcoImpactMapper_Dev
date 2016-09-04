@@ -1,13 +1,13 @@
-Thu: make actual elementary effects calculation work
+recalculate EEs for Med - lowerres 2
 
-Fri: per default, save MC and Morris settings with project
+SUN: per default, save MC and Morris settings with project
 
-Fri: make list of test
+SUN make list of test
 
-Fri, Sat: run tests
+SUN, MON run tests
 
-Sun: make functions that are marked with ** (dev version only) invisible
+make functions that are marked with ** (dev version only) invisible
 
-Sun, Mon: write new tutorial
+write new tutorial
     
 When back: Re-check tutorial, upload new version to Figshare

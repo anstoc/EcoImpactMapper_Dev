@@ -1738,7 +1738,7 @@ public class MainWindow extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "No data loaded.");
             return;
         }
-        //check if sensitivity scores exist
+        //check if sensitivity weights exist
         if(GlobalResources.mappingProject.sensitivityScores==null || GlobalResources.mappingProject.sensitivityScores.size()<1)
         {
             JOptionPane.showMessageDialog(this,"Please load sensitivity weights.");
@@ -2213,8 +2213,7 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void menuItemMorrisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemMorrisActionPerformed
        
-        //TODO uncomment
-        /*if(GlobalResources.mappingProject.grid==null)
+         if(GlobalResources.mappingProject.grid==null)
         {
             JOptionPane.showMessageDialog(this, "No data loaded.");
             return;
@@ -2224,13 +2223,85 @@ public class MainWindow extends javax.swing.JFrame {
         {
             JOptionPane.showMessageDialog(this,"Please load sensitivity weights.");
             return;
-        } */
+        }
+        //check if regions exist
+        if(GlobalResources.mappingProject.regions==null)
+        {
+            JOptionPane.showMessageDialog(this,"Please load regions.");
+            return;
+        }
         
+        final MorrisDialog dialog = new MorrisDialog(this, true);
+        final MorrisSampler ms = new MorrisSampler();
+        dialog.setVisible(true);
         
-       MorrisDialog dialog = new MorrisDialog(this, true);
-       dialog.setVisible(true);
-       
-       
+        if(!dialog.isCanceled())
+        {
+           final long startTime=System.currentTimeMillis();
+           int r = dialog.getSampleSize();
+           String outputFolder = dialog.getOutputFolder();
+           
+            //create worker threads
+            final MorrisWorker[] workers = new MorrisWorker[GlobalResources.nrOfThreads];
+            GlobalResources.statusWindow.setNewText("Starting elementary effect calculations with "+dialog.getSampleSize()+" trajectories and "+GlobalResources.nrOfThreads+" threads");
+               GlobalResources.statusWindow.println("Setting up worker threads...");
+               for(int i=0; i<workers.length; i++)
+               {
+                   workers[i]=new MorrisWorker();
+                   workers[i].sampleSize=(int) Math.ceil(dialog.getSampleSize()*1.0/GlobalResources.nrOfThreads);
+                   workers[i].workerNr=i+1;
+                   //workers[i].setMorrisSampler(ms.clone());
+                   workers[i].working=true; 
+               }
+              //
+              try
+              {
+                  GlobalResources.statusWindow.println("Starting worker threads...");
+                   for(int i=0; i<workers.length; i++)
+                   {
+                       workers[i].execute();
+                   }
+                   
+                   //this thread will only wait fhe simulation threads to end, and once that's done, make the status window closable, which in turn allows the GUI thread to continue.
+                   SwingWorker<Void, Void> waitingThread = new SwingWorker<Void, Void>() 
+                   {
+                        @Override
+                        protected Void doInBackground() throws Exception 
+                        {
+                            GlobalResources.statusWindow.println("Helper thread waits for calculations to finish...");
+                            MorrisSampler[] samplers = new MorrisSampler[workers.length];
+                            for(int i =0; i<workers.length; i++)
+                            {
+                                samplers[i]=workers[i].get();
+                            }
+                            GlobalResources.statusWindow.println("Merging thread results...");
+                            for(int i=samplers.length-2; i>=0; i--)
+                            {
+                                samplers[i].mergeResults(samplers[i+1]);
+                            }
+                            GlobalResources.statusWindow.println("Writing thread results...");
+                            Thread.sleep(500);
+                            samplers[0].calculateElementaryEffectStatistics(dialog.getSampleSize());
+                            samplers[0].saveResults(dialog.getOutputFolder());
+                            long duration=System.currentTimeMillis()-startTime;
+                            GlobalResources.statusWindow.println("Completed elementary effects calculation with  "+dialog.getSampleSize()+" runs in "+duration*0.001*(1.0/60)*(1.0/60)+" hours.");
+                            GlobalResources.statusWindow.ready2bClosed();
+                            return null;
+                        }
+ 
+                };
+                   
+                   waitingThread.execute();
+                   timer.start();
+                   GlobalResources.statusWindow.setVisible(true);
+                   timer.stop();
+              }
+              catch(Exception e)
+              {
+                  GlobalResources.statusWindow.println("Error in elementary effects calculations.");
+                  GlobalResources.statusWindow.println(e);
+              }
+        }
        /*
        boolean multiThreading=true;
        if(!dialog.wasCanceled())

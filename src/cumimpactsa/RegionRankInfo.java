@@ -19,6 +19,6 @@ public class RegionRankInfo
     public int minRank=9999;
     public int inTop25p=0;
     public int inBottom25p=0;
-    public double[] currentStressorImpact=null;
-    public double[] stressorPercentSum=null;
+    //public double[] currentStressorImpact=null;
+    //public double[] stressorPercentSum=null;
 }
