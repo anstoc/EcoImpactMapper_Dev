@@ -1,10 +1,11 @@
-recalculate EEs for Med - lowerres 2
+* recalculate EEs for Med - lowerres 2.
 
-SUN: per default, save MC and Morris settings with project
 
-SUN make list of test
+make list of test - one for each function
 
-SUN, MON run tests
+while checking each function, make sure logging is appropriate
+
+run tests
 
 make functions that are marked with ** (dev version only) invisible
 

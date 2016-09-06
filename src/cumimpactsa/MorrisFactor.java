@@ -59,9 +59,30 @@ public class MorrisFactor
     {
         //make sure not yet contained
         boolean contained=false;
-        for(int i=0; i<levelNames.size();i++)
+        if(qualitative)
         {
-            if(levelNames.get(i).equals(levelName)) contained=true;
+            for(int i=0; i<levelNames.size();i++)
+            {
+                if(levelNames.get(i).equals(levelName)) contained=true;
+            }
+        }
+        //distinction necessary so that same numbers are recognized as being the same;
+        else
+        {
+         try
+            {
+               float number=Float.parseFloat(levelName);
+               float[] containedNumbers=this.getLevelCodes();
+               for(int i=0; i<containedNumbers.length; i++)
+               {
+                   if(containedNumbers[i]==number) {contained=true;}
+               }
+               
+            }
+            catch(Exception e)
+            {
+                JOptionPane.showMessageDialog(null, "This factor level must be a number between "+min+" and "+max);
+            }
         }
         
         //qualitative factor - make sure it's a valid option

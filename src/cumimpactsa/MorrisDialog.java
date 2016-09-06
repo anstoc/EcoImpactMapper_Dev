@@ -34,6 +34,7 @@ public class MorrisDialog extends javax.swing.JDialog {
         //update other fields
         this.textFieldFilterDistance.setText(GlobalResources.lowPassFilterDistance+"");
         this.textFieldSampleSize.setText(sampleSize+"");
+        this.textFieldThreads.setText(GlobalResources.nrOfThreads+"");
         
     }
 

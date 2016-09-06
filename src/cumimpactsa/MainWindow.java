@@ -55,7 +55,7 @@ public class MainWindow extends javax.swing.JFrame {
 });
     
     private DrawableData drawingPaneShows = null;
-    private MonteCarloRanksDialog mcDialog=new MonteCarloRanksDialog(this,true);
+    protected MonteCarloRanksDialog mcDialog=new MonteCarloRanksDialog(this,true);
    
     /**
      * Creates new form MainWindow
@@ -68,6 +68,9 @@ public class MainWindow extends javax.swing.JFrame {
         ButtonGroup group = new ButtonGroup();
         group.add(this.radioButtonProcessedLayer);
         group.add(this.radioButtonRawLayer);
+        
+        //register as static variable
+        GlobalResources.mainWindow=this;
         
         //find folder that executable resides in
         File settingsFile;

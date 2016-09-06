@@ -638,6 +638,12 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_buttonSaveActionPerformed
 
+    protected void save(String filename)
+    {
+        CsvTableGeneral table = createSettingsTable();
+        table.writeToFile(filename);    
+    }
+    
     private void buttonLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonLoadActionPerformed
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -647,10 +653,16 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
         if (result == JFileChooser.APPROVE_OPTION)
         {
             File selectedFile = fileChooser.getSelectedFile();
+            loadFromFile(selectedFile.getAbsolutePath());
+        }
+    }//GEN-LAST:event_buttonLoadActionPerformed
+
+    protected void loadFromFile(String filename)
+    {
             CsvTableGeneral table = new CsvTableGeneral();
             try
             {
-                table.readFromFile(selectedFile);
+                table.readFromFile(new File(filename));
                 ArrayList<String> componentNames = table.getColumn(table.getColNames().get(0));
                 ArrayList<String> componentValues = table.getColumn(table.getColNames().get(1));
                 
@@ -673,11 +685,10 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
             }
             catch(Exception e)
             {
-                JOptionPane.showMessageDialog(this, "Could not read selected file: "+selectedFile.getAbsolutePath());
+                JOptionPane.showMessageDialog(this, "Could not read Monte Carlo settings from file: "+filename);
             }
-        }
-    }//GEN-LAST:event_buttonLoadActionPerformed
-
+    }
+    
     private void checkBoxSpatialSummaryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBoxSpatialSummaryActionPerformed
        
     }//GEN-LAST:event_checkBoxSpatialSummaryActionPerformed

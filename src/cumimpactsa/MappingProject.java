@@ -59,6 +59,7 @@ public class MappingProject
         regions = null;
         processing=false;
         processingProgressPercent=-1;
+        morrisFactors=MorrisFactor.getDefaultImplementedFactors();
         
     }
     
@@ -429,6 +430,34 @@ public class MappingProject
             table.addRow(row);
         }
         
+        //save elementary effects settings
+        pos=filename.lastIndexOf(".");
+        if(pos<1) {basepath=filename;}
+        else {basepath = filename.substring(0,pos);}
+        String factorFileName=basepath+"_factors.csv";
+        row = new ArrayList<String>();
+        row.add("factors");
+        row.add("n/a");
+        row.add(getRelativePath(factorFileName));
+        row.add("n/a");row.add("n/a");row.add("n/a");
+        table.addRow(row);
+        //create selective factors file
+        MorrisFactor.saveFactorsToCsv(factorFileName);
+        
+        //save Monte Carlo settings
+        pos=filename.lastIndexOf(".");
+        if(pos<1) {basepath=filename;}
+        else {basepath = filename.substring(0,pos);}
+        String mcFileName=basepath+"_mcsettings.csv";
+        row = new ArrayList<String>();
+        row.add("mcsettings");
+        row.add("n/a");
+        row.add(getRelativePath(mcFileName));
+        row.add("n/a");row.add("n/a");row.add("n/a");
+        table.addRow(row);
+        //create selective factors file
+        GlobalResources.mainWindow.mcDialog.save(mcFileName);
+        
         //save colors
         ArrayList<String> maxRow = new ArrayList<String>();
         ArrayList<String> midRow = new ArrayList<String>();
@@ -452,6 +481,8 @@ public class MappingProject
         line.add("threads"); line.add("n/a"); line.add("n/a"); line.add("n/a"); line.add("n/a");
         line.add(GlobalResources.nrOfThreads+"");
         table.addRow(line);
+        
+
         
         table.writeToFile(filename);
         
@@ -634,6 +665,17 @@ public class MappingProject
                        String selFactorsFileName=getAbsolutePath(file.get(row));
                        selFactorsTable.readFromFile(new File(selFactorsFileName));
                        //processing of this table will occur when all other data are loaded to make sure no data layers are missing
+                   }
+                   else if(resType.get(row).equals("factors"))
+                   {
+                       CsvTableGeneral factorsTable=new CsvTableGeneral();
+                       factorsTable.readFromFile(new File(getAbsolutePath(file.get(row))));
+                       MorrisFactor.setFactorLevelsFromTable(factorsTable);
+                   }
+                   else if(resType.get(row).equals("mcsettings"))
+                   {
+                       CsvTableGeneral factorsTable=new CsvTableGeneral();
+                       GlobalResources.mainWindow.mcDialog.loadFromFile(getAbsolutePath(file.get(row)));
                    }
                    else if(resType.get(row).equals("color"))
                    {

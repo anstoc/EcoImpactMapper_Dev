@@ -188,13 +188,15 @@ public class StatusWindow extends javax.swing.JDialog {
                 bw.write(e.getStackTrace()[i].toString());
                 bw.newLine();
             }
-            bw.flush();
+      
         }
         catch(Exception ex)
         {
             println("Logging of exception failed");
             println(ex);
         }
+        
+        finally {try {bw.flush();} catch(Exception ex) {println("UNLOGGED EXCEPTION!");}}
         
     }
 

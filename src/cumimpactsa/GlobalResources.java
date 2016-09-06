@@ -33,6 +33,7 @@ public abstract class GlobalResources
     public static float lowPassFilterDistance=25000;
     public static int nrOfThreads=1;
 
+    protected static MainWindow mainWindow;
     
     public static String getDateTime()
     {

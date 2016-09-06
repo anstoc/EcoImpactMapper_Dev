@@ -20,8 +20,6 @@ import static cumimpactsa.MCSimulationManager.simulationRuns;*/
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
-import javax.swing.JOptionPane;
  
 /**
  *
@@ -160,13 +158,13 @@ public class MorrisSampler
                 x[fIndex]=newLevel;
             }
         }        
-        logOrientationMatrix(matrix);
+        //logOrientationMatrix(matrix);
         return matrix;
     }
     
     public void logOrientationMatrix(int[][] b)
     {
-        GlobalResources.statusWindow.println("    "+prefix + "Orientation matrix:");
+        GlobalResources.statusWindow.println("        "+prefix + "Orientation matrix:");
         for(int i=0; i<b.length; i++)
         {   String row="        ";
             for(int j=0; j<b[0].length;j++)
@@ -191,22 +189,21 @@ public class MorrisSampler
         //make changes according to model factors
         //first the changes that affect stressors' processing chains
         //linear decay
-        if(parameters[2]>0) 
-        {   
-            int levelIndex = parameters[2];
-            float decayDistance = factors[2].getLevelCodes()[levelIndex];
-            setStressLinearDecay(stressors, decayDistance);
-        }
+ 
+        int levelIndex = parameters[2];
+        float decayDistance = factors[2].getLevelCodes()[levelIndex];
+        setStressLinearDecay(stressors, decayDistance);
+      
 
         //improved stressor resolution
         float improveRes=factors[5].getLevelCodes()[parameters[5]];
         if(parameters[5]>0) setImprovedStressorResolution(stressors);
-        else GlobalResources.statusWindow.println("    "+prefix+": No improved stressor resolution.");
+        else GlobalResources.statusWindow.println("        "+prefix+": No improved stressor resolution.");
 
         //reduced analysis resolution
         //float reductionFactor=factors[4].getLevelCodes()[parameters[4]];
         if(parameters[4]>0) setReducedAnalysisRes(stressors, ecocomps, 2);//(int) reductionFactor);
-        else GlobalResources.statusWindow.println("    "+prefix+": No reduced analysis resolution.");
+        else GlobalResources.statusWindow.println("        "+prefix+": No reduced analysis resolution.");
         
         //transformation
         addTransformations(stressors, factors[7].getLevelCodes()[parameters[7]]);
@@ -360,13 +357,13 @@ public class MorrisSampler
     {
         String desc;
         if(parameter==0) {
-            GlobalResources.statusWindow.println("    "+prefix+": Using multiple stressor effects model: Additive");
+            GlobalResources.statusWindow.println("        "+prefix+": Using multiple stressor effects model: Additive");
             return Simulator.MEM_ADDITIVE;}
         else if(parameter==1) {
-            GlobalResources.statusWindow.println("    "+prefix+": Using multiple stressor effects model: Dominant");
+            GlobalResources.statusWindow.println("        "+prefix+": Using multiple stressor effects model: Dominant");
             return Simulator.MEM_DOMINANT;}
         else {
-            GlobalResources.statusWindow.println("    "+prefix+": Using multiple stressor effects model: Antagonistic");
+            GlobalResources.statusWindow.println("        "+prefix+": Using multiple stressor effects model: Antagonistic");
             return Simulator.MEM_DIMINISHING;}
         
     }
@@ -377,7 +374,7 @@ public class MorrisSampler
         String desc;
         if(parameter==0) {model = Simulator.IMPACTS_SUM;desc="Sum";}
         else {model = Simulator.IMPACTS_AVG;desc="Mean";}
-        GlobalResources.statusWindow.println("    "+prefix+": Aggregating impacts on multiple ecosystem components as "+desc+".");
+        GlobalResources.statusWindow.println("        "+prefix+": Aggregating impacts on multiple ecosystem components as "+desc+".");
         return model;
     }
     
@@ -407,7 +404,7 @@ public class MorrisSampler
                     stressors.get(i).getProcessingChain().add(transformer);
                 }
             }
-             GlobalResources.statusWindow.println("    "+prefix+": Using transformation type: "+name);
+             GlobalResources.statusWindow.println("        "+prefix+": Using transformation type: "+name);
         }
     
     
@@ -443,7 +440,7 @@ public class MorrisSampler
                 stressors.get(i).needsReprocessing();
             }
         }
-        GlobalResources.statusWindow.println("    "+prefix+": Improved resolution for "+layerCount+" stressor layers.");
+        GlobalResources.statusWindow.println("        "+prefix+": Improved resolution for "+layerCount+" stressor layers.");
     }
     
     private void setReducedAnalysisRes(ArrayList<SpatialDataLayer> stressors, ArrayList<SpatialDataLayer> ecocomps, int factor) 
@@ -460,7 +457,7 @@ public class MorrisSampler
                 ecocomps.get(i).getProcessingChain().add(reducer);
                 ecocomps.get(i).needsReprocessing();
             }
-            GlobalResources.statusWindow.println("    "+prefix+": Reduced analysis resolution by factor "+factor);
+            GlobalResources.statusWindow.println("        "+prefix+": Reduced analysis resolution by factor "+factor);
     }
     
     
@@ -496,25 +493,29 @@ public class MorrisSampler
             scores.getAllScores().get(changeIndex).setResponseFunction(r);
         }
         
-        GlobalResources.statusWindow.println("    "+prefix+": Set response functions for "+impactsToChange+" ("+(int) Math.round(parameter*100)+"%) of stressor-ecosystem component combinations to thresholds.");
+        GlobalResources.statusWindow.println("        "+prefix+": Set response functions for "+impactsToChange+" ("+(int) Math.round(parameter*100)+"%) of stressor-ecosystem component combinations to thresholds.");
         
     }
     
     protected void setStressLinearDecay(ArrayList<SpatialDataLayer> stressors, float decayDistance) 
     {
         int layerCount=0;
+        
         for(int i=0; i<stressors.size();i++)
         {
             if(stressors.get(i).isSelectiveFactorAssigned(new IdwSpreader().getName()))
             {
                 layerCount++;
-                IdwSpreader spreader = new IdwSpreader();
-                spreader.setParamValue("distance", decayDistance);
-                stressors.get(i).getProcessingChain().add(spreader);
-                stressors.get(i).needsReprocessing();
+                if(decayDistance>0)
+                {
+                    IdwSpreader spreader = new IdwSpreader();
+                    spreader.setParamValue("distance", decayDistance);
+                    stressors.get(i).getProcessingChain().add(spreader);
+                    stressors.get(i).needsReprocessing();
+                }
             }
         }
-        GlobalResources.statusWindow.println("    "+prefix+": Added linear decay to "+decayDistance+" map units to "+layerCount+" stressor layers.");
+        GlobalResources.statusWindow.println("        "+prefix+": Added linear decay to "+decayDistance+" map units to "+layerCount+" stressor layers.");
     }
     
     
@@ -542,7 +543,7 @@ public class MorrisSampler
             }
             if(isFlagged) r=r-1;
         }
-        GlobalResources.statusWindow.println("    "+prefix+": Exluding "+removeNr+"("+(int) Math.round(100.0*parameter)+"%) of stressors from calculations.");
+        GlobalResources.statusWindow.println("        "+prefix+": Excluding "+removeNr+" ("+(int) Math.round(100.0*parameter)+"%) of stressors from calculations.");
         return stressors.size() - removeNr;
     }
     
@@ -555,7 +556,7 @@ public class MorrisSampler
             if(scores.getAllScores().get(i).getSensitivityScore()<scores.getMin()) {scores.getAllScores().get(i).changeSensitivtyScore(scores.getMin());}
             if(scores.getAllScores().get(i).getSensitivityScore()>scores.getMax()) {scores.getAllScores().get(i).changeSensitivtyScore(scores.getMax());}
         }
-        GlobalResources.statusWindow.println("    "+prefix+"Added random errors up to +/-"+parameter+" times the original range to sensivity weights.");
+        GlobalResources.statusWindow.println("        "+prefix+": Added random errors up to +/-"+parameter+" times the original range to sensivity weights.");
     }
     
     protected void setStochasticModelComponents(SensitivityScoreSet scores, ArrayList<SpatialDataLayer> stressors)
@@ -609,7 +610,7 @@ public class MorrisSampler
             regionOutputs[step] = results.regionRanks;
             stressorOutputs[step] = results.stressorRanks;
             ecocompOutputs[step] = results.ecocompRanks;
-            GlobalResources.statusWindow.println("    "+prefix+" Model evaluations completed: " + step);
+            //GlobalResources.statusWindow.println("            "+prefix+" Model evaluations completed: " + step);
         }
         //calculate elementary effects
         //[parameters][regions]
@@ -633,65 +634,68 @@ public class MorrisSampler
                     changedCount++;
                 }
             }
+            if(changeIndex>-1)
+            {
+                //calculate delta for this factor
+                float delta;
+                if(factors[changeIndex].isQualitative() && !factors[changeIndex].isNumericalSortingForced())
+                {
+                    delta=1;
+                }
+                else 
+                {
+                    float diff=factors[changeIndex].getLevelCodes()[p2[changeIndex]]-factors[changeIndex].getLevelCodes()[p1[changeIndex]];
+                    float range = factors[changeIndex].getRange();
+                    delta = diff/range;
+                }
 
-            //calculate delta for this factor
-            float delta;
-            if(factors[changeIndex].isQualitative() && !factors[changeIndex].isNumericalSortingForced())
-            {
-                delta=1;
-            }
-            else 
-            {
-                float diff=factors[changeIndex].getLevelCodes()[p2[changeIndex]]-factors[changeIndex].getLevelCodes()[p1[changeIndex]];
-                float range = factors[changeIndex].getRange();
-                delta = diff/range;
-            }
-                    
-            
-            float[] regionOutputs1 = regionOutputs[i];
-            float[] regionOutputs2 = regionOutputs[i+1];
-            float[] stressorOutputs1 = stressorOutputs[i];
-            float[] stressorOutputs2 = stressorOutputs[i+1];
-            float[] ecocompOutputs1 = ecocompOutputs[i];
-            float[] ecocompOutputs2 = ecocompOutputs[i+1];
-            
-            //[parameter][region]
-            float[] regionEffects = new float[regionOutputs1.length];
-            for(int r=0; r<regionOutputs1.length;r++)
-            {
-                float y1=regionOutputs1[r];
-                float y2=regionOutputs2[r];
-                regionEffects[r] = (y2-y1)/delta;
-            }
-            elementaryEffects.regionEEffects[changeIndex] = regionEffects;
-            
-            //[parameter][stressor]
-            float[] stressorEffects = new float[stressorOutputs1.length];
-            for(int r=0; r<stressorOutputs1.length;r++)
-            {
-                float y1=stressorOutputs1[r];
-                float y2=stressorOutputs2[r];
-                if(y1!=GlobalResources.NODATAVALUE && y2!=GlobalResources.NODATAVALUE)
+
+
+                float[] regionOutputs1 = regionOutputs[i];
+                float[] regionOutputs2 = regionOutputs[i+1];
+                float[] stressorOutputs1 = stressorOutputs[i];
+                float[] stressorOutputs2 = stressorOutputs[i+1];
+                float[] ecocompOutputs1 = ecocompOutputs[i];
+                float[] ecocompOutputs2 = ecocompOutputs[i+1];
+
+                //[parameter][region]
+                float[] regionEffects = new float[regionOutputs1.length];
+                for(int r=0; r<regionOutputs1.length;r++)
                 {
-                    stressorEffects[r] = (y2-y1)/delta;
+                    float y1=regionOutputs1[r];
+                    float y2=regionOutputs2[r];
+                    regionEffects[r] = (y2-y1)/delta;
                 }
-                else
+                elementaryEffects.regionEEffects[changeIndex] = regionEffects;
+
+                //[parameter][stressor]
+                float[] stressorEffects = new float[stressorOutputs1.length];
+                for(int r=0; r<stressorOutputs1.length;r++)
                 {
-                    stressorEffects[r] = GlobalResources.NODATAVALUE;
+                    float y1=stressorOutputs1[r];
+                    float y2=stressorOutputs2[r];
+                    if(y1!=GlobalResources.NODATAVALUE && y2!=GlobalResources.NODATAVALUE)
+                    {
+                        stressorEffects[r] = (y2-y1)/delta;
+                    }
+                    else
+                    {
+                        stressorEffects[r] = GlobalResources.NODATAVALUE;
+                    }
                 }
+                elementaryEffects.stressorEEffects[changeIndex] = stressorEffects;
+
+                //[parameter][region]
+                float[] ecocompEffects = new float[ecocompOutputs1.length];
+                for(int r=0; r<ecocompOutputs1.length;r++)
+                {
+                    float y1=ecocompOutputs1[r];
+                    float y2=ecocompOutputs2[r];
+                    ecocompEffects[r] = (y2-y1)/delta;
+                }
+                elementaryEffects.ecocompEEffects[changeIndex] = ecocompEffects;
+                //System.out.println("    Calculated elementary effects for parameters: "+i+ " of "+ (orientationMatrix.length-1));
             }
-            elementaryEffects.stressorEEffects[changeIndex] = stressorEffects;
-            
-            //[parameter][region]
-            float[] ecocompEffects = new float[ecocompOutputs1.length];
-            for(int r=0; r<ecocompOutputs1.length;r++)
-            {
-                float y1=ecocompOutputs1[r];
-                float y2=ecocompOutputs2[r];
-                ecocompEffects[r] = (y2-y1)/delta;
-            }
-            elementaryEffects.ecocompEEffects[changeIndex] = ecocompEffects;
-            //System.out.println("    Calculated elementary effects for parameters: "+i+ " of "+ (orientationMatrix.length-1));
         }
         GlobalResources.statusWindow.println("    "+prefix+    "Trajectory completed");
         return elementaryEffects;
@@ -718,19 +722,7 @@ public class MorrisSampler
     
     public void calculateElementaryEffectStatistics(int sampleSize)
     {
-        /*//[trajectory][parameter][region]
-        regionEEMatrices = new float[sampleSize][this.parameterValues.length][GlobalResources.mappingProject.regions.getGrid().getUniqueDataValues().size()];
-        stressorEEMatrices = new float[sampleSize][this.parameterValues.length][GlobalResources.mappingProject.stressors.size()];
-        ecocompEEMatrices = new float[sampleSize][this.parameterValues.length][GlobalResources.mappingProject.ecocomps.size()];
-        for(int r=0; r<sampleSize; r++)
-        {
-            System.out.println("Processing trajectory " + (r+1) + " out of " + sampleSize);
-            float[][] b = getOrientationMatrix();
-            ElementaryEffects eE = calculateElementaryEffects(b);
-            regionEEMatrices[r] = eE.regionEEffects;
-            stressorEEMatrices[r]=eE.stressorEEffects;
-            ecocompEEMatrices[r]=eE.ecocompEEffects;
-        }*/
+        
         //calculate mu*'s
         //[parameter][region/stressor/ecocomp]
         regionMuStarMatrix = new float[this.factorValues.length][originalRegions.getGrid().getUniqueDataValues().size()];
@@ -870,6 +862,8 @@ public class MorrisSampler
     
     public void saveResults(String outputFolder)
     {
+        GlobalResources.statusWindow.println("Saving results to folder: "+outputFolder);
+        
         //regions
         saveRegionData(regionMuMatrix, new File(outputFolder,"regions_mu.csv").getAbsolutePath());
         saveRegionData(regionMuStarMatrix, new File(outputFolder,"regions_mustar.csv").getAbsolutePath());
