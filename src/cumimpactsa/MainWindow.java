@@ -37,8 +37,9 @@ import javax.swing.WindowConstants;
  */
 public class MainWindow extends javax.swing.JFrame {
 
-    private Timer timer = new Timer(1000, new ActionListener() {
     
+    private Timer timer = new Timer(1000, new ActionListener() {
+        
         int lastProgress=-1;
         
         @Override
@@ -72,6 +73,16 @@ public class MainWindow extends javax.swing.JFrame {
         //register as static variable
         GlobalResources.mainWindow=this;
         
+        //hide non-released functions
+        if(GlobalResources.releaseVersion)
+        {
+            this.menuItemExportLowerRes.setVisible(false);
+            this.menuItemAois.setVisible(false);
+            this.menuItemExportPolyAreas.setVisible(false);
+            this.menuItemFreeMem.setVisible(false);
+            this.menuItemRunCurrentTest.setVisible(false);
+            this.menuDevelopment.setVisible(false);
+        }
         //find folder that executable resides in
         File settingsFile;
         File logFile;
@@ -82,17 +93,17 @@ public class MainWindow extends javax.swing.JFrame {
             File exFile = new File(codeSource.getLocation().toURI().getPath());
             String exDir = exFile.getParentFile().getPath();
             // if logging directory doesnt exist, create it
-            File dir = new File(exDir+"/Logs");
+            File dir = new File(exDir,"Logs");
             if (!dir.exists()) 
             {        
                 dir.mkdir();
             }
-            logFile = new File(dir+"/log"+GlobalResources.getDateTime()+".txt");
+            logFile = new File(dir,"log"+GlobalResources.getDateTime()+".txt");
             GlobalResources.statusWindow.setLogFile(logFile);
             
             
             //try to load settings (currently: only last used folder)
-            settingsFile = new File(exDir+"/settings.csv");
+            settingsFile = new File(exDir,"settings.csv");
             if(settingsFile.exists())
             {
                 CsvTableGeneral settings = new CsvTableGeneral();
@@ -179,7 +190,7 @@ public class MainWindow extends javax.swing.JFrame {
                     line.add("threads");
                     line.add(GlobalResources.nrOfThreads+"");
                     settings.addRow(line);
-                    settings.writeToFile(exDir+"/settings.csv");   
+                    settings.writeToFile(new File(exDir,"settings.csv").getAbsolutePath());   
                 }
                 catch(Exception ex)
                 {
@@ -230,7 +241,7 @@ public class MainWindow extends javax.swing.JFrame {
         menuNew = new javax.swing.JMenuItem();
         menuSave = new javax.swing.JMenuItem();
         menuLoad = new javax.swing.JMenuItem();
-        jMenuItem4 = new javax.swing.JMenuItem();
+        menuItemExportLowerRes = new javax.swing.JMenuItem();
         menuAssignSelectiveFactors = new javax.swing.JMenu();
         menuSensitivityscores = new javax.swing.JMenuItem();
         menuPreprocessing = new javax.swing.JMenuItem();
@@ -263,7 +274,7 @@ public class MainWindow extends javax.swing.JFrame {
         menuItemMonteCarloRanks = new javax.swing.JMenuItem();
         menuItemMorris = new javax.swing.JMenuItem();
         menuItemFreeMem = new javax.swing.JMenuItem();
-        jMenu4 = new javax.swing.JMenu();
+        menuDevelopment = new javax.swing.JMenu();
         menuItemRunCurrentTest = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -428,13 +439,13 @@ public class MainWindow extends javax.swing.JFrame {
         });
         menuProject.add(menuLoad);
 
-        jMenuItem4.setText("** Export data with lower resolution...");
-        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+        menuItemExportLowerRes.setText("** Export data with lower resolution...");
+        menuItemExportLowerRes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem4ActionPerformed(evt);
+                menuItemExportLowerResActionPerformed(evt);
             }
         });
-        menuProject.add(jMenuItem4);
+        menuProject.add(menuItemExportLowerRes);
 
         menuBarMain.add(menuProject);
 
@@ -456,7 +467,7 @@ public class MainWindow extends javax.swing.JFrame {
         });
         menuAssignSelectiveFactors.add(menuPreprocessing);
 
-        menuItemExportLayer.setText("** Export displayed layer...");
+        menuItemExportLayer.setText("Export displayed layer...");
         menuItemExportLayer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuItemExportLayerActionPerformed(evt);
@@ -663,7 +674,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         menuBarMain.add(menuDiversityIndexAvg);
 
-        jMenu4.setText("** Development");
+        menuDevelopment.setText("** Development");
 
         menuItemRunCurrentTest.setText("Run current test");
         menuItemRunCurrentTest.addActionListener(new java.awt.event.ActionListener() {
@@ -671,9 +682,9 @@ public class MainWindow extends javax.swing.JFrame {
                 menuItemRunCurrentTestActionPerformed(evt);
             }
         });
-        jMenu4.add(menuItemRunCurrentTest);
+        menuDevelopment.add(menuItemRunCurrentTest);
 
-        menuBarMain.add(jMenu4);
+        menuBarMain.add(menuDevelopment);
 
         setJMenuBar(menuBarMain);
 
@@ -791,6 +802,7 @@ public class MainWindow extends javax.swing.JFrame {
         for(int i=0; i<resultNames.length; i++) {model.addElement(resultNames[i]);}
         this.listOtherData.setModel(model);
         
+        GlobalResources.statusWindow.println("Started new project.");
       
        
     }//GEN-LAST:event_menuNewActionPerformed
@@ -853,9 +865,12 @@ public class MainWindow extends javax.swing.JFrame {
         
         //update graphics to show the latest stressor
         SpatialDataLayer newStressor = GlobalResources.mappingProject.getLastDataAdded();
-        drawingPaneShows=newStressor;
-        updateGraphics();
-       
+        if(newStressor!=null && newStressor.getType()==GlobalResources.DATATYPE_STRESSOR)
+        {
+            drawingPaneShows=newStressor;
+            updateGraphics();
+            GlobalResources.statusWindow.println("Loaded stressor layer: "+newStressor.getSource().toString());
+        }
     }//GEN-LAST:event_buttonStressorsPlusActionPerformed
 
     private void StressorListChanged(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_StressorListChanged
@@ -881,7 +896,9 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void buttonStressorsMinusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonStressorsMinusActionPerformed
         String stressorName = (String) this.listStressors.getSelectedValue();
+        if(stressorName==null || stressorName.equals(new String("null"))) return;
         GlobalResources.mappingProject.removeStressorByName(stressorName);
+        GlobalResources.statusWindow.println("Removed stressor: "+stressorName);
         
         //update stressor list
          String[] stressorNames=GlobalResources.mappingProject.getStressorNames();
@@ -910,12 +927,11 @@ public class MainWindow extends javax.swing.JFrame {
         
         //update graphics to show the latest stressor
         SpatialDataLayer newEcocomp = GlobalResources.mappingProject.getLastDataAdded();
-        if(newEcocomp!=null)
+        if(newEcocomp!=null && newEcocomp.getType()==GlobalResources.DATATYPE_ECOCOMP)
         {
             drawingPaneShows = newEcocomp;  //so that it doesn't get lost on resize
             updateGraphics();
-
-            
+            GlobalResources.statusWindow.println("Loaded ecocystem component layer: "+newEcocomp.getSource().toString());
         }
     }//GEN-LAST:event_buttonEcoPlusActionPerformed
 
@@ -924,12 +940,10 @@ public class MainWindow extends javax.swing.JFrame {
            SpatialDataLayer ecocomp=GlobalResources.mappingProject.getEcocompByName(ecocompName);
            if(ecocomp!=null)
            {
-      
                listStressors.clearSelection();
                listOtherData.clearSelection();
                drawingPaneShows = ecocomp;
                updateGraphics();
-
            }
          
     }//GEN-LAST:event_listEcocompsValueChanged
@@ -943,8 +957,10 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_listEcocompsMouseClicked
 
     private void buttonEcoMinusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonEcoMinusActionPerformed
-         String ecocompName = (String) this.listEcocomps.getSelectedValue();
+        String ecocompName = (String) this.listEcocomps.getSelectedValue();
+        if(ecocompName==null || ecocompName.equals(new String("null"))) return;
         GlobalResources.mappingProject.removeEcocompByName(ecocompName);
+        GlobalResources.statusWindow.println("Removed ecosystem component: "+ecocompName);
         
         //update stressor list
          String[] ecocompNames=GlobalResources.mappingProject.getEcocompNames();
@@ -952,9 +968,11 @@ public class MainWindow extends javax.swing.JFrame {
         for(int i=0; i<ecocompNames.length; i++) {model.addElement(ecocompNames[i]);}
         this.listEcocomps.setModel(model);
         
-        //update graphics (stop showing removed ecocomp)
+        //update graphics (stop showing removed)
         drawingPaneShows = null;
         updateGraphics();
+        
+        
 
     }//GEN-LAST:event_buttonEcoMinusActionPerformed
 
@@ -1035,6 +1053,7 @@ public class MainWindow extends javax.swing.JFrame {
             File selectedFile = fileChooser.getSelectedFile();
             GlobalResources.lastUsedFolder=selectedFile.getParent();
             GlobalResources.mappingProject.save(selectedFile.getAbsolutePath());
+            GlobalResources.statusWindow.println("Saved project to: "+selectedFile.getAbsolutePath());
         }
     }//GEN-LAST:event_menuSaveActionPerformed
 
@@ -1050,6 +1069,8 @@ public class MainWindow extends javax.swing.JFrame {
             GlobalResources.lastUsedFolder=selectedFile.getParent();
             GlobalResources.mappingProject.sensitivityScores=new SensitivityScoreSet();
             GlobalResources.mappingProject.sensitivityScores.createFromFile(selectedFile.getAbsolutePath());
+            if(GlobalResources.mappingProject.sensitivityScores.size()>0) 
+                GlobalResources.statusWindow.println("Loaded sensitivity weights from "+selectedFile);
         }
     }//GEN-LAST:event_menuSensitivityscoresActionPerformed
 
@@ -1117,7 +1138,9 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void buttonResultsMinusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonResultsMinusActionPerformed
         String resultName = (String) this.listOtherData.getSelectedValue();
+        if(resultName==null || resultName.equals(new String("null"))) return;
         GlobalResources.mappingProject.removeResultByName(resultName);
+        GlobalResources.statusWindow.println("Removed spatial data layer: "+resultName);
         updateResultsList();
         drawingPaneShows = null;
         updateGraphics();
@@ -1198,7 +1221,8 @@ public class MainWindow extends javax.swing.JFrame {
                  }
             };
 
-            try{
+            try
+            {
                 GlobalResources.statusWindow.setNewText("Calculating additive impact index as mean...");
                 timer.start();
                 worker.execute();
@@ -1211,7 +1235,6 @@ public class MainWindow extends javax.swing.JFrame {
                 updateGraphics();
                 GlobalResources.mappingProject.results.add(index);
                 updateResultsList();
-            
             }
             catch(Exception e)
             {
@@ -1729,9 +1752,9 @@ public class MainWindow extends javax.swing.JFrame {
         this.listOtherData.setModel(model);
         //this.update(null);
         
-        //update graphics to show the latest stressor
-        SpatialDataLayer newStressor = GlobalResources.mappingProject.getLastDataAdded();
-        drawingPaneShows=newStressor;
+        //update GUI
+        SpatialDataLayer regions = GlobalResources.mappingProject.getLastDataAdded();
+        drawingPaneShows=regions;
         updateGraphics();
     }//GEN-LAST:event_menuItemLoadRegionsActionPerformed
 
@@ -1813,7 +1836,9 @@ public class MainWindow extends javax.swing.JFrame {
                    
                    waitingThread.execute();
                    timer.start();
+                   GlobalResources.statusWindow.setProgressVisible(false);
                    GlobalResources.statusWindow.setVisible(true);
+                   GlobalResources.statusWindow.setProgressVisible(true);
                    timer.stop();
               }
               catch(Exception e)
@@ -2195,7 +2220,7 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_menuItemDiminishingImpactMeanActionPerformed
 
     //export data with lower resolution
-    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+    private void menuItemExportLowerResActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemExportLowerResActionPerformed
         if(GlobalResources.mappingProject.grid==null)
         {
             JOptionPane.showMessageDialog(this, "No data loaded.");
@@ -2212,7 +2237,7 @@ public class MainWindow extends javax.swing.JFrame {
             File selectedFile = fileChooser.getSelectedFile();
             GlobalResources.mappingProject.saveLowerResolutionVersion(selectedFile.getAbsolutePath(),reductionFactor);
         }
-    }//GEN-LAST:event_jMenuItem4ActionPerformed
+    }//GEN-LAST:event_menuItemExportLowerResActionPerformed
 
     private void menuItemMorrisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemMorrisActionPerformed
        
@@ -2296,7 +2321,9 @@ public class MainWindow extends javax.swing.JFrame {
                    
                    waitingThread.execute();
                    timer.start();
+                   GlobalResources.statusWindow.setProgressVisible(false);
                    GlobalResources.statusWindow.setVisible(true);
+                   GlobalResources.statusWindow.setProgressVisible(true);
                    timer.stop();
               }
               catch(Exception e)
@@ -2596,11 +2623,9 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
-    private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
@@ -2614,6 +2639,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenu menuAssignSelectiveFactors;
     private javax.swing.JMenuBar menuBarMain;
     private javax.swing.JMenuItem menuColorScale;
+    private javax.swing.JMenu menuDevelopment;
     private javax.swing.JMenu menuDiversityIndexAvg;
     private javax.swing.JMenuItem menuImpactIndex;
     private javax.swing.JMenuItem menuImpactIndex1;
@@ -2622,6 +2648,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem menuItemDiminishingImpactMean;
     private javax.swing.JMenuItem menuItemDiminishingImpactsSum;
     private javax.swing.JMenuItem menuItemExportLayer;
+    private javax.swing.JMenuItem menuItemExportLowerRes;
     private javax.swing.JMenuItem menuItemExportPolyAreas;
     private javax.swing.JMenuItem menuItemFreeMem;
     private javax.swing.JMenuItem menuItemImpactIndexDominantSum;

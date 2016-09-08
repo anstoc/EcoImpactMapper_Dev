@@ -35,14 +35,16 @@ public class LoadDataForm extends javax.swing.JDialog {
    public void setDataType(int type)
    {
        dataType=type;
-       
-       if(dataType==GlobalResources.DATATYPE_REGIONS || dataType==GlobalResources.DATATYPE_AOIS)
+       if(dataType==GlobalResources.DATATYPE_REGIONS)
+       {
+           this.textFieldName.setText("Regions");
+           this.textFieldName.setEditable(false);   
+       }
+        if(dataType==GlobalResources.DATATYPE_AOIS)
        {
            this.textFieldName.setText("Areas of interest");
            this.textFieldName.setEditable(false);   
-       }
-
-       
+       } 
    }
     
     /**

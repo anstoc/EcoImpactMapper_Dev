@@ -26,6 +26,13 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
     public MonteCarloRanksDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        if(GlobalResources.releaseVersion)
+        {
+            this.checkBoxAddRunsToResults.setVisible(false);
+            this.checkBoxSpatialSummary.setVisible(false);
+            this.checkBoxMapStressorContributions.setVisible(false);
+      
+        }
     }
 
     public void setSimulationManager(MCSimulationManager mcm)
@@ -47,6 +54,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLayeredPane1 = new javax.swing.JLayeredPane();
         jLabel1 = new javax.swing.JLabel();
         textFieldSimulationRuns = new javax.swing.JTextField();
         textFieldOutputFolder = new javax.swing.JTextField();
@@ -171,7 +179,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
                 textFieldMissingStressorDataMaxActionPerformed(evt);
             }
         });
-        getContentPane().add(textFieldMissingStressorDataMax, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 100, 60, 30));
+        getContentPane().add(textFieldMissingStressorDataMax, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 100, 60, 20));
 
         textFieldSensitivtyScoreErrorsMin.setText("0");
         textFieldSensitivtyScoreErrorsMin.setToolTipText("<html>In each simulation run, random errors will be added to the sensitivity weights. <br>\nIf m is the maximum of the sensitivity weights and r is a random number <br>\ndrawn from a uniform distribution U(min,max), the errors will be drawn from <br>\na uniform distribution U(-0.5*r*m,0.5*r*m).\n");
@@ -186,13 +194,13 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
                 textFieldSensitivtyScoreErrorsMinActionPerformed(evt);
             }
         });
-        getContentPane().add(textFieldSensitivtyScoreErrorsMin, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 130, 60, -1));
+        getContentPane().add(textFieldSensitivtyScoreErrorsMin, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 140, 60, -1));
 
         checkBoxSensitivtyScoreErrors.setSelected(true);
         checkBoxSensitivtyScoreErrors.setText("Sensitivity weight errors");
         checkBoxSensitivtyScoreErrors.setToolTipText("<html>In each simulation run, random errors will be added to the sensitivity weights. <br>\nIf m is the maximum of the sensitivity weights and r is a random number <br>\ndrawn from a uniform distribution U(min,max), the errors will be drawn from <br>\na uniform distribution U(-0.5*r*m,0.5*r*m).\n");
         checkBoxSensitivtyScoreErrors.setName("cbsens"); // NOI18N
-        getContentPane().add(checkBoxSensitivtyScoreErrors, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 130, -1, -1));
+        getContentPane().add(checkBoxSensitivtyScoreErrors, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 140, -1, -1));
 
         textFieldSensitivtyScoreErrorMax.setText("1.0");
         textFieldSensitivtyScoreErrorMax.setToolTipText("<html>In each simulation run, random errors will be added to the sensitivity weights. <br>\nIf m is the maximum of the sensitivity weights and r is a random number <br>\ndrawn from a uniform distribution U(min,max), the errors will be drawn from <br>\na uniform distribution U(-0.5*r*m,0.5*r*m).\n");
@@ -207,7 +215,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
                 textFieldSensitivtyScoreErrorMaxActionPerformed(evt);
             }
         });
-        getContentPane().add(textFieldSensitivtyScoreErrorMax, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 130, 60, -1));
+        getContentPane().add(textFieldSensitivtyScoreErrorMax, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 140, 60, -1));
 
         jLabel4.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
         jLabel4.setText("Input data");
@@ -346,7 +354,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
         textFieldThreads.setText("1");
         textFieldThreads.setToolTipText("<html>Most modern computer processors have several cores, i.e. they can do several<br>\ncalculations at the same time. In this case, for large data sets and many simulation runs, \nyou can speed up processing by increasing the number of threads up to your number of cores.</html>");
         textFieldThreads.setName("nrthreads"); // NOI18N
-        getContentPane().add(textFieldThreads, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 480, 30, 20));
+        getContentPane().add(textFieldThreads, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 420, 30, 20));
 
         textFieldReducedAnalysisResMax.setText("2");
         textFieldReducedAnalysisResMax.setToolTipText("<html>In each simulation run, the spatial resolution of the analysis will be reduced<br>\nby a randomly chosen integer factor between min and max. For example, if the original<br>\nspatial resolution is 1km, min=1 and max=2, the spatial resolution of the analysis<br>\nwill be 1km in about half of the simulation runs, and 2km in the remaining simulation runs.</html>");
@@ -414,12 +422,12 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
                 checkBoxSpatialSummaryActionPerformed(evt);
             }
         });
-        getContentPane().add(checkBoxSpatialSummary, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 450, -1, -1));
+        getContentPane().add(checkBoxSpatialSummary, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 480, -1, -1));
 
         checkBoxAddRunsToResults.setText("** Show simulation runs in project results");
         checkBoxAddRunsToResults.setToolTipText("<html>If this option is selected, the human impact map from each simulation run<br>\nis added to the project results. This option should be disabled if the number of simulation/br>\nruns is large.</html>");
         checkBoxAddRunsToResults.setName("cbshowruns"); // NOI18N
-        getContentPane().add(checkBoxAddRunsToResults, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 430, -1, -1));
+        getContentPane().add(checkBoxAddRunsToResults, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 460, -1, -1));
 
         jLabel12.setText("Max");
         getContentPane().add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 80, -1, -1));
@@ -439,7 +447,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
 
         jLabel14.setText("Number of threads:");
         jLabel14.setToolTipText("<html>Most modern computer processors have several cores, i.e. they can do several<br>\ncalculations at the same time. In this case, for large data sets and many simulation runs,<br>\nyou can speed up processing by increasing the number of threads up to your number of cores.<br>\nUsing several threads increases memory requirements, though.\n</html>");
-        getContentPane().add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 480, -1, -1));
+        getContentPane().add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 420, -1, -1));
 
         buttonSave.setText("Save settings...");
         buttonSave.addActionListener(new java.awt.event.ActionListener() {
@@ -460,7 +468,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
         checkBoxMapStressorContributions.setText("** Map stressor contributions");
         checkBoxMapStressorContributions.setToolTipText("<html>If this option is selected, the stressor's contribution to impact scores isd mapped as mean over all simulation runs in which it occurs.");
         checkBoxMapStressorContributions.setName("cbmapcontrib"); // NOI18N
-        getContentPane().add(checkBoxMapStressorContributions, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 410, -1, -1));
+        getContentPane().add(checkBoxMapStressorContributions, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 440, -1, -1));
 
         jLabel15.setText("Filter distance:");
         jLabel15.setToolTipText("<html>This factor only affects data layers to which it has been assigned in the \"Assign selective factors\" dialog.<br> In each simulation run,  large, uniform areas<br>\nwill be replaced with fine-resolution versions that retain the general patterns. This involves low-pass filtering, the distance for which has to be given below.<br> Typically, about 5 times the spatial resolution is a good choice.\n</html>");
@@ -604,7 +612,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
        if(error.equals(""))
        {
            this.simulationReady=true;
-           File settingsFile = new File(mcm.outputFolder+"/simulationsettings.csv");
+           File settingsFile = new File(mcm.outputFolder,"simulationsettings.csv");
            CsvTableGeneral table = createSettingsTable();
            table.writeToFile(settingsFile.getAbsolutePath()); 
            this.setVisible(false);
@@ -986,6 +994,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JLayeredPane jLayeredPane1;
     private javax.swing.JTextField textFieldFilterDistance;
     private javax.swing.JTextField textFieldMissingStressorDataMax;
     private javax.swing.JTextField textFieldMissingStressorDataMin;

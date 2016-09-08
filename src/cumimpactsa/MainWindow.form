@@ -33,12 +33,12 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuLoadActionPerformed"/>
               </Events>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem4">
+            <MenuItem class="javax.swing.JMenuItem" name="menuItemExportLowerRes">
               <Properties>
                 <Property name="text" type="java.lang.String" value="** Export data with lower resolution..."/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem4ActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuItemExportLowerResActionPerformed"/>
               </Events>
             </MenuItem>
           </SubComponents>
@@ -66,7 +66,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="menuItemExportLayer">
               <Properties>
-                <Property name="text" type="java.lang.String" value="** Export displayed layer..."/>
+                <Property name="text" type="java.lang.String" value="Export displayed layer..."/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuItemExportLayerActionPerformed"/>
@@ -292,7 +292,7 @@
             </MenuItem>
           </SubComponents>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="jMenu4">
+        <Menu class="javax.swing.JMenu" name="menuDevelopment">
           <Properties>
             <Property name="text" type="java.lang.String" value="** Development"/>
           </Properties>

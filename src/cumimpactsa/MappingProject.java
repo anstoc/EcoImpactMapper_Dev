@@ -122,6 +122,7 @@ public class MappingProject
                 SpatialDataLayer oldRegions=getDataLayerByName(regions.getName());
                 if(oldRegions!=null) {results.remove(oldRegions);}
                 results.add(regions);
+                GlobalResources.statusWindow.println("Added regions from file: "+regions.source.toString());
             }
         else if(type==GlobalResources.DATATYPE_AOIS)
             {
@@ -789,6 +790,7 @@ public class MappingProject
         {
             if(names[i].equals(resultName))
             {
+                if(names[i].equals(regions.getName())) regions=null;
                 results.remove(i);
             }   
         }

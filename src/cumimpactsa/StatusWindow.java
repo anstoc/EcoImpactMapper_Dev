@@ -196,7 +196,7 @@ public class StatusWindow extends javax.swing.JDialog {
             println(ex);
         }
         
-        finally {try {bw.flush();} catch(Exception ex) {println("UNLOGGED EXCEPTION!");}}
+        finally {try {bw.flush();} catch(Exception ex) {println("UNLOGGED EXCEPTION");}}
         
     }
 
@@ -258,6 +258,15 @@ public class StatusWindow extends javax.swing.JDialog {
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(null, "Error closing log file.");
         }
+    }
+
+    void setProgressVisible(boolean b) {
+        if(b)
+        {
+            this.label.setText(("No task"));
+            this.label.setVisible(true);
+        }
+        else this.label.setVisible(false);
     }
 
 }

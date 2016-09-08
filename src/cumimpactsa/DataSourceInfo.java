@@ -13,4 +13,14 @@ public class DataSourceInfo {
     public String xField;
     public String yField;
     public String valueField;
+    
+    public String toString()
+    {
+        String s="    Source: "+sourceFile+"\n"
+                +"    X field: "+xField+"\n"
+                +"    Y field: "+yField+"\n"
+                +"    Value field: "+valueField;
+        return s;
+    }
+    
 }

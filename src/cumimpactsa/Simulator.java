@@ -7,8 +7,8 @@ package cumimpactsa;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+//import java.util.HashSet;
+//import java.util.Set;
 
 /**
  *
@@ -289,7 +289,7 @@ class Simulator
         //separate calculations for each ecocomp
         for(int e=0; e<ecocomps.size();e++)
         {
-            GlobalResources.mappingProject.setProcessingProgressPercent((int) (100*e/ecocomps.size()));
+            //GlobalResources.mappingProject.setProcessingProgressPercent((int) (100*e/ecocomps.size()));
             //get impacts only for this ecocomp
             ArrayList<ImpactInfo> eImpacts = scores.getActiveImpactsForEcocomp(ecocomps.get(e).getName());
             float[][] ecocomp = ecocomps.get(e).getProcessedGrid().getData();

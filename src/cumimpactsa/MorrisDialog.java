@@ -282,6 +282,7 @@ public class MorrisDialog extends javax.swing.JDialog {
         {
             isCanceled=false;
             this.setVisible(false);
+            MorrisFactor.saveFactorsToCsv(new File(outputFolder,"levels.csv").getAbsolutePath());
         }
     }//GEN-LAST:event_buttonCalculateActionPerformed
 
