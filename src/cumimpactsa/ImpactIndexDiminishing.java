@@ -26,7 +26,7 @@ public class ImpactIndexDiminishing extends SpatialDataLayer
         source.xField="x";
         source.yField="y";
         source.valueField="value";
-        this.name=GlobalResources.getDateTime() + " Impact Index (diminishing)";
+        this.name=GlobalResources.getDateTime() + " Impact Index (antagonistic)";
         if(avg) {this.name = this.name + " (mean)";}
         else {this.name = this.name + " (sum)";}
         

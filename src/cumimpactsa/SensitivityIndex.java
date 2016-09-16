@@ -17,7 +17,7 @@ public class SensitivityIndex extends SpatialDataLayer
 {
     public SensitivityIndex(String saveFileName)
     {
-        super(GlobalResources.getDateTime() + " SensitivityIndex",null,GlobalResources.DATATYPE_SPATIAL,null);
+        super(GlobalResources.getDateTime() + " Sensitivity Index",null,GlobalResources.DATATYPE_SPATIAL,null);
         source = new DataSourceInfo();
         source.sourceFile=saveFileName;
         source.xField="x";

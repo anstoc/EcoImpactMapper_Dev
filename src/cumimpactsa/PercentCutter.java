@@ -19,7 +19,7 @@ public class PercentCutter extends GeneralProcessor
         paramNames=new String[1];
         paramNames[0]="percent";
         paramValues=new double[1];
-        paramValues[0]=1.0;
+        paramValues[0]=1;
         
     }
     
@@ -62,7 +62,7 @@ public class PercentCutter extends GeneralProcessor
     @Override
     public String getName() 
     {
-        return "Cut top x %";
+        return "Cut top " + paramValues[0]+ "%";
     }
 
     @Override

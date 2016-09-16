@@ -121,7 +121,7 @@ public class ProcessingWindow extends javax.swing.JDialog {
             }
         });
 
-        buttonSetForAllEcocomps.setText("Set for all ecol. components");
+        buttonSetForAllEcocomps.setText("Set for all ecosystem comp.");
         buttonSetForAllEcocomps.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonSetForAllEcocompsActionPerformed(evt);

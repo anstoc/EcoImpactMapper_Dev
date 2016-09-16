@@ -82,13 +82,13 @@ public class MappingProject
         processors.add(new LogTransformer());
         processors.add(new Rescaler()); 
         processors.add(new PresenceTransformer());
-        processors.add(new GreaterMedianTransformer());
+        if(!GlobalResources.releaseVersion) processors.add(new GreaterMedianTransformer());
         //processors.add(new ErrorCreatorMovePoints());
         //processors.add(new ErrorCreatorMoveLines());
         //processors.add(new ErrorCreatorMoveAreas());
-        processors.add(new IdwSpreader());
-        processors.add(new AreaRefiner()); 
-        processors.add(new ResolutionReducer());
+        if(!GlobalResources.releaseVersion) processors.add(new IdwSpreader());
+        if(!GlobalResources.releaseVersion) processors.add(new AreaRefiner()); 
+        if(!GlobalResources.releaseVersion) processors.add(new ResolutionReducer());
     }
     
     public void initializeSelectiveFactors()
