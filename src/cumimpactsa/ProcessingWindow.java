@@ -6,6 +6,7 @@ package cumimpactsa;
 
 import java.util.ArrayList;
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 
 /**
@@ -62,6 +63,8 @@ public class ProcessingWindow extends javax.swing.JDialog {
         buttonOk = new javax.swing.JButton();
         buttonSetForAllStressors = new javax.swing.JButton();
         buttonSetForAllEcocomps = new javax.swing.JButton();
+        labelParameter = new javax.swing.JLabel();
+        textFieldParameter = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -128,6 +131,11 @@ public class ProcessingWindow extends javax.swing.JDialog {
             }
         });
 
+        labelParameter.setText("Parameter");
+
+        textFieldParameter.setText("0");
+        textFieldParameter.setEnabled(false);
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -140,7 +148,9 @@ public class ProcessingWindow extends javax.swing.JDialog {
                 .add(32, 32, 32)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
-                        .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 202, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                            .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
+                            .add(textFieldParameter))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(buttonAddProcessor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 60, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -152,7 +162,8 @@ public class ProcessingWindow extends javax.swing.JDialog {
                             .add(buttonSetForAllStressors, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 210, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                             .add(buttonSetForAllEcocomps, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 210, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                             .add(buttonOk, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 204, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                    .add(jLabel2))
+                    .add(jLabel2)
+                    .add(labelParameter))
                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -164,29 +175,36 @@ public class ProcessingWindow extends javax.swing.JDialog {
                         .add(buttonAddProcessor)
                         .add(12, 12, 12)
                         .add(buttonRemoveProcessor))
-                    .add(layout.createSequentialGroup()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jLabel1)
-                            .add(layout.createSequentialGroup()
-                                .add(4, 4, 4)
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                                    .add(jLabel2)
-                                    .add(jLabel3))))
-                        .add(8, 8, 8)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 480, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 478, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
-                .add(0, 0, Short.MAX_VALUE))
-            .add(layout.createSequentialGroup()
-                .add(31, 31, 31)
-                .add(jScrollPane3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 303, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(18, 18, 18)
-                .add(buttonSetForAllStressors)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(buttonSetForAllEcocomps)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .add(buttonOk, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 43, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(19, 19, 19))
+                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                        .add(layout.createSequentialGroup()
+                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                .add(jLabel1)
+                                .add(layout.createSequentialGroup()
+                                    .add(4, 4, 4)
+                                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                        .add(jLabel2)
+                                        .add(jLabel3))))
+                            .add(8, 8, 8)
+                            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 452, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                        .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                                .add(layout.createSequentialGroup()
+                                    .addContainerGap()
+                                    .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 388, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                                    .add(31, 31, 31)
+                                    .add(jScrollPane3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 303, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                    .add(18, 18, 18)
+                                    .add(buttonSetForAllStressors)
+                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                    .add(buttonSetForAllEcocomps)))
+                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                            .add(labelParameter)
+                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                                .add(buttonOk, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 28, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .add(textFieldParameter, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))))
+                .add(0, 20, Short.MAX_VALUE))
         );
 
         pack();
@@ -210,7 +228,7 @@ public class ProcessingWindow extends javax.swing.JDialog {
             
             for(int i=0; i<processingChain.size();i++)
             {
-                model.addElement(processingChain.get(i).getName());
+                model.addElement(processingChain.get(i).getNameAndLastParam());
             }
             
             this.listProcessingChain.setModel(model);
@@ -230,13 +248,23 @@ public class ProcessingWindow extends javax.swing.JDialog {
         else
         {
             PreProcessor newProcessor=GlobalResources.mappingProject.getNewProcessorByName(processor);
-            GlobalResources.mappingProject.getDataLayerByName(selected).getProcessingChain().add(newProcessor);
-            listDataLayersValueChanged(null); //for updating display
-            GlobalResources.mappingProject.getDataLayerByName(selected).needsReprocessing();
+            try
+            {
+                if(newProcessor.getParamNr()>0)
+                {
+                   float paramValue=Float.parseFloat(this.textFieldParameter.getText());
+                   if(paramValue<0) throw new Exception();
+                   newProcessor.setParamValue(newProcessor.getParamNames()[newProcessor.getParamNr()-1], paramValue);
+                }
+                GlobalResources.mappingProject.getDataLayerByName(selected).getProcessingChain().add(newProcessor);
+                listDataLayersValueChanged(null); //for updating display
+                GlobalResources.mappingProject.getDataLayerByName(selected).needsReprocessing();
+            }
+            catch(Exception e)
+            {
+                JOptionPane.showMessageDialog(this, "Parameter must be a positive number");
+            }
         }
-        
-        
-        
     }//GEN-LAST:event_buttonAddProcessorActionPerformed
 
     private void buttonRemoveProcessorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRemoveProcessorActionPerformed
@@ -268,7 +296,11 @@ public class ProcessingWindow extends javax.swing.JDialog {
            for(int j=0; j<this.listProcessingChain.getModel().getSize();j++)
             {
                 String procName = (String) this.listProcessingChain.getModel().getElementAt(j);
-                processingChain.add(GlobalResources.mappingProject.getNewProcessorByName(procName).clone());
+                float param=Helpers.getProcessorParam(procName);
+                procName=Helpers.cleanProcessorName(procName);
+                PreProcessor processor=GlobalResources.mappingProject.getNewProcessorByName(procName).clone();
+                if(param>=0 && processor.getParamNr()>0) processor.setParamValue(processor.getParamNames()[processor.getParamNr()-1], param);
+                processingChain.add(processor);
             }
            
            GlobalResources.mappingProject.stressors.get(i).setProcessingChain(processingChain);
@@ -287,7 +319,11 @@ public class ProcessingWindow extends javax.swing.JDialog {
            for(int j=0; j<this.listProcessingChain.getModel().getSize();j++)
             {
                 String procName = (String) this.listProcessingChain.getModel().getElementAt(j);
-                processingChain.add(GlobalResources.mappingProject.getNewProcessorByName(procName).clone());
+                float param=Helpers.getProcessorParam(procName);
+                procName=Helpers.cleanProcessorName(procName);
+                PreProcessor processor=GlobalResources.mappingProject.getNewProcessorByName(procName).clone();
+                if(param>=0 && processor.getParamNr()>0) processor.setParamValue(processor.getParamNames()[processor.getParamNr()-1], param);
+                processingChain.add(processor);
             }
            
            GlobalResources.mappingProject.ecocomps.get(i).setProcessingChain(processingChain);
@@ -296,7 +332,20 @@ public class ProcessingWindow extends javax.swing.JDialog {
     }//GEN-LAST:event_buttonSetForAllEcocompsActionPerformed
 
     private void listAvailableProcessorsValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listAvailableProcessorsValueChanged
-        
+        //set up parameter field
+        PreProcessor processor = GlobalResources.mappingProject.getNewProcessorByName((String) listAvailableProcessors.getSelectedValue());
+        if(processor.getParamNr()>0) 
+        {
+            this.labelParameter.setText(processor.getParamNames()[processor.getParamNr()-1]); //currently, user can only set 1 (the last) parameter!
+            this.textFieldParameter.setText(processor.getParamValues()[processor.getParamNr()-1]+"");         //others are e.g. used internally for seeds
+            this.textFieldParameter.setEnabled(true);
+        }
+        else
+        {
+            this.labelParameter.setText("No parameter");
+            this.textFieldParameter.setText("");
+            this.textFieldParameter.setEnabled(false);
+        }
     }//GEN-LAST:event_listAvailableProcessorsValueChanged
 
     private void listProcessingChainValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listProcessingChainValueChanged
@@ -356,8 +405,10 @@ public class ProcessingWindow extends javax.swing.JDialog {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JLabel labelParameter;
     private javax.swing.JList listAvailableProcessors;
     private javax.swing.JList listDataLayers;
     private javax.swing.JList listProcessingChain;
+    private javax.swing.JTextField textFieldParameter;
     // End of variables declaration//GEN-END:variables
 }

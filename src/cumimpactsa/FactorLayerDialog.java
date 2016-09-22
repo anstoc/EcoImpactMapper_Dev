@@ -24,10 +24,10 @@ public class FactorLayerDialog extends javax.swing.JDialog {
         
         //set up data layer list
         String[] stressorNames=GlobalResources.mappingProject.getStressorNames();
-        String[] ecocompNames = GlobalResources.mappingProject.getEcocompNames();
+        //String[] ecocompNames = GlobalResources.mappingProject.getEcocompNames();
         DefaultListModel model = new DefaultListModel();
         for(int i=0; i<stressorNames.length; i++) {model.addElement(stressorNames[i]);}
-        for(int i=0; i<ecocompNames.length; i++) {model.addElement(ecocompNames[i]);}
+        //for(int i=0; i<ecocompNames.length; i++) {model.addElement(ecocompNames[i]);}
         this.listLayers.setModel(model);
         
         //set up factor list

@@ -86,8 +86,8 @@ public class MappingProject
         //processors.add(new ErrorCreatorMovePoints());
         //processors.add(new ErrorCreatorMoveLines());
         //processors.add(new ErrorCreatorMoveAreas());
-        if(!GlobalResources.releaseVersion) processors.add(new IdwSpreader());
-        if(!GlobalResources.releaseVersion) processors.add(new AreaRefiner()); 
+        processors.add(new IdwSpreader());
+        processors.add(new AreaRefiner()); 
         if(!GlobalResources.releaseVersion) processors.add(new ResolutionReducer());
     }
     

@@ -171,5 +171,30 @@ public abstract class Helpers
         for(int i=0; i<list.size();i++) {copy.add(new String(list.get(i)));}
         return copy;
     }
-    
+
+    //removes parameter value from processor
+    static String cleanProcessorName(String procName) 
+    {
+        if(!procName.contains("[")) return procName;
+        else return procName.substring(0, procName.indexOf("["));
+    }
+
+    static float getProcessorParam(String procName) 
+    {
+        float value=-1;
+        if(!procName.contains("[")) return value;
+        else
+        {
+            String substring=procName.substring(procName.indexOf("[")+1, procName.indexOf("]"));
+            try
+            {
+                value=Float.parseFloat(substring);
+            }
+            catch(Exception e)
+            {
+                value=-1;
+            }
+        }
+        return value;
+    }
 }

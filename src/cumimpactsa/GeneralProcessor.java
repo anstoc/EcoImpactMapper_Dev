@@ -65,4 +65,11 @@ public abstract class GeneralProcessor implements PreProcessor
         this.workerNr=workerNr;
     }
     
+    @Override
+    public String getNameAndLastParam()
+    {
+        if(getParamNr()>0) return getName() + "["+getParamValues()[getParamNr()-1]+"]";
+        else return getName();
+    }
+    
 }

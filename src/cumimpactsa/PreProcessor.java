@@ -18,4 +18,5 @@ public interface PreProcessor
    public String getName();
    public PreProcessor clone();
    public void setWorkerNr(int workerNr);
+   public String getNameAndLastParam();
 }

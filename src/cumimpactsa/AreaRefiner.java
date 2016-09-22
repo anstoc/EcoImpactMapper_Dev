@@ -16,10 +16,11 @@ public class AreaRefiner extends GeneralProcessor
 {
     public AreaRefiner()
     {
-        paramNames=new String[1];
-        paramValues=new double[1];
+        paramNames=new String[2];
+        paramValues=new double[2];
         paramNames[0]="seed";
-        paramValues[0]=0; //if seed is 0, not used; otherwise use the seed for deterministic result
+        paramNames[1]="Low pass filter distance";
+        paramValues[1]=GlobalResources.lowPassFilterDistance;
     }
     
     private class AreaInfo
@@ -167,14 +168,14 @@ public class AreaRefiner extends GeneralProcessor
         DataGrid unfilteredGrid = new DataGrid(randomValues,vmax,0,grid.getNoDataValue());
     
         //TODO 6 for Micheli et al (26km), 2 for Korpinen et al (25km), 3 for global at 8km resolution
-        int filterCells = (int) Math.floor(GlobalResources.lowPassFilterDistance/(2*GlobalResources.mappingProject.grid.getCellSize()));
+        int filterCells = (int) Math.floor(paramValues[1]/(2*GlobalResources.mappingProject.grid.getCellSize()));
         return Helpers.lowPassFilter(unfilteredGrid, filterCells);
     }
 
     @Override
     public String getName() 
     {
-        return "Redistribute effort in areas";
+        return "Refine coarse areas";
     }
 
     @Override
