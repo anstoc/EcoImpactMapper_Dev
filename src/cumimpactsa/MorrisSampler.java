@@ -562,9 +562,8 @@ public class MorrisSampler
     protected void setStochasticModelComponents(SensitivityScoreSet scores, ArrayList<SpatialDataLayer> stressors)
     {
         //random sensitivity scores
-        //note: removed factor 0.5 here as level will be used to multiply
         scoreErrors = new float[scores.size()];
-        for(int i=0; i<scoreErrors.length;i++) {scoreErrors[i] = (float) ((scores.getMax()-scores.getMin())-2*(Math.random()*(scores.getMax()-scores.getMin())));} //random errors, can be +/- 50% of score range between original max and min scores
+        for(int i=0; i<scoreErrors.length;i++) {scoreErrors[i] = (float) ((scores.getMax()-scores.getMin())-2*(Math.random()*(scores.getMax()-scores.getMin())));} //random errors, can be up to the score range between original max and min scores
     
         //random seeds for area refiner
         areaRefinerSeeds=new float[stressors.size()];
@@ -865,21 +864,21 @@ public class MorrisSampler
         GlobalResources.statusWindow.println("Saving results to folder: "+outputFolder);
         
         //regions
-        saveRegionData(regionMuMatrix, new File(outputFolder,"regions_mu.csv").getAbsolutePath());
+        if(!GlobalResources.releaseVersion) saveRegionData(regionMuMatrix, new File(outputFolder,"regions_mu.csv").getAbsolutePath());
         saveRegionData(regionMuStarMatrix, new File(outputFolder,"regions_mustar.csv").getAbsolutePath());
-        saveRegionData(regionSigmaMatrix, new File(outputFolder,"regions_sigma.csv").getAbsolutePath());
+        if(!GlobalResources.releaseVersion) saveRegionData(regionSigmaMatrix, new File(outputFolder,"regions_sigma.csv").getAbsolutePath());
         saveRegionData(regionSigmaStarMatrix, new File(outputFolder,"regions_sigmastar.csv").getAbsolutePath());
         
         //stressors
-        saveStressorData(stressorMuMatrix, new File(outputFolder,"stressors_mu.csv").getAbsolutePath());
+       if(!GlobalResources.releaseVersion)  saveStressorData(stressorMuMatrix, new File(outputFolder,"stressors_mu.csv").getAbsolutePath());
         saveStressorData(stressorMuStarMatrix, new File(outputFolder,"stressors_mustar.csv").getAbsolutePath());
-        saveStressorData(stressorSigmaMatrix, new File(outputFolder,"stressors_sigma.csv").getAbsolutePath());
+        if(!GlobalResources.releaseVersion) saveStressorData(stressorSigmaMatrix, new File(outputFolder,"stressors_sigma.csv").getAbsolutePath());
         saveStressorData(stressorSigmaStarMatrix, new File(outputFolder,"stressors_sigmastar.csv").getAbsolutePath());
         
         //ecocomps
-        saveEcocompData(ecocompMuMatrix, new File(outputFolder,"ecocomps_mu.csv").getAbsolutePath());
+        if(!GlobalResources.releaseVersion) saveEcocompData(ecocompMuMatrix, new File(outputFolder,"ecocomps_mu.csv").getAbsolutePath());
         saveEcocompData(ecocompMuStarMatrix, new File(outputFolder,"ecocomps_mustar.csv").getAbsolutePath());
-        saveEcocompData(ecocompSigmaMatrix, new File(outputFolder,"ecocomps_sigma.csv").getAbsolutePath());
+        if(!GlobalResources.releaseVersion)  saveEcocompData(ecocompSigmaMatrix, new File(outputFolder,"ecocomps_sigma.csv").getAbsolutePath());
         saveEcocompData(ecocompSigmaStarMatrix, new File(outputFolder,"ecocomps_sigmastar.csv").getAbsolutePath()); 
     }
     

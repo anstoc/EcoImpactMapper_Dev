@@ -179,10 +179,10 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
                 textFieldMissingStressorDataMaxActionPerformed(evt);
             }
         });
-        getContentPane().add(textFieldMissingStressorDataMax, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 100, 60, 20));
+        getContentPane().add(textFieldMissingStressorDataMax, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 100, 60, 30));
 
         textFieldSensitivtyScoreErrorsMin.setText("0");
-        textFieldSensitivtyScoreErrorsMin.setToolTipText("<html>In each simulation run, random errors will be added to the sensitivity weights. <br>\nIf m is the maximum of the sensitivity weights and r is a random number <br>\ndrawn from a uniform distribution U(min,max), the errors will be drawn from <br>\na uniform distribution U(-0.5*r*m,0.5*r*m).\n");
+        textFieldSensitivtyScoreErrorsMin.setToolTipText("<html>In each simulation run, random errors will be added to the sensitivity weights. <br>\nIf m is the range of the sensitivity weights and r is a random number <br>\ndrawn from a uniform distribution U(min,max), the errors will be drawn from <br>\na uniform distribution U(-r*m,r*m). Weights that after adding the errors are outside <br>\nthe original range will be set to the original minimum or maximum, respectively.");
         textFieldSensitivtyScoreErrorsMin.setName("sensmin"); // NOI18N
         textFieldSensitivtyScoreErrorsMin.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
@@ -198,12 +198,12 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
 
         checkBoxSensitivtyScoreErrors.setSelected(true);
         checkBoxSensitivtyScoreErrors.setText("Sensitivity weight errors");
-        checkBoxSensitivtyScoreErrors.setToolTipText("<html>In each simulation run, random errors will be added to the sensitivity weights. <br>\nIf m is the range of the sensitivity weights and r is a random number <br>\ndrawn from a uniform distribution U(min,max), the errors will be drawn from <br>\na uniform distribution U(-0.5*r*m,0.5*r*m).\n");
+        checkBoxSensitivtyScoreErrors.setToolTipText("<html>In each simulation run, random errors will be added to the sensitivity weights. <br>\nIf m is the range of the sensitivity weights and r is a random number <br>\ndrawn from a uniform distribution U(min,max), the errors will be drawn from <br>\na uniform distribution U(-r*m,r*m). Weights that after adding the errors are outside <br>\nthe original range will be set to the original minimum or maximum, respectively.\n");
         checkBoxSensitivtyScoreErrors.setName("cbsens"); // NOI18N
         getContentPane().add(checkBoxSensitivtyScoreErrors, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 140, -1, -1));
 
-        textFieldSensitivtyScoreErrorMax.setText("1.0");
-        textFieldSensitivtyScoreErrorMax.setToolTipText("<html>In each simulation run, random errors will be added to the sensitivity weights. <br>\nIf m is the range of the sensitivity weights and r is a random number <br>\ndrawn from a uniform distribution U(min,max), the errors will be drawn from <br>\na uniform distribution U(-0.5*r*m,0.5*r*m).");
+        textFieldSensitivtyScoreErrorMax.setText("0.5");
+        textFieldSensitivtyScoreErrorMax.setToolTipText("<html>In each simulation run, random errors will be added to the sensitivity weights. <br>\nIf m is the range of the sensitivity weights and r is a random number <br>\ndrawn from a uniform distribution U(min,max), the errors will be drawn from <br>\na uniform distribution U(-r*m,r*m). Weights that after adding the errors are outside <br>\nthe original range will be set to the original minimum or maximum, respectively.");
         textFieldSensitivtyScoreErrorMax.setName("sensmax"); // NOI18N
         textFieldSensitivtyScoreErrorMax.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {

@@ -297,13 +297,12 @@ public class MCSimulationManager
             if(mapStressorContributions) {writeStressorContributionMaps(stressorInfos);}
     }
     
-    //creates new sensitivty scores from U(a,b) where a and b are the highest and lowest "real" scores in the project;
-    //then changes the project's scores to a weighted average (weights randomly taken from interval given by simulation parameters).
+
     protected void changeSensitivityScores(SensitivityScoreSet scores)
     {
         if(!this.sensitivityScoreErrors) {return;}
         float[] scoreErrors = new float[scores.size()];
-        for(int i=0; i<scoreErrors.length;i++) {scoreErrors[i] = (float) (0.5*(scores.getMax()-scores.getMin())-(Math.random()*(scores.getMax()-scores.getMin())));} //random errors, can be +/- 50% of score range between original max and min scores
+        for(int i=0; i<scoreErrors.length;i++) {scoreErrors[i] = (float) ((scores.getMax()-scores.getMin())-2*(Math.random()*(scores.getMax()-scores.getMin())));} //random errors, can be +/- full score range between original max and min scores
         float parameter = (float) Math.random();
         
         for(int i=0; i<scores.size();i++)
@@ -313,7 +312,7 @@ public class MCSimulationManager
             if(scores.getAllScores().get(i).getSensitivityScore()>scores.getMax()) {scores.getAllScores().get(i).changeSensitivtyScore(scores.getMax());}
         }
        
-         GlobalResources.statusWindow.println("    "+prefix+"Changed sensitivity weights with errors up to +/- : " + (parameter*0.5*(scores.getMax()-scores.getMin())));
+         GlobalResources.statusWindow.println("    "+prefix+"Changed sensitivity weights with errors up to +/- : " + (parameter*(scores.getMax()-scores.getMin())));
     }
     
     /*returns a random set of parameter values
