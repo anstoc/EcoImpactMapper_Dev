@@ -515,7 +515,7 @@ public class MappingProject
             {
                 ArrayList<String> row = new ArrayList<String>();
                 row.add(stressors.get(i).getName());
-                row.add(procChain.get(j).getName());
+                row.add(procChain.get(j).getNameAndLastParam());
                 table.addRow(row);
             }     
         }
@@ -531,11 +531,10 @@ public class MappingProject
             {
                 ArrayList<String> row = new ArrayList<String>();
                 row.add(ecocomps.get(i).getName());
-                row.add(procChain.get(j).getName());
+                row.add(procChain.get(j).getNameAndLastParam());
                 table.addRow(row);
             }     
         }
-        
         table.writeToFile(filename);
     }
     
@@ -738,8 +737,14 @@ public class MappingProject
                             layer.getProcessingChain().clear();  //remove default list
                             layer.setProcessingChainLoaded();
                         }
-                        PreProcessor processor = getNewProcessorByName(processors.get(i));
+                        
+                        String procName = processors.get(i);
+                        float param=Helpers.getProcessorParam(procName);
+                        procName=Helpers.cleanProcessorName(procName);
+                        PreProcessor processor=GlobalResources.mappingProject.getNewProcessorByName(procName).clone();
+                        if(param>=0 && processor.getParamNr()>0) processor.setParamValue(processor.getParamNames()[processor.getParamNr()-1], param);
                         layer.getProcessingChain().add(processor);
+                        
                     }
                 }
                 

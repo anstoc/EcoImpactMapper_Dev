@@ -306,7 +306,6 @@ public class MCSimulationManager
         for(int i=0; i<scoreErrors.length;i++) {scoreErrors[i] = (float) (0.5*(scores.getMax()-scores.getMin())-(Math.random()*(scores.getMax()-scores.getMin())));} //random errors, can be +/- 50% of score range between original max and min scores
         float parameter = (float) Math.random();
         
-        //random seeds for area refiner
         for(int i=0; i<scores.size();i++)
         {
             scores.getAllScores().get(i).changeSensitivtyScore(scores.getInfo(i).getSensitivityScore()+parameter*scoreErrors[i]);
@@ -314,11 +313,11 @@ public class MCSimulationManager
             if(scores.getAllScores().get(i).getSensitivityScore()>scores.getMax()) {scores.getAllScores().get(i).changeSensitivtyScore(scores.getMax());}
         }
        
-         GlobalResources.statusWindow.println("    "+prefix+"Changed sensitivity weights with errors up to: " + (parameter*0.5*scores.getMax()-scores.getMin()));
+         GlobalResources.statusWindow.println("    "+prefix+"Changed sensitivity weights with errors up to +/- : " + (parameter*0.5*(scores.getMax()-scores.getMin())));
     }
     
-    //returns a random set of parameter values
-    public double[] getRandomVector()
+    /*returns a random set of parameter values
+    public double[] getRandomVector2()
     {
         double[] x = new double[9];
         x[0] = Math.round(3*Math.random())/3.0;
@@ -332,7 +331,7 @@ public class MCSimulationManager
         x[8] = Math.round(2*Math.random());
         
         return x;
-    }
+    }*/
     
     
     protected int disableStressorData(ArrayList<SpatialDataLayer> stressors, SensitivityScoreSet scores)
@@ -445,7 +444,7 @@ public class MCSimulationManager
         
         if(options.get(selection)==Simulator.MEM_ADDITIVE) { GlobalResources.statusWindow.println("    "+prefix+": MEM: Additive");}
         else if(options.get(selection)==Simulator.MEM_DOMINANT) { GlobalResources.statusWindow.println("    "+prefix+": MEM: Dominant");}
-        else if(options.get(selection)==Simulator.MEM_DIMINISHING) { GlobalResources.statusWindow.println("    "+prefix+"MEM: Diminishing");}
+        else if(options.get(selection)==Simulator.MEM_DIMINISHING) { GlobalResources.statusWindow.println("    "+prefix+"MEM: Antagonistic");}
         return options.get(selection);
         
     }
@@ -562,7 +561,7 @@ public class MCSimulationManager
        Collections.sort(stressorInfos, new StressorComparator());
        
        int p25 = (int) Math.round(0.25 * activeStressors);
-       int p75 = (int) Math.round(0.75 * activeStressors);
+       //int p75 = (int) Math.round(0.75 * activeStressors);
        
        int rank=0;
        for(int i=0; i<stressorInfos.size();i++)
@@ -578,7 +577,7 @@ public class MCSimulationManager
                     }
                 if(nrank > info.maxRank) {info.maxRank=nrank;}
                 if(rank <= p25) {info.inMostImportant25p++;}
-                if(rank >= p75) {info.inLeastImportant25p++;}
+                if(rank > activeStressors-p25 ) {info.inLeastImportant25p++;}
                 info.included++;
            }
        }  
@@ -608,7 +607,7 @@ public class MCSimulationManager
             row.add(info.inLeastImportant25p/(0.01*info.included)+"");
             table.addRow(row);
         }
-        
+        GlobalResources.statusWindow.println("Writing uncertainty analysis results for stressors to: "+new File(outputFolder,"stressorranks.csv").getAbsolutePath());
         table.writeToFile(new File(outputFolder,"stressorranks.csv").getAbsolutePath());
     }
 
@@ -660,7 +659,9 @@ public class MCSimulationManager
            if(rank < info.minRank) {info.minRank=rank;}
            if(rank > info.maxRank) {info.maxRank=rank;}
            if(rank <= p25) {info.inTop25p++;}
-           if(rank >= regionInfos.size()-(p25-1)) {info.inBottom25p++;}
+           if(rank > regionInfos.size()-p25) {info.inBottom25p++;}
+       
+                 
        }
        
        //calculate and store stressor percent contributions
@@ -686,7 +687,7 @@ public class MCSimulationManager
            if(rank < info.minRank) {info.minRank=rank;}
            if(rank > info.maxRank) {info.maxRank=rank;}
            if(rank <= p25) {info.inMostImportant25p++;}
-           if(rank >= ecocompInfos.size()-(p25-1)) {info.inLeastImportant25p++;}
+           if(rank > ecocompInfos.size()-p25) {info.inLeastImportant25p++;}
        }  
     }
 
@@ -762,11 +763,11 @@ public class MCSimulationManager
             if(rank<=p15) {info.inHighest15p++;}
             if(rank<=p20) {info.inHighest20p++;}
             if(rank<=p25) {info.inHighest25p++;}
-            if(rank>cellInfos.size()-(p05-1)) {info.inLowest5p++;}
-            if(rank>cellInfos.size()-(p10-1)) {info.inLowest10p++;}
-            if(rank>cellInfos.size()-(p15-1)) {info.inLowest15p++;}
-            if(rank>cellInfos.size()-(p20-1)) {info.inLowest20p++;}
-            if(rank>cellInfos.size()-(p25-1)) {info.inLowest25p++;}
+            if(rank>cellInfos.size()-(p05)) {info.inLowest5p++;}
+            if(rank>cellInfos.size()-(p10)) {info.inLowest10p++;}
+            if(rank>cellInfos.size()-(p15)) {info.inLowest15p++;}
+            if(rank>cellInfos.size()-(p20)) {info.inLowest20p++;}
+            if(rank>cellInfos.size()-(p25)) {info.inLowest25p++;}
             float perc = (float) (1-(1.0*i)/(cellInfos.size()-1));
             if(perc>info.maxPerc) {info.maxPerc=perc;}
             if(perc<info.minPerc) {info.minPerc=perc;}
@@ -850,26 +851,61 @@ public class MCSimulationManager
         DataGrid quintileVotesGrid= new DataGrid(quintileVotes, 100, 0, GlobalResources.NODATAVALUE);
         DataGrid meanQuantileGrid= new DataGrid(meanQuantile, 100, 0, GlobalResources.NODATAVALUE);
         
-        GlobalResources.statusWindow.println("Writing uncertainty analysis results as regular grids to folder: "+outputFolder);
-        DataSourceInfo maxPInfo = new DataSourceInfo();
-        maxPInfo.sourceFile=new File(outputFolder, "maxp.csv").getAbsolutePath();
-        maxPInfo.valueField="value";
-        maxPInfo.xField="x";
-        maxPInfo.yField="y";
-        SpatialDataLayer maxPLayer = new SpatialDataLayer("Maximum quantiles", maxPGrid, GlobalResources.DATATYPE_SPATIAL, maxPInfo);        
-        CsvTableGeneral table = GlobalResources.mappingProject.grid.createTableFromLayer(maxPLayer, false);
-        table.writeToFile(maxPInfo.sourceFile);        
-        GlobalResources.mappingProject.results.add(maxPLayer);
-    
-        DataSourceInfo minPInfo = new DataSourceInfo();
-        minPInfo.sourceFile=new File(outputFolder, "minp.csv").getAbsolutePath();
-        minPInfo.valueField="value";
-        minPInfo.xField="x";
-        minPInfo.yField="y";
-        SpatialDataLayer minPLayer = new SpatialDataLayer("Minimum quantiles", minPGrid, GlobalResources.DATATYPE_SPATIAL, minPInfo);        
-        table = GlobalResources.mappingProject.grid.createTableFromLayer(minPLayer, false);
-        table.writeToFile(minPInfo.sourceFile);        
-        GlobalResources.mappingProject.results.add(minPLayer);
+        CsvTableGeneral table;
+        
+        if(!GlobalResources.releaseVersion)
+        {
+            GlobalResources.statusWindow.println("Writing uncertainty analysis results as regular grids to folder: "+outputFolder);
+            DataSourceInfo maxPInfo = new DataSourceInfo();
+            maxPInfo.sourceFile=new File(outputFolder, "maxp.csv").getAbsolutePath();
+            maxPInfo.valueField="value";
+            maxPInfo.xField="x";
+            maxPInfo.yField="y";
+            SpatialDataLayer maxPLayer = new SpatialDataLayer("Maximum quantiles", maxPGrid, GlobalResources.DATATYPE_SPATIAL, maxPInfo);        
+            table = GlobalResources.mappingProject.grid.createTableFromLayer(maxPLayer, false);
+            table.writeToFile(maxPInfo.sourceFile);        
+            GlobalResources.mappingProject.results.add(maxPLayer);
+        
+            DataSourceInfo minPInfo = new DataSourceInfo();
+            minPInfo.sourceFile=new File(outputFolder, "minp.csv").getAbsolutePath();
+            minPInfo.valueField="value";
+            minPInfo.xField="x";
+            minPInfo.yField="y";
+            SpatialDataLayer minPLayer = new SpatialDataLayer("Minimum quantiles", minPGrid, GlobalResources.DATATYPE_SPATIAL, minPInfo);        
+            table = GlobalResources.mappingProject.grid.createTableFromLayer(minPLayer, false);
+            table.writeToFile(minPInfo.sourceFile);        
+            GlobalResources.mappingProject.results.add(minPLayer);
+            
+            DataSourceInfo quintileInfo = new DataSourceInfo();
+            quintileInfo.sourceFile=new File(outputFolder, "quintiles.csv").getAbsolutePath();
+            quintileInfo.valueField="value";
+            quintileInfo.xField="x";
+            quintileInfo.yField="y";
+            SpatialDataLayer quintileLayer = new SpatialDataLayer("Quintile - majority vote", quintileGrid, GlobalResources.DATATYPE_SPATIAL, quintileInfo);        
+            table = GlobalResources.mappingProject.grid.createTableFromLayer(quintileLayer, false);
+            table.writeToFile(quintileInfo.sourceFile);        
+            GlobalResources.mappingProject.results.add(quintileLayer);
+
+            DataSourceInfo quintileVotesInfo = new DataSourceInfo();
+            quintileVotesInfo.sourceFile=new File(outputFolder, "quintileVotes.csv").getAbsolutePath();
+            quintileVotesInfo.valueField="value";
+            quintileVotesInfo.xField="x";
+            quintileVotesInfo.yField="y";
+            SpatialDataLayer quintileVotesLayer = new SpatialDataLayer("Quintile votes", quintileVotesGrid, GlobalResources.DATATYPE_SPATIAL, quintileVotesInfo);        
+            table = GlobalResources.mappingProject.grid.createTableFromLayer(quintileVotesLayer, false);
+            table.writeToFile(quintileVotesInfo.sourceFile);        
+            GlobalResources.mappingProject.results.add(quintileVotesLayer);
+
+            DataSourceInfo meanQuantileInfo = new DataSourceInfo();
+            meanQuantileInfo.sourceFile=new File(outputFolder, "meanPercentiles.csv").getAbsolutePath();
+            meanQuantileInfo.valueField="value";
+            meanQuantileInfo.xField="x";
+            meanQuantileInfo.yField="y";
+            SpatialDataLayer meanQuantilesLayer = new SpatialDataLayer("Mean percentile", meanQuantileGrid, GlobalResources.DATATYPE_SPATIAL, meanQuantileInfo);        
+            table = GlobalResources.mappingProject.grid.createTableFromLayer(meanQuantilesLayer, false);
+            table.writeToFile(meanQuantileInfo.sourceFile);        
+            GlobalResources.mappingProject.results.add(meanQuantilesLayer);
+        }
     
         DataSourceInfo top05pInfo = new DataSourceInfo();
         top05pInfo.sourceFile=new File(outputFolder, "highest05p.csv").getAbsolutePath();
@@ -888,7 +924,7 @@ public class MCSimulationManager
         SpatialDataLayer top10pLayer = new SpatialDataLayer("% in highest 10%", top10pGrid, GlobalResources.DATATYPE_SPATIAL, top10pInfo);        
         table = GlobalResources.mappingProject.grid.createTableFromLayer(top10pLayer, false);
         table.writeToFile(top10pInfo.sourceFile);        
-        GlobalResources.mappingProject.results.add(top10pLayer);
+        if(!GlobalResources.releaseVersion) GlobalResources.mappingProject.results.add(top10pLayer);
         
         DataSourceInfo top15pInfo = new DataSourceInfo();
         top15pInfo.sourceFile=new File(outputFolder, "highest15p.csv").getAbsolutePath();
@@ -917,7 +953,7 @@ public class MCSimulationManager
         SpatialDataLayer top25pLayer = new SpatialDataLayer("% in highest 25%", top25pGrid, GlobalResources.DATATYPE_SPATIAL, top25pInfo);        
         table = GlobalResources.mappingProject.grid.createTableFromLayer(top25pLayer, false);
         table.writeToFile(top25pInfo.sourceFile);        
-        GlobalResources.mappingProject.results.add(top25pLayer);
+        if(!GlobalResources.releaseVersion)GlobalResources.mappingProject.results.add(top25pLayer);
         
         DataSourceInfo bottom05pInfo = new DataSourceInfo();
         bottom05pInfo.sourceFile=new File(outputFolder, "lowest05p.csv").getAbsolutePath();
@@ -936,7 +972,7 @@ public class MCSimulationManager
         SpatialDataLayer bottom10pLayer = new SpatialDataLayer("% in lowest 10%", bottom10pGrid, GlobalResources.DATATYPE_SPATIAL, bottom10pInfo);        
         table = GlobalResources.mappingProject.grid.createTableFromLayer(bottom10pLayer, false);
         table.writeToFile(bottom10pInfo.sourceFile);        
-        GlobalResources.mappingProject.results.add(bottom10pLayer);
+        if(!GlobalResources.releaseVersion) GlobalResources.mappingProject.results.add(bottom10pLayer);
         
         DataSourceInfo bottom15pInfo = new DataSourceInfo();
         bottom15pInfo.sourceFile=new File(outputFolder, "lowest15p.csv").getAbsolutePath();
@@ -964,37 +1000,8 @@ public class MCSimulationManager
         SpatialDataLayer bottom25pLayer = new SpatialDataLayer("% in lowest 25%", bottom25pGrid, GlobalResources.DATATYPE_SPATIAL, bottom25pInfo);        
         table = GlobalResources.mappingProject.grid.createTableFromLayer(bottom25pLayer, false);
         table.writeToFile(bottom25pInfo.sourceFile);        
-        GlobalResources.mappingProject.results.add(bottom25pLayer);
+        if(!GlobalResources.releaseVersion) GlobalResources.mappingProject.results.add(bottom25pLayer);
         
-        DataSourceInfo quintileInfo = new DataSourceInfo();
-        quintileInfo.sourceFile=new File(outputFolder, "quintiles.csv").getAbsolutePath();
-        quintileInfo.valueField="value";
-        quintileInfo.xField="x";
-        quintileInfo.yField="y";
-        SpatialDataLayer quintileLayer = new SpatialDataLayer("Quintile - majority vote", quintileGrid, GlobalResources.DATATYPE_SPATIAL, quintileInfo);        
-        table = GlobalResources.mappingProject.grid.createTableFromLayer(quintileLayer, false);
-        table.writeToFile(quintileInfo.sourceFile);        
-        GlobalResources.mappingProject.results.add(quintileLayer);
-        
-        DataSourceInfo quintileVotesInfo = new DataSourceInfo();
-        quintileVotesInfo.sourceFile=new File(outputFolder, "quintileVotes.csv").getAbsolutePath();
-        quintileVotesInfo.valueField="value";
-        quintileVotesInfo.xField="x";
-        quintileVotesInfo.yField="y";
-        SpatialDataLayer quintileVotesLayer = new SpatialDataLayer("Quintile votes", quintileVotesGrid, GlobalResources.DATATYPE_SPATIAL, quintileVotesInfo);        
-        table = GlobalResources.mappingProject.grid.createTableFromLayer(quintileVotesLayer, false);
-        table.writeToFile(quintileVotesInfo.sourceFile);        
-        GlobalResources.mappingProject.results.add(quintileVotesLayer);
-        
-        DataSourceInfo meanQuantileInfo = new DataSourceInfo();
-        meanQuantileInfo.sourceFile=new File(outputFolder, "meanPercentiles.csv").getAbsolutePath();
-        meanQuantileInfo.valueField="value";
-        meanQuantileInfo.xField="x";
-        meanQuantileInfo.yField="y";
-        SpatialDataLayer meanQuantilesLayer = new SpatialDataLayer("Mean percentile", meanQuantileGrid, GlobalResources.DATATYPE_SPATIAL, meanQuantileInfo);        
-        table = GlobalResources.mappingProject.grid.createTableFromLayer(meanQuantilesLayer, false);
-        table.writeToFile(meanQuantileInfo.sourceFile);        
-        GlobalResources.mappingProject.results.add(meanQuantilesLayer);
     }
 
 public StressorRankInfo getStressorInfoByName(String name) 
@@ -1143,6 +1150,5 @@ public StressorRankInfo getStressorInfoByName(String name)
             GlobalResources.statusWindow.println("Writing stressor contributions to: "+sourceInfo.sourceFile);
             table.writeToFile(sourceInfo.sourceFile); 
         }
-        
     }
 }

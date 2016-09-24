@@ -62,7 +62,7 @@ public class PercentCutter extends GeneralProcessor
     @Override
     public String getName() 
     {
-        return "Cut top " + paramValues[0]+ "%";
+        return "Cut top x%";
     }
 
     @Override

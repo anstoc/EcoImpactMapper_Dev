@@ -1840,6 +1840,8 @@ public class MainWindow extends javax.swing.JFrame {
                    GlobalResources.statusWindow.setVisible(true);
                    GlobalResources.statusWindow.setProgressVisible(true);
                    timer.stop();
+                   updateResultsList();
+                   updateGraphics();
               }
               catch(Exception e)
               {
