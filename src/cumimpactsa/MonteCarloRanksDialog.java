@@ -858,6 +858,7 @@ public class MonteCarloRanksDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_textFieldReducedAnalysisResMaxFocusLost
 
     private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
+        this.simulationReady=false;
         this.textFieldThreads.setText(GlobalResources.nrOfThreads+"");
         this.textFieldFilterDistance.setText(GlobalResources.lowPassFilterDistance+"");
     }//GEN-LAST:event_formComponentShown

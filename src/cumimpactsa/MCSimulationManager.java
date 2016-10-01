@@ -304,7 +304,7 @@ public class MCSimulationManager
         if(!this.sensitivityScoreErrors) {return;}
         float[] scoreErrors = new float[scores.size()];
         for(int i=0; i<scoreErrors.length;i++) {scoreErrors[i] = (float) ((scores.getMax()-scores.getMin())-2*(Math.random()*(scores.getMax()-scores.getMin())));} //random errors, can be +/- full score range between original max and min scores
-        float parameter = (float) Math.random();
+        float parameter = (float) (this.sensitivityScoreErrorsMin+(this.sensitivityScoreErrorsMax-this.sensitivityScoreErrorsMin)*Math.random());
         
         for(int i=0; i<scores.size();i++)
         {
