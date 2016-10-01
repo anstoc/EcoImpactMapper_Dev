@@ -254,6 +254,7 @@ public class MCSimulationManager
                 ArrayList<SpatialDataLayer> stressors = makeLayerListClone(GlobalResources.mappingProject.stressors);
                 eraseProcessingChains(stressors);
                 ArrayList<SpatialDataLayer> ecocomps = makeLayerListClone(GlobalResources.mappingProject.ecocomps);
+                eraseProcessingChains(ecocomps);
                 SensitivityScoreSet scores = GlobalResources.mappingProject.sensitivityScores.clone(stressors, ecocomps);
                 stressLinearDecay(stressors);
                 setReducedAnalysisRes(stressors, ecocomps);

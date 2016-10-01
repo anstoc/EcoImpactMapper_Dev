@@ -184,6 +184,7 @@ public class MorrisSampler
         stressors = makeLayerListClone(originalStressors);
         eraseProcessingChains(stressors);
         ecocomps = makeLayerListClone(originalEcocomps);
+        eraseProcessingChains(ecocomps);
         scores = originalScores.clone(stressors, ecocomps);
 
         //make changes according to model factors

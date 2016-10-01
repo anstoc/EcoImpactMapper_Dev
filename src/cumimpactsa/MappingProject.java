@@ -778,7 +778,6 @@ public class MappingProject
 
 	worker.execute();
 
-        
     }
 
     //Creates an absolute path from the project folderand a path relative to it
@@ -795,7 +794,7 @@ public class MappingProject
         {
             if(names[i].equals(resultName))
             {
-                if(names[i].equals(regions.getName())) regions=null;
+                if(regions!=null && names[i].equals(regions.getName())) regions=null;
                 results.remove(i);
             }   
         }

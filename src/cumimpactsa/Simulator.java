@@ -109,7 +109,7 @@ class Simulator
         else
         {
       
-            DiversityIndex divIndex = new DiversityIndex("not_saved", ecocomps);  //TODO if thr siulation doesn't change ecocomps, calculate only once as a static variable
+            DiversityIndex divIndex = new DiversityIndex("not_saved", ecocomps);  
             ecocompSum = divIndex.getGrid().getData();
         }
 
@@ -155,6 +155,10 @@ class Simulator
                             if(meanOrSum == Simulator.IMPACTS_AVG)
                             {
                                 summand=summand/ecocompSum[x][y];
+                            /*    if(ecocompSum[x][y]!=1)
+                                {
+                                    System.out.println("Div index !=1");
+                                }*/
                             }
                         
                             if(Double.isNaN(summand)) {summand=0;}
