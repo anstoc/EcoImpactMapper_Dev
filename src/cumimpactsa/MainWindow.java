@@ -263,10 +263,13 @@ public class MainWindow extends javax.swing.JFrame {
         jMenu3 = new javax.swing.JMenu();
         menuImpactIndex = new javax.swing.JMenuItem();
         menuImpactIndex1 = new javax.swing.JMenuItem();
+        menuImpactIndexAddMax = new javax.swing.JMenuItem();
         menuItemImpactIndexDominantSum = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
+        menuImpactIndexDomMax = new javax.swing.JMenuItem();
         menuItemDiminishingImpactsSum = new javax.swing.JMenuItem();
         menuItemDiminishingImpactMean = new javax.swing.JMenuItem();
+        menuImpactIndexAntMax = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         menuItemAreaPlots = new javax.swing.JMenuItem();
         menuUncertainty = new javax.swing.JMenu();
@@ -588,6 +591,14 @@ public class MainWindow extends javax.swing.JFrame {
         });
         jMenu3.add(menuImpactIndex1);
 
+        menuImpactIndexAddMax.setText("Additive model, max");
+        menuImpactIndexAddMax.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuImpactIndexAddMaxActionPerformed(evt);
+            }
+        });
+        jMenu3.add(menuImpactIndexAddMax);
+
         menuItemImpactIndexDominantSum.setText("Dominant stressor model, sum");
         menuItemImpactIndexDominantSum.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -604,7 +615,15 @@ public class MainWindow extends javax.swing.JFrame {
         });
         jMenu3.add(jMenuItem2);
 
-        menuItemDiminishingImpactsSum.setText("Antagonistic impact model, sum");
+        menuImpactIndexDomMax.setText("Dominant stressor model, max");
+        menuImpactIndexDomMax.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuImpactIndexDomMaxActionPerformed(evt);
+            }
+        });
+        jMenu3.add(menuImpactIndexDomMax);
+
+        menuItemDiminishingImpactsSum.setText("Antagonistic model, sum");
         menuItemDiminishingImpactsSum.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuItemDiminishingImpactsSumActionPerformed(evt);
@@ -612,13 +631,21 @@ public class MainWindow extends javax.swing.JFrame {
         });
         jMenu3.add(menuItemDiminishingImpactsSum);
 
-        menuItemDiminishingImpactMean.setText("Antagonistic impact model, mean");
+        menuItemDiminishingImpactMean.setText("Antagonistic model, mean");
         menuItemDiminishingImpactMean.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuItemDiminishingImpactMeanActionPerformed(evt);
             }
         });
         jMenu3.add(menuItemDiminishingImpactMean);
+
+        menuImpactIndexAntMax.setText("Antagonistic model, max");
+        menuImpactIndexAntMax.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuImpactIndexAntMaxActionPerformed(evt);
+            }
+        });
+        jMenu3.add(menuImpactIndexAntMax);
 
         jMenu1.add(jMenu3);
 
@@ -1911,7 +1938,7 @@ public class MainWindow extends javax.swing.JFrame {
                      }
                      catch(Exception e)
                      {
-                         GlobalResources.statusWindow.println("Error retriving results from dominant impact index (sum) calculation thread.");
+                         GlobalResources.statusWindow.println("Error retriving results from dominant impact index (max) calculation thread.");
                          GlobalResources.statusWindow.println(e);
                      }
                      finally
@@ -1922,7 +1949,7 @@ public class MainWindow extends javax.swing.JFrame {
             };
             try
             {
-                GlobalResources.statusWindow.setNewText("Calculating dominant impact index as sum...");
+                GlobalResources.statusWindow.setNewText("Calculating dominant impact index as max...");
                 timer.start();
                 worker.execute();
                 GlobalResources.statusWindow.setVisible(true);
@@ -2576,6 +2603,283 @@ public class MainWindow extends javax.swing.JFrame {
         dialog.setVisible(true);
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
+    private void menuImpactIndexAddMaxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuImpactIndexAddMaxActionPerformed
+         if(GlobalResources.mappingProject.grid==null)
+        {
+            JOptionPane.showMessageDialog(this, "No data loaded.");
+            return;
+        } 
+        //check if sensitivity scores exist
+        if(GlobalResources.mappingProject.sensitivityScores==null || GlobalResources.mappingProject.sensitivityScores.size()<1)
+        {
+            JOptionPane.showMessageDialog(this,"To calculate an impact index, you must first load sensitivity weights.");
+            return;
+        }
+
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fileChooser.setCurrentDirectory(new File(GlobalResources.lastUsedFolder));
+        int result = fileChooser.showSaveDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION)
+        {
+            final File selectedFile = fileChooser.getSelectedFile();
+            GlobalResources.lastUsedFolder=selectedFile.getParent();
+            
+            //calculate index in worker thread
+            GlobalResources.mappingProject.processing=true;
+            
+            SwingWorker<ImpactIndexMaxEcocomp, Void> worker = new SwingWorker<ImpactIndexMaxEcocomp, Void>() 
+            {
+                 @Override
+                 protected ImpactIndexMaxEcocomp doInBackground() throws Exception 
+                 {
+                    GlobalResources.statusWindow.println("Started worker thread...");
+                    ImpactIndexMaxEcocomp index = new ImpactIndexMaxEcocomp(selectedFile.getAbsolutePath(),GlobalResources.mappingProject.sensitivityScores, ImpactIndexMaxEcocomp.ADDITIVE);
+                    GlobalResources.mappingProject.processing=false;
+                    return index;
+                }
+                 
+                 @Override 
+                 protected void done()
+                 {
+                     GlobalResources.statusWindow.println("Worker thread is done.");
+                     GlobalResources.mappingProject.setProcessingProgressPercent(100);
+                     try    
+                     {
+                        ImpactIndexMaxEcocomp index = get();
+                        GlobalResources.statusWindow.println("Writing results to file: "+selectedFile.getAbsolutePath());
+                        CsvTableGeneral table = GlobalResources.mappingProject.grid.createTableFromLayer(index, false);
+                        table.writeToFile(selectedFile.getAbsolutePath());
+
+                        //write contributions
+                        CsvTableGeneral cTable = index.getScores().getContributionsAsTable();
+                        String basepath;
+                        int pos=selectedFile.getAbsolutePath().lastIndexOf(".");
+                        if(pos<1) {basepath=selectedFile.getAbsolutePath();}
+                        else {basepath = selectedFile.getAbsolutePath().substring(0,pos);}
+                        GlobalResources.statusWindow.println("Writing stressor and ecosystem component contributions to file: "+basepath+"_contributions.csv");
+                        cTable.writeToFile(basepath+"_contributions.csv");
+                     }
+                     catch(Exception e)
+                     {
+                         GlobalResources.statusWindow.println("Error retrieving results from impact index (max) thread.");
+                         GlobalResources.statusWindow.println(e);
+                     }
+                     finally
+                     {
+                         GlobalResources.statusWindow.ready2bClosed();
+                     }
+                 }
+            };
+            try
+            {
+                GlobalResources.statusWindow.setNewText("Calculating additive impact index as max...");
+                timer.start();
+                worker.execute();
+                GlobalResources.statusWindow.setVisible(true);
+                timer.stop();
+                
+                ImpactIndexMaxEcocomp index = worker.get();            
+                drawingPaneShows = index;
+                updateGraphics();
+
+                GlobalResources.mappingProject.results.add(index);
+
+                updateResultsList();
+                
+           }
+            catch(Exception e)
+            {
+                JOptionPane.showMessageDialog(this, "Error retrieving max impact index from worker thread.");
+            }   
+        }
+    }//GEN-LAST:event_menuImpactIndexAddMaxActionPerformed
+
+    private void menuImpactIndexDomMaxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuImpactIndexDomMaxActionPerformed
+         if(GlobalResources.mappingProject.grid==null)
+        {
+            JOptionPane.showMessageDialog(this, "No data loaded.");
+            return;
+        } 
+        //check if sensitivity scores exist
+        if(GlobalResources.mappingProject.sensitivityScores==null || GlobalResources.mappingProject.sensitivityScores.size()<1)
+        {
+            JOptionPane.showMessageDialog(this,"To calculate an impact index, you must first load sensitivity weights.");
+            return;
+        }
+
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fileChooser.setCurrentDirectory(new File(GlobalResources.lastUsedFolder));
+        int result = fileChooser.showSaveDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION)
+        {
+            final File selectedFile = fileChooser.getSelectedFile();
+            GlobalResources.lastUsedFolder=selectedFile.getParent();
+            
+            //calculate index in worker thread
+            GlobalResources.mappingProject.processing=true;
+            
+            SwingWorker<ImpactIndexMaxEcocomp, Void> worker = new SwingWorker<ImpactIndexMaxEcocomp, Void>() 
+            {
+                 @Override
+                 protected ImpactIndexMaxEcocomp doInBackground() throws Exception 
+                 {
+                    GlobalResources.statusWindow.println("Started worker thread...");
+                    ImpactIndexMaxEcocomp index = new ImpactIndexMaxEcocomp(selectedFile.getAbsolutePath(),GlobalResources.mappingProject.sensitivityScores, ImpactIndexMaxEcocomp.DOMINANT);
+                    GlobalResources.mappingProject.processing=false;
+                    return index;
+                }
+                 
+                 @Override 
+                 protected void done()
+                 {
+                     GlobalResources.statusWindow.println("Worker thread is done.");
+                     GlobalResources.mappingProject.setProcessingProgressPercent(100);
+                     try    
+                     {
+                        ImpactIndexMaxEcocomp index = get();
+                        GlobalResources.statusWindow.println("Writing results to file: "+selectedFile.getAbsolutePath());
+                        CsvTableGeneral table = GlobalResources.mappingProject.grid.createTableFromLayer(index, false);
+                        table.writeToFile(selectedFile.getAbsolutePath());
+
+                        //write contributions
+                        CsvTableGeneral cTable = index.getScores().getContributionsAsTable();
+                        String basepath;
+                        int pos=selectedFile.getAbsolutePath().lastIndexOf(".");
+                        if(pos<1) {basepath=selectedFile.getAbsolutePath();}
+                        else {basepath = selectedFile.getAbsolutePath().substring(0,pos);}
+                        GlobalResources.statusWindow.println("Writing stressor and ecosystem component contributions to file: "+basepath+"_contributions.csv");
+                        cTable.writeToFile(basepath+"_contributions.csv");
+                     }
+                     catch(Exception e)
+                     {
+                         GlobalResources.statusWindow.println("Error retrieving results from impact index (max) thread.");
+                         GlobalResources.statusWindow.println(e);
+                     }
+                     finally
+                     {
+                         GlobalResources.statusWindow.ready2bClosed();
+                     }
+                 }
+            };
+            try
+            {
+                GlobalResources.statusWindow.setNewText("Calculating additive impact index as max...");
+                timer.start();
+                worker.execute();
+                GlobalResources.statusWindow.setVisible(true);
+                timer.stop();
+                
+                ImpactIndexMaxEcocomp index = worker.get();            
+                drawingPaneShows = index;
+                updateGraphics();
+
+                GlobalResources.mappingProject.results.add(index);
+
+                updateResultsList();
+                
+           }
+            catch(Exception e)
+            {
+                JOptionPane.showMessageDialog(this, "Error retrieving max impact index from worker thread.");
+            }   
+        }
+    }//GEN-LAST:event_menuImpactIndexDomMaxActionPerformed
+
+    private void menuImpactIndexAntMaxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuImpactIndexAntMaxActionPerformed
+                                                    
+         if(GlobalResources.mappingProject.grid==null)
+        {
+            JOptionPane.showMessageDialog(this, "No data loaded.");
+            return;
+        } 
+        //check if sensitivity scores exist
+        if(GlobalResources.mappingProject.sensitivityScores==null || GlobalResources.mappingProject.sensitivityScores.size()<1)
+        {
+            JOptionPane.showMessageDialog(this,"To calculate an impact index, you must first load sensitivity weights.");
+            return;
+        }
+
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fileChooser.setCurrentDirectory(new File(GlobalResources.lastUsedFolder));
+        int result = fileChooser.showSaveDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION)
+        {
+            final File selectedFile = fileChooser.getSelectedFile();
+            GlobalResources.lastUsedFolder=selectedFile.getParent();
+            
+            //calculate index in worker thread
+            GlobalResources.mappingProject.processing=true;
+            
+            SwingWorker<ImpactIndexMaxEcocomp, Void> worker = new SwingWorker<ImpactIndexMaxEcocomp, Void>() 
+            {
+                 @Override
+                 protected ImpactIndexMaxEcocomp doInBackground() throws Exception 
+                 {
+                    GlobalResources.statusWindow.println("Started worker thread...");
+                    ImpactIndexMaxEcocomp index = new ImpactIndexMaxEcocomp(selectedFile.getAbsolutePath(),GlobalResources.mappingProject.sensitivityScores, ImpactIndexMaxEcocomp.ANTAGONISTIC);
+                    GlobalResources.mappingProject.processing=false;
+                    return index;
+                }
+                 
+                 @Override 
+                 protected void done()
+                 {
+                     GlobalResources.statusWindow.println("Worker thread is done.");
+                     GlobalResources.mappingProject.setProcessingProgressPercent(100);
+                     try    
+                     {
+                        ImpactIndexMaxEcocomp index = get();
+                        GlobalResources.statusWindow.println("Writing results to file: "+selectedFile.getAbsolutePath());
+                        CsvTableGeneral table = GlobalResources.mappingProject.grid.createTableFromLayer(index, false);
+                        table.writeToFile(selectedFile.getAbsolutePath());
+
+                        //write contributions
+                        CsvTableGeneral cTable = index.getScores().getContributionsAsTable();
+                        String basepath;
+                        int pos=selectedFile.getAbsolutePath().lastIndexOf(".");
+                        if(pos<1) {basepath=selectedFile.getAbsolutePath();}
+                        else {basepath = selectedFile.getAbsolutePath().substring(0,pos);}
+                        GlobalResources.statusWindow.println("Writing stressor and ecosystem component contributions to file: "+basepath+"_contributions.csv");
+                        cTable.writeToFile(basepath+"_contributions.csv");
+                     }
+                     catch(Exception e)
+                     {
+                         GlobalResources.statusWindow.println("Error retrieving results from impact index (max) thread.");
+                         GlobalResources.statusWindow.println(e);
+                     }
+                     finally
+                     {
+                         GlobalResources.statusWindow.ready2bClosed();
+                     }
+                 }
+            };
+            try
+            {
+                GlobalResources.statusWindow.setNewText("Calculating antagonistic impact index as max...");
+                timer.start();
+                worker.execute();
+                GlobalResources.statusWindow.setVisible(true);
+                timer.stop();
+                
+                ImpactIndexMaxEcocomp index = worker.get();            
+                drawingPaneShows = index;
+                updateGraphics();
+
+                GlobalResources.mappingProject.results.add(index);
+
+                updateResultsList();
+                
+           }
+            catch(Exception e)
+            {
+                JOptionPane.showMessageDialog(this, "Error retrieving max impact index from worker thread.");
+            }   
+        }            
+    }//GEN-LAST:event_menuImpactIndexAntMaxActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -2645,6 +2949,9 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenu menuDiversityIndexAvg;
     private javax.swing.JMenuItem menuImpactIndex;
     private javax.swing.JMenuItem menuImpactIndex1;
+    private javax.swing.JMenuItem menuImpactIndexAddMax;
+    private javax.swing.JMenuItem menuImpactIndexAntMax;
+    private javax.swing.JMenuItem menuImpactIndexDomMax;
     private javax.swing.JMenuItem menuItemAois;
     private javax.swing.JMenuItem menuItemAreaPlots;
     private javax.swing.JMenuItem menuItemDiminishingImpactMean;

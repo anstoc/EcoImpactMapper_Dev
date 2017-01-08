@@ -191,5 +191,62 @@ public class SensitivityScoreSet
         }
         return sum/count;
     }
+
+    SensitivityScoreSet getSubsetForEcocomp(String name, ArrayList<SpatialDataLayer> stressors, ArrayList<SpatialDataLayer> ecocomps) 
+    {
+        SensitivityScoreSet clone = new SensitivityScoreSet();
+        
+        for(int i=0; i<impacts.size();i++)
+        {
+            
+            if(impacts.get(i).getEcocomp().getName().equals(name))
+            {
+                SpatialDataLayer newStressor=null;
+                SpatialDataLayer newEcocomp=null;
+                for(int j=0;j<stressors.size();j++)
+                {
+                    if(stressors.get(j).getName().equals(impacts.get(i).getStressor().getName()))  
+                    {newStressor=stressors.get(j);}
+                }
+                for(int j=0;j<ecocomps.size();j++)
+                 {
+                   if(ecocomps.get(j).getName().equals(impacts.get(i).getEcocomp().getName()))  
+                    {newEcocomp=ecocomps.get(j);}
+                }
+                ImpactInfo newImpact=new ImpactInfo(newStressor,newEcocomp,impacts.get(i).getSensitivityScore());
+                clone.impacts.add(newImpact);
+       
+            }
+        }
+        clone.max=this.max;
+        clone.min=this.min;
+        return clone;
+    }
+
+    /*
+     * @summary Adds contributions from the subset to the respective stressor/ecosystem component combinations.
+     */
+    void addContributionsFromSubset(SensitivityScoreSet subset) 
+    {
+        ArrayList<ImpactInfo> subsetImpacts=subset.getAllScores();
+        for(int i=0; i<subsetImpacts.size();i++)
+        {
+            for(int j=0;j<this.impacts.size(); j++)
+            {
+                if(impacts.get(j).getEcocomp().getName().equals(subsetImpacts.get(i).getEcocomp().getName()) && impacts.get(j).getStressor().getName().equals(subsetImpacts.get(i).getStressor().getName()))
+                {
+                    impacts.get(j).addToContribution(subsetImpacts.get(i).getContribution());
+                }
+            }
+        }
+    }
+
+    void resetContributions() 
+    {
+        for(int i=0; i<impacts.size();i++)
+        {
+            impacts.get(i).setContribution(0);
+        }
+    }
     
 }

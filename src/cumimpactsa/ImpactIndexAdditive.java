@@ -20,6 +20,7 @@ public class ImpactIndexAdditive extends SpatialDataLayer
      
         super("Impact index",null,GlobalResources.DATATYPE_SPATIAL,null);
         
+        
         this.scores=sensitivityScores;
         source = new DataSourceInfo();
         source.sourceFile=saveFileName;

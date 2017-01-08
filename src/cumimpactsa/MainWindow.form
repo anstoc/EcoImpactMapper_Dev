@@ -200,6 +200,14 @@
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuImpactIndex1ActionPerformed"/>
                       </Events>
                     </MenuItem>
+                    <MenuItem class="javax.swing.JMenuItem" name="menuImpactIndexAddMax">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Additive model, max"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuImpactIndexAddMaxActionPerformed"/>
+                      </Events>
+                    </MenuItem>
                     <MenuItem class="javax.swing.JMenuItem" name="menuItemImpactIndexDominantSum">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Dominant stressor model, sum"/>
@@ -216,9 +224,17 @@
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem2ActionPerformed"/>
                       </Events>
                     </MenuItem>
+                    <MenuItem class="javax.swing.JMenuItem" name="menuImpactIndexDomMax">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Dominant stressor model, max"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuImpactIndexDomMaxActionPerformed"/>
+                      </Events>
+                    </MenuItem>
                     <MenuItem class="javax.swing.JMenuItem" name="menuItemDiminishingImpactsSum">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="Antagonistic impact model, sum"/>
+                        <Property name="text" type="java.lang.String" value="Antagonistic model, sum"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuItemDiminishingImpactsSumActionPerformed"/>
@@ -226,10 +242,18 @@
                     </MenuItem>
                     <MenuItem class="javax.swing.JMenuItem" name="menuItemDiminishingImpactMean">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="Antagonistic impact model, mean"/>
+                        <Property name="text" type="java.lang.String" value="Antagonistic model, mean"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuItemDiminishingImpactMeanActionPerformed"/>
+                      </Events>
+                    </MenuItem>
+                    <MenuItem class="javax.swing.JMenuItem" name="menuImpactIndexAntMax">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Antagonistic model, max"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuImpactIndexAntMaxActionPerformed"/>
                       </Events>
                     </MenuItem>
                   </SubComponents>
