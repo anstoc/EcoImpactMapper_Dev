@@ -271,6 +271,7 @@ public class MorrisFactor
                 if(f1==f2) 
                 {    
                     levelNames.remove(i);
+                    updateMinMaxLevel();
                     return;
                 }
             }
@@ -365,6 +366,8 @@ public class MorrisFactor
        }
        else
        {
+           minLevel=max;
+           maxLevel=min;
            for(int i=0; i<this.getLevelCodes().length; i++)
            {
                if(this.getLevelCodes()[i]<minLevel) {minLevel=getLevelCodes()[i];}

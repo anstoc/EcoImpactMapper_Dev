@@ -596,7 +596,7 @@ public class MorrisSampler
     public ElementaryEffects calculateElementaryEffects(int[][] orientationMatrix)
     {
         //orientation matrix: [steps][parameters]
-        
+
        //[steps][regions]
         float[][] regionOutputs = new float[orientationMatrix.length][originalRegions.grid.getUniqueDataValues().size()]; 
         float[][] stressorOutputs = new float[orientationMatrix.length][originalStressors.size()];
@@ -646,7 +646,9 @@ public class MorrisSampler
                 {
                     float diff=factors[changeIndex].getLevelCodes()[p2[changeIndex]]-factors[changeIndex].getLevelCodes()[p1[changeIndex]];
                     float range = factors[changeIndex].getRange();
+
                     delta = diff/range;
+                    //if(changeIndex==1) System.out.println("Diff: "+diff+", Range: "+range+"; Delta: "+delta);
                 }
 
 

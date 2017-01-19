@@ -17,7 +17,7 @@ public abstract class GlobalResources
     public static MappingProject mappingProject=new MappingProject();
     public static StatusWindow statusWindow;
     
-    public static boolean releaseVersion=true; //used to hide functions that are not fully implemented or tested in the public version
+    public static boolean releaseVersion=false; //used to hide functions that are not fully implemented or tested in the public version
     
     public static final float NODATAVALUE=-9999; //keep negative
     public static final int DATATYPE_STRESSOR=1;

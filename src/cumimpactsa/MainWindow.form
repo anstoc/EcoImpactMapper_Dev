@@ -202,7 +202,7 @@
                     </MenuItem>
                     <MenuItem class="javax.swing.JMenuItem" name="menuImpactIndexAddMax">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="Additive model, max"/>
+                        <Property name="text" type="java.lang.String" value="** Additive model, max"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuImpactIndexAddMaxActionPerformed"/>
@@ -226,7 +226,7 @@
                     </MenuItem>
                     <MenuItem class="javax.swing.JMenuItem" name="menuImpactIndexDomMax">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="Dominant stressor model, max"/>
+                        <Property name="text" type="java.lang.String" value="** Dominant stressor model, max"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuImpactIndexDomMaxActionPerformed"/>
@@ -250,7 +250,7 @@
                     </MenuItem>
                     <MenuItem class="javax.swing.JMenuItem" name="menuImpactIndexAntMax">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="Antagonistic model, max"/>
+                        <Property name="text" type="java.lang.String" value="** Antagonistic model, max"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuImpactIndexAntMaxActionPerformed"/>
@@ -271,6 +271,22 @@
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuItemAreaPlotsActionPerformed"/>
+                  </Events>
+                </MenuItem>
+                <MenuItem class="javax.swing.JMenuItem" name="menuMapIndividualImpactsSum">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="** Map individual impacts (Sum)..."/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuMapIndividualImpactsSumActionPerformed"/>
+                  </Events>
+                </MenuItem>
+                <MenuItem class="javax.swing.JMenuItem" name="menuMapIndividualImpactsMean">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="** Map individual impacts (Mean)..."/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuMapIndividualImpactsMeanActionPerformed"/>
                   </Events>
                 </MenuItem>
               </SubComponents>

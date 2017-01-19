@@ -621,6 +621,7 @@ public class MappingProject
                         }
                         else
                         {
+                            File t = new File(getAbsolutePath(file.get(row)));
                             inputData = new CsvTableFloat(new File(getAbsolutePath(file.get(row))));
                             GlobalResources.lastOpenedTable=inputData;
                             GlobalResources.lastOpenedTableFile=getAbsolutePath(file.get(row));

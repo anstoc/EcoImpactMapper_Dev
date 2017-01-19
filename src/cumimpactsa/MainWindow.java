@@ -272,6 +272,8 @@ public class MainWindow extends javax.swing.JFrame {
         menuImpactIndexAntMax = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         menuItemAreaPlots = new javax.swing.JMenuItem();
+        menuMapIndividualImpactsSum = new javax.swing.JMenuItem();
+        menuMapIndividualImpactsMean = new javax.swing.JMenuItem();
         menuUncertainty = new javax.swing.JMenu();
         jMenuItem5 = new javax.swing.JMenuItem();
         menuItemMonteCarloRanks = new javax.swing.JMenuItem();
@@ -591,7 +593,7 @@ public class MainWindow extends javax.swing.JFrame {
         });
         jMenu3.add(menuImpactIndex1);
 
-        menuImpactIndexAddMax.setText("Additive model, max");
+        menuImpactIndexAddMax.setText("** Additive model, max");
         menuImpactIndexAddMax.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuImpactIndexAddMaxActionPerformed(evt);
@@ -615,7 +617,7 @@ public class MainWindow extends javax.swing.JFrame {
         });
         jMenu3.add(jMenuItem2);
 
-        menuImpactIndexDomMax.setText("Dominant stressor model, max");
+        menuImpactIndexDomMax.setText("** Dominant stressor model, max");
         menuImpactIndexDomMax.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuImpactIndexDomMaxActionPerformed(evt);
@@ -639,7 +641,7 @@ public class MainWindow extends javax.swing.JFrame {
         });
         jMenu3.add(menuItemDiminishingImpactMean);
 
-        menuImpactIndexAntMax.setText("Antagonistic model, max");
+        menuImpactIndexAntMax.setText("** Antagonistic model, max");
         menuImpactIndexAntMax.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuImpactIndexAntMaxActionPerformed(evt);
@@ -660,6 +662,22 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
         jMenu2.add(menuItemAreaPlots);
+
+        menuMapIndividualImpactsSum.setText("** Map individual impacts (Sum)...");
+        menuMapIndividualImpactsSum.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuMapIndividualImpactsSumActionPerformed(evt);
+            }
+        });
+        jMenu2.add(menuMapIndividualImpactsSum);
+
+        menuMapIndividualImpactsMean.setText("** Map individual impacts (Mean)...");
+        menuMapIndividualImpactsMean.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuMapIndividualImpactsMeanActionPerformed(evt);
+            }
+        });
+        jMenu2.add(menuMapIndividualImpactsMean);
 
         menuDiversityIndexAvg.add(jMenu2);
 
@@ -2526,6 +2544,12 @@ public class MainWindow extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "No data loaded.");
             return;
         } 
+        //check if sensitivity scores exist
+        if(GlobalResources.mappingProject.sensitivityScores==null || GlobalResources.mappingProject.sensitivityScores.size()<1)
+        {
+            JOptionPane.showMessageDialog(this,"To calculate a sensitivity index, you must first load sensitivity weights.");
+            return;
+        }
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fileChooser.setCurrentDirectory(new File(GlobalResources.lastUsedFolder));
@@ -2880,6 +2904,94 @@ public class MainWindow extends javax.swing.JFrame {
         }            
     }//GEN-LAST:event_menuImpactIndexAntMaxActionPerformed
 
+    private void menuMapIndividualImpactsSumActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuMapIndividualImpactsSumActionPerformed
+        executeMapIndividualImpacts(false);            
+    }//GEN-LAST:event_menuMapIndividualImpactsSumActionPerformed
+
+    private void menuMapIndividualImpactsMeanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuMapIndividualImpactsMeanActionPerformed
+       executeMapIndividualImpacts(true); 
+    }//GEN-LAST:event_menuMapIndividualImpactsMeanActionPerformed
+
+    private void executeMapIndividualImpacts(final boolean avg)
+    {
+        if(GlobalResources.mappingProject.grid==null)
+        {
+            JOptionPane.showMessageDialog(this, "No data loaded.");
+            return;
+        } 
+        //check if sensitivity weights exist
+        if(GlobalResources.mappingProject.sensitivityScores==null || GlobalResources.mappingProject.sensitivityScores.size()<1)
+        {
+            JOptionPane.showMessageDialog(this,"To calculate individual impacts, you must first load sensitivity weights.");
+            return;
+        }
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fileChooser.setCurrentDirectory(new File(GlobalResources.lastUsedFolder));
+        int result = fileChooser.showSaveDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION)
+        {
+            final File selectedFile = fileChooser.getSelectedFile();
+            GlobalResources.lastUsedFolder=selectedFile.getParent();
+            //calculate index in worker thread
+            GlobalResources.mappingProject.processing=true;
+            GlobalResources.mappingProject.setProcessingProgressPercent(0);
+            
+            SwingWorker<IndividualImpactMapper, Void> worker = new SwingWorker<IndividualImpactMapper, Void>() 
+            {
+                 @Override
+                 protected IndividualImpactMapper doInBackground() throws Exception 
+                 {
+                    GlobalResources.statusWindow.println("Started background thread...");
+                    IndividualImpactMapper mapper = new IndividualImpactMapper();
+                    mapper.calculateIndividualImpacts(GlobalResources.mappingProject.sensitivityScores, avg);
+                    GlobalResources.statusWindow.println("Calculations finished, writing results...");
+                    mapper.writeToFile(selectedFile);
+                    GlobalResources.mappingProject.processing=false;
+                    return mapper;
+                }
+                 
+                 @Override 
+                 protected void done()
+                 {
+                     GlobalResources.statusWindow.println("Background thread is done.");
+                     GlobalResources.mappingProject.setProcessingProgressPercent(100);
+                     try    
+                     {
+                        IndividualImpactMapper mapper = get();
+                        
+                     }
+                     catch(Exception e)
+                     {
+                         GlobalResources.statusWindow.println( "Error retriving results from individual impacts thread. (1)");
+                         GlobalResources.statusWindow.println(e);
+                     }
+                     finally
+                     {
+                         GlobalResources.statusWindow.ready2bClosed();
+                     }
+                 }
+            };
+            try
+            {
+                GlobalResources.statusWindow.setNewText("Calculating impacts for all stressor-ecosystem component combinations...");
+                worker.execute();
+                timer.start();
+                GlobalResources.statusWindow.setVisible(true);
+                timer.stop();
+                IndividualImpactMapper mapper = worker.get();
+                //show in drawing pane;
+                this.setEnabled(true);  
+                updateResultsList();
+            }
+            catch(Exception e)
+            {
+                GlobalResources.statusWindow.println( "Error retriving results from individual impacts thread. (2)");
+                GlobalResources.statusWindow.println(e);
+            }
+        }
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -2967,6 +3079,8 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem menuItemRunCurrentTest;
     private javax.swing.JMenuItem menuItemSensitivityIndex;
     private javax.swing.JMenuItem menuLoad;
+    private javax.swing.JMenuItem menuMapIndividualImpactsMean;
+    private javax.swing.JMenuItem menuMapIndividualImpactsSum;
     private javax.swing.JMenuItem menuNew;
     private javax.swing.JMenuItem menuPreprocessing;
     private javax.swing.JMenu menuProject;
