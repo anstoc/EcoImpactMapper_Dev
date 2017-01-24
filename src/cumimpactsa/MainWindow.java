@@ -30,6 +30,8 @@ import javax.swing.SwingWorker;
 import javax.swing.SwingWorker.StateValue;
 import javax.swing.Timer;
 import javax.swing.WindowConstants;
+import java.nio.file.Paths;
+
 
 /**
  *
@@ -2926,7 +2928,7 @@ public class MainWindow extends javax.swing.JFrame {
             return;
         }
         JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         fileChooser.setCurrentDirectory(new File(GlobalResources.lastUsedFolder));
         int result = fileChooser.showSaveDialog(this);
         if (result == JFileChooser.APPROVE_OPTION)
@@ -2944,9 +2946,19 @@ public class MainWindow extends javax.swing.JFrame {
                  {
                     GlobalResources.statusWindow.println("Started background thread...");
                     IndividualImpactMapper mapper = new IndividualImpactMapper();
-                    mapper.calculateIndividualImpacts(GlobalResources.mappingProject.sensitivityScores, avg);
-                    GlobalResources.statusWindow.println("Calculations finished, writing results...");
-                    mapper.writeToFile(selectedFile);
+                    for(int i=0;i<GlobalResources.mappingProject.stressors.size();i++)
+                    {
+                        String name = GlobalResources.mappingProject.stressors.get(i).getName();
+                        GlobalResources.mappingProject.setProcessingProgressPercent((int) (100*((new Float(i))/GlobalResources.mappingProject.stressors.size())));
+                        GlobalResources.statusWindow.println("    Processing stressor: "+name);
+                        mapper.calculateIndividualImpacts(name, GlobalResources.mappingProject.sensitivityScores, avg);
+                        String filename="ind_impact_";
+                        if(avg) filename=filename+"avg_"; else filename=filename+"sum_";
+                        filename=filename+name+".csv";
+                        filename=Paths.get(selectedFile.getAbsolutePath(),filename).toString();
+                        GlobalResources.statusWindow.println("Calculations finished for "+name+", writing results to "+filename);
+                        mapper.writeToFile(new File(filename));
+                    }
                     GlobalResources.mappingProject.processing=false;
                     return mapper;
                 }

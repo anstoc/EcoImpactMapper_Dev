@@ -18,9 +18,9 @@ public class IndividualImpactMapper
     private SensitivityScoreSet scores;
     private ArrayList<IndividualImpact> impactList;
     
-    public void calculateIndividualImpacts(SensitivityScoreSet sensitivityScores, boolean avg)  //avg: if true, divides by nr of ecocomps in each cell
+    public void calculateIndividualImpacts(String whichStressor, SensitivityScoreSet sensitivityScores, boolean avg)  //avg: if true, divides by nr of ecocomps in each cell
     {
-
+        
         impactList=new ArrayList<IndividualImpact>();
         //needed to calculate average and impact contributions
         DiversityIndex divIndex = new DiversityIndex("not_saved");
@@ -28,28 +28,29 @@ public class IndividualImpactMapper
         
         for(int i=0; i<sensitivityScores.size();i++)
         {
-            GlobalResources.mappingProject.setProcessingProgressPercent((int) (100*i/sensitivityScores.size()));
-            
-            ImpactInfo impact = sensitivityScores.getInfo(i);
-            
-            float score = (float) impact.getSensitivityScore();
-            float[][] ecocompData=impact.getEcocomp().getProcessedGrid().getData();
-            float[][] stressorData=impact.getStressor().getProcessedGrid().getData();
-            float z=0;
-            for(int x=0;x<ecocompData.length;x++)
+            if(sensitivityScores.getAllScores().get(i).getStressor().getName().equals(whichStressor))
             {
-                for(int y=0; y<ecocompData[0].length; y++)
+                ImpactInfo impact = sensitivityScores.getInfo(i);
+
+                float score = (float) impact.getSensitivityScore();
+                float[][] ecocompData=impact.getEcocomp().getProcessedGrid().getData();
+                float[][] stressorData=impact.getStressor().getProcessedGrid().getData();
+                float z=0;
+                for(int x=0;x<ecocompData.length;x++)
                 {
-                    if(stressorData[x][y]!=GlobalResources.NODATAVALUE && ecocompData[x][y]!=GlobalResources.NODATAVALUE && ecocompData[x][y]!=0)
+                    for(int y=0; y<ecocompData[0].length; y++)
                     {
-                        float summand=score*ecocompData[x][y]*stressorData[x][y];
-                        if(avg)
+                        if(stressorData[x][y]!=GlobalResources.NODATAVALUE && ecocompData[x][y]!=GlobalResources.NODATAVALUE && ecocompData[x][y]!=0)
                         {
-                            summand=summand/ecocompSum[x][y];
-                        }
-                        if(!Double.isNaN(summand))
-                        {
-                           impactList.add(new IndividualImpact(x,y,impact,summand));
+                            float summand=score*ecocompData[x][y]*stressorData[x][y];
+                            if(avg)
+                            {
+                                summand=summand/ecocompSum[x][y];
+                            }
+                            if(!Double.isNaN(summand))
+                            {
+                               impactList.add(new IndividualImpact(x,y,impact,summand));
+                            }
                         }
                     }
                 }
