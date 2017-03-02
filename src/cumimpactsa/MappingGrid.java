@@ -146,7 +146,6 @@ public class MappingGrid
                     Point2DInt gridCoords=getGridCoords(new Point2D(worldX[i],worldY[i]));
                     emptyGrid[gridCoords.x][gridCoords.y]=0;
                 }
-            
         }
         
         return Helpers.deepArrayCopy(emptyGrid);

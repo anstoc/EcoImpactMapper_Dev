@@ -71,6 +71,8 @@ public class MorrisSampler
     private SensitivityScoreSet originalScores;
     private SpatialDataLayer originalRegions;
     
+    private float[][][] eeMaps=null;
+    
     public String prefix="";
     
     public void setup()
@@ -78,11 +80,16 @@ public class MorrisSampler
         //set up parameter names
         parameterNames=MorrisFactor.getFactorNames();
         
-        //make copies of the original data (WHY?)
-        originalEcocomps=makeLayerListClone(GlobalResources.mappingProject.ecocomps);
+        //make copies of the original data
+        originalEcocomps=GlobalResources.mappingProject.ecocomps;
+        originalStressors=GlobalResources.mappingProject.stressors;
+        originalScores=GlobalResources.mappingProject.sensitivityScores;
+        originalRegions=GlobalResources.mappingProject.regions;
+        
+        /*originalEcocomps=makeLayerListClone(GlobalResources.mappingProject.ecocomps);
         originalStressors=makeLayerListClone(GlobalResources.mappingProject.stressors);
         originalScores=GlobalResources.mappingProject.sensitivityScores.clone(originalStressors, originalEcocomps);
-        originalRegions=GlobalResources.mappingProject.regions.clone();
+        originalRegions=GlobalResources.mappingProject.regions.clone();*/
     }
     
     //returns a vector representing the index for each parameter's level
@@ -234,125 +241,60 @@ public class MorrisSampler
         
     }
     
-      //returned object contains one rank for each region, stressor and ecocomp
-      //this version is more computaionally efficient as it only reprocesses spatial data
-      //that change as consequence of parameters
-    /*public MappingResults calculateOutputs(float[] parameters, float[] lastParameters)	
+    //returned 2d array contains model output for the given parameters;
+    //if rankBased==true, then the outputs are CDF-transformed; otherwise they are
+    //just rescaled so that the maximum is 1.
+    private float[][] calculateSpatialOutputs(int[] parameters, boolean rankBased)	
     {
-        
-        Simulator simulator=null;
+        stressors = makeLayerListClone(originalStressors);
+        eraseProcessingChains(stressors);
+        ecocomps = makeLayerListClone(originalEcocomps);
+        eraseProcessingChains(ecocomps);
+        scores = originalScores.clone(stressors, ecocomps);
 
-        //first call, there are no old parameters. Create everything from scratch.
-        if(lastParameters==null)
-        {
-            return calculateOutputs(parameters);
-        }
+        //make changes according to model factors
+        //first the changes that affect stressors' processing chains
+        //linear decay
+ 
+        int levelIndex = parameters[2];
+        float decayDistance = factors[2].getLevelCodes()[levelIndex];
+        setStressLinearDecay(stressors, decayDistance);
+      
+
+        //improved stressor resolution
+        float improveRes=factors[5].getLevelCodes()[parameters[5]];
+        if(parameters[5]>0) setImprovedStressorResolution(stressors);
+        else GlobalResources.statusWindow.println("        "+prefix+": No improved stressor resolution.");
+
+        //reduced analysis resolution
+        //float reductionFactor=factors[4].getLevelCodes()[parameters[4]];
+        if(parameters[4]>0) setReducedAnalysisRes(stressors, ecocomps, 2);//(int) reductionFactor);
+        else GlobalResources.statusWindow.println("        "+prefix+": No reduced analysis resolution.");
         
-        //set up model inputs
-        //reset scores on each run (may not always be needed, but is computationally cheap)
-        scores = GlobalResources.mappingProject.sensitivityScores.clone(stressors, ecocomps);
+        //transformation
+        addTransformations(stressors, factors[7].getLevelCodes()[parameters[7]]);
+        addToProcessingChains(stressors,new Rescaler());
+
+        //remove stressors
+        int activeStressors=disableStressorData(stressors, scores, factors[0].getLevelCodes()[parameters[0]]);
+
+        //add sensitivity weight errors
+        changeSensitivityScores(scores,factors[1].getLevelCodes()[parameters[1]]);
+
+        //set non-linear responses
+        if(parameters[3]>0) setResponseFunctions(scores,factors[3].getLevelCodes()[parameters[3]]);        
+   
+        //run simulation
+        Simulator simulator = new Simulator(stressors,ecocomps,originalRegions,scores,getMEM(factors[8].getLevelCodes()[parameters[8]]), getImpactModel(parameters[6]),prefix);
+        DataGrid result=simulator.getResult().getGrid();
+        if(rankBased) {result=new PercentileTransformer().process(result);}
+        else {result=new Rescaler().process(result);}
+        //.System.out.println("Calculated output map with max: "+result.getMax()+" and min: "+result.getMin());
+        return result.getData();
         
-        //ecocomps need only be changed if analysis resolution changes
-        if(parameters[4]!=lastParameters[4])
-        {
-            ecocomps = makeLayerListClone(GlobalResources.mappingProject.ecocomps);
-        }
-        
-        //stressors need to be completely changed if analysis resolution changes or transformation changes
-        if(parameters[4]!=lastParameters[4] || parameters[7]!=lastParameters[7])
-        {
-            //make deep copies of model inputs
-            stressors = makeLayerListClone(GlobalResources.mappingProject.stressors);
-            MCSimulationManager.eraseProcessingChains(stressors);
-       
-            //make changes according to model factors
-            int activeStressors = GlobalResources.mappingProject.stressors.size();
-            disableStressorData(stressors, scores, parameters[0]);
-            changeSensitivityScores(scores,parameters[1]);
-            if(parameters[2]>0) 
-            {    
-                setPointStressLinearDecay(stressors, parameters[2]);
-            }
-            if(parameters[3]>0) setResponseFunctions(scores,parameters[3]);
-            if(parameters[4]>0) setReducedAnalysisRes(stressors, ecocomps, (int) parameters[4]);
-            if(parameters[5]>0) setImprovedStressorResolution(stressors);
-            addTransformations(stressors, parameters[7]);
-                
-            //add rescaling as default processing
-            MCSimulationManager.addToProcessingChains(stressors,new Rescaler());
-                
-             //run simulation
-        
-            simulator = new Simulator(stressors,ecocomps, scores,getMEM(parameters[8]), getImpactModel(parameters[6]));
-        }
-        //only pre-processing for points changed; thus, only point spatial data need to be recreated
-        //note that in the morris simulation, only one parameter changes at a time. i.e. 2 and 5 can't change simultaneously
-        else if(parameters[2]!=lastParameters[2])
-        {
-            //make deep copies of point model inputs
-            stressors = MCSimulationManager.makeLayerListCloneBySpatialDataType(GlobalResources.mappingProject.stressors,GlobalResources.SPATIALDATATYPE_POINT);
-            eraseProcessingChainsForSpatialDataType(stressors,GlobalResources.SPATIALDATATYPE_POINT);
-       
-            //make changes according to model factors
-            int activeStressors = GlobalResources.mappingProject.stressors.size();
-            disableStressorData(stressors, scores, parameters[0]);
-            changeSensitivityScores(scores,parameters[1]);
-            if(parameters[2]>0) 
-            {    
-                setPointStressLinearDecay(stressors, parameters[2]);
-            }
-            if(parameters[3]>0) setResponseFunctions(scores,parameters[3]);
-            if(parameters[4]>0) setReducedAnalysisResForDataType(stressors, (int) parameters[4],GlobalResources.SPATIALDATATYPE_POINT);
-            //if(parameters[5]>0) setImprovedStressorResolution(stressors); NOT NEEDED AS POINT DATA, NOT POLYGON DATA, HAVE CHANGED
-            addTransformationsForSpatialDataType(stressors, parameters[7],GlobalResources.SPATIALDATATYPE_POINT);
-                
-            //add rescaling as default processing
-            MCSimulationManager.addToProcessingChainsBySpatialDataType(stressors,new Rescaler(),GlobalResources.SPATIALDATATYPE_POINT);
-                
-             //run simulation
-        
-            simulator = new Simulator(stressors,ecocomps, scores,getMEM(parameters[8]), getImpactModel(parameters[6]));
-        }
-        //only pre-processing for polygons changed; thus, only polygon spatial data need to be recreated
-        else if(parameters[5]!=lastParameters[5])
-        {
-            //make deep copies of polygon model inputs
-            stressors = MCSimulationManager.makeLayerListCloneBySpatialDataType(GlobalResources.mappingProject.stressors,GlobalResources.SPATIALDATATYPE_POLYGON);
-            eraseProcessingChainsForSpatialDataType(stressors,GlobalResources.SPATIALDATATYPE_POLYGON);
-       
-            //make changes according to model factors
-            int activeStressors = GlobalResources.mappingProject.stressors.size();
-            disableStressorData(stressors, scores, parameters[0]);
-            changeSensitivityScores(scores,parameters[1]);
-            //if(parameters[2]>0) CAN'T HAVE CHANGED BECAUSE X5 has CHANGED, NOT X2- NO ACTION NEEDED
-            //{    
-             //   setPointStressLinearDecay(stressors, parameters[2]);
-            //}
-            if(parameters[3]>0) setResponseFunctions(scores,parameters[3]);
-            if(parameters[4]>0) setReducedAnalysisResForDataType(stressors, (int) parameters[4],GlobalResources.SPATIALDATATYPE_POLYGON);
-            if(parameters[5]>0) setImprovedStressorResolution(stressors);
-            addTransformationsForSpatialDataType(stressors, parameters[7],GlobalResources.SPATIALDATATYPE_POLYGON);
-                
-            //add rescaling as default processing
-            MCSimulationManager.addToProcessingChainsBySpatialDataType(stressors,new Rescaler(),GlobalResources.SPATIALDATATYPE_POLYGON);
-                
-             //run simulation
-        
-            simulator = new Simulator(stressors,ecocomps, scores,getMEM(parameters[8]), getImpactModel(parameters[6]));
-        }
-        
-        //get results
-        MappingResults results = new MappingResults();
-        
-        ArrayList<float[]> regionResults = simulator.getRegionCodesAndRanks(GlobalResources.mappingProject.regions.getGrid().getData()); //return region ranks in order in which region codes appear
-        regionCodes = regionResults.get(0);
-        results.regionRanks=regionResults.get(1);
-        results.stressorRanks=simulator.getStressorRanks();
-        results.ecocompRanks=simulator.getEcocompRanks();
-        
-        return results;
-        
-    }*/
+    }
+    
+
     
     private  int getMEM(float parameter) 
     {
@@ -701,6 +643,97 @@ public class MorrisSampler
         }
         GlobalResources.statusWindow.println("    "+prefix+    "Trajectory completed");
         return elementaryEffects;
+    }
+    
+    /**
+        Calculates one float[][] grid for each factor, following a random trajectory through factor space.
+        The produced grids contain the absolute values of the elementary effects on each grid cell. 
+        Results are stored in an internal variable and can be accessed
+    **/
+    public void calculateEEMaps(boolean rankBased)
+    {
+        //set up trajectory
+        int[][] orientationMatrix = getOrientationMatrix();
+        setStochasticModelComponents(originalScores, originalStressors);
+        
+        //evaluate model for each orientation matrix row
+        float[][][] results=new float[orientationMatrix.length][][];
+        for(int step=0; step<orientationMatrix.length; step++)
+        {
+            int[] pVector=orientationMatrix[step];
+            GlobalResources.statusWindow.println("    "+prefix+": Calculating elementary effect for orientation matrix row "+step);
+            results[step] = calculateSpatialOutputs(pVector,rankBased); 
+        }
+        //calculate elementary effects
+        eeMaps=new float[results.length-1][][];
+        
+        for(int i=0; i<orientationMatrix.length-1;i++)
+        {
+            
+            int[] p1 = orientationMatrix[i];
+            int[] p2 = orientationMatrix[i+1];
+            //find out which parameter changes
+            int changeIndex=-1;
+            int changedCount=0;
+            for(int p=0; p<p1.length;p++)
+            {
+                if(p1[p]!=p2[p])
+                {
+                    changeIndex=p;
+                    changedCount++;
+                }
+            }
+            if(changeIndex>-1)
+            {
+                //calculate delta for this factor
+                float delta;
+                if(factors[changeIndex].isQualitative() && !factors[changeIndex].isNumericalSortingForced())
+                {
+                    delta=1;
+                }
+                else 
+                {
+                    float diff=factors[changeIndex].getLevelCodes()[p2[changeIndex]]-factors[changeIndex].getLevelCodes()[p1[changeIndex]];
+                    float range = factors[changeIndex].getRange();
+
+                    delta = diff/range;
+                    //if(changeIndex==1) System.out.println("Diff: "+diff+", Range: "+range+"; Delta: "+delta);
+                }
+
+                float[][] outputs1=results[i];
+                float[][] outputs2=results[i+1];
+                
+                //[parameter][x][y]
+                float[][] eeMap = new float[outputs1.length][outputs1[0].length];
+                for(int x=0; x<outputs1.length; x++)
+                    for(int y=0; y<outputs1[0].length; y++)
+                    {
+                        float y1=outputs1[x][y];
+                        float y2=outputs2[x][y];
+                        if(y1==GlobalResources.NODATAVALUE || y2==GlobalResources.NODATAVALUE)
+                        {
+                            eeMap[x][y]=GlobalResources.NODATAVALUE;
+                        }
+                        else
+                        {    
+                            eeMap[x][y] = Math.abs((y2-y1)/delta);
+                        }
+                    }
+               eeMaps[changeIndex] = eeMap;
+            }
+        }
+    }
+    
+    public float[][][] getEEMaps()
+    {
+        if(eeMaps==null) return new float[0][][];
+        else return eeMaps;
+    }
+    
+    public String[] getFactorNames()
+    {
+        if(parameterNames!=null) return parameterNames;
+        else return new String[0];
     }
     
     public void processTrajectories(int sampleSize)

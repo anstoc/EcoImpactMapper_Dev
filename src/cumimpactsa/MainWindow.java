@@ -1023,22 +1023,14 @@ public class MainWindow extends javax.swing.JFrame {
 
     }//GEN-LAST:event_buttonEcoMinusActionPerformed
 
-    private void menuLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuLoadActionPerformed
-
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        fileChooser.setCurrentDirectory(new File(GlobalResources.lastUsedFolder));
-        int result = fileChooser.showOpenDialog(this);
-        
-        if (result == JFileChooser.APPROVE_OPTION)
-        {
-            File selectedFile = fileChooser.getSelectedFile();
+    protected void loadProject(File selectedFile, boolean silent)
+    {
             GlobalResources.statusWindow.setNewText("Loading project: "+selectedFile.getAbsolutePath());
             GlobalResources.statusWindow.println();
             GlobalResources.statusWindow.setProgress(0);
-            GlobalResources.lastUsedFolder=selectedFile.getParent();
+            GlobalResources.statusWindow.setAutoClose(silent); 
             this.update(this.getGraphics());
-            
+            GlobalResources.lastUsedFolder=selectedFile.getParent();
             try
             {
                 
@@ -1080,8 +1072,19 @@ public class MainWindow extends javax.swing.JFrame {
                 this.setResizable(true);
                 this.setFocusable(true);
             }
-
-            
+        
+    }
+    
+    private void menuLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuLoadActionPerformed
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fileChooser.setCurrentDirectory(new File(GlobalResources.lastUsedFolder));
+        int result = fileChooser.showOpenDialog(this);
+        
+        if (result == JFileChooser.APPROVE_OPTION)
+        {
+            File selectedFile = fileChooser.getSelectedFile();
+            loadProject(selectedFile,false);
         }
     }//GEN-LAST:event_menuLoadActionPerformed
 
@@ -2461,28 +2464,7 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_menuItemMorrisActionPerformed
 
     private void menuItemRunCurrentTestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemRunCurrentTestActionPerformed
-       //got through all stressors; make a clone; calculate unique values; and compare results using 2 methods
-        /*int passed=0; 
-        int failed=0;
-        for(int i=0; i<GlobalResources.mappingProject.stressors.size(); i++)
-        {
-            DataGrid grid1 = GlobalResources.mappingProject.stressors.get(i).getGrid().clone();
-            DataGrid grid2 = GlobalResources.mappingProject.stressors.get(i).getGrid().clone();
-            grid1.createDataInfo();
-            grid2.createDataInfo2();
-            ArrayList<Double> uniqueValues1=grid1.getUniqueDataValues();
-            ArrayList<Double> uniqueValues2=grid2.getUniqueDataValues();
-            if(uniqueValues1.equals(uniqueValues2))
-            {
-                passed++;
-            }
-            else
-            {
-                failed++;
-            }
-           
-        }
-         JOptionPane.showMessageDialog(null,"Passed: "+passed+";   failed: "+failed);*/
+      RAccess.getEEMapsParallel(true, 10);
     }//GEN-LAST:event_menuItemRunCurrentTestActionPerformed
 
     private void radioButtonMenuItemQuantileStretchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioButtonMenuItemQuantileStretchActionPerformed

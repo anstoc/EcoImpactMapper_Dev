@@ -66,6 +66,5 @@ public class SensitivityIndex extends SpatialDataLayer
         }
         
        grid = new DataGrid(data,max,min,GlobalResources.NODATAVALUE);
-    }
-    
+    } 
 }

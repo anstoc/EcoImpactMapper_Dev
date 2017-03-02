@@ -20,6 +20,7 @@ import javax.swing.JOptionPane;
 public class StatusWindow extends javax.swing.JDialog {
 
     private BufferedWriter bw=null;
+    private boolean autoClose=false;
     
     /**
      * Creates new form StatusWindow
@@ -30,6 +31,10 @@ public class StatusWindow extends javax.swing.JDialog {
         initComponents();
     }
 
+    public void setAutoClose(boolean autoClose)
+    {
+        this.autoClose=autoClose;
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -155,8 +160,14 @@ public class StatusWindow extends javax.swing.JDialog {
                 println("Lost connection to log file.");
                 println(ex);
             }
-}
-        this.jButton1.setEnabled(true);
+        }
+        if(!autoClose) this.jButton1.setEnabled(true);
+        else 
+        {
+            this.jButton1.setEnabled(false);
+            this.setVisible(false);
+        }
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

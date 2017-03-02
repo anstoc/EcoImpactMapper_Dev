@@ -10,6 +10,8 @@ package cumimpactsa;
  */
 public class CumImpactSA {
 
+    public static MainWindow mainWindow;
+    
     /**
      * @param args the command line arguments
      */
@@ -19,4 +21,5 @@ public class CumImpactSA {
         MainWindow mainWindow=new MainWindow();
         mainWindow.setVisible(true);
     }
+    
 }
