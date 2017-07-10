@@ -6,6 +6,8 @@
 package cumimpactsa;
 
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.SwingWorker;
 
 /**
@@ -122,6 +124,7 @@ public class RAccess
         ms.calculateEEMaps(rankBased);
         return ms.getEEMaps();
     }
+   
     
     public static float[][][][] getEEMapsParallel(boolean rankBased, int threads)
     {
@@ -143,8 +146,7 @@ public class RAccess
         }
         catch(Exception e)
         {
-            GlobalResources.statusWindow.println("Error in elementary effects calculations.");
-            GlobalResources.statusWindow.println(e);
+     
         }
         
         MorrisSampler[] samplers = new MorrisSampler[threads];
@@ -164,4 +166,63 @@ public class RAccess
         }
         return result;
     }
+    
+    public static float[][] getRegionEEsParallel(int r, boolean rankBased, int threads)
+    { 
+           
+            //create worker threads
+            GlobalResources.mappingProject.regions.grid.getUniqueDataValues();
+            final MorrisWorker[] workers = new MorrisWorker[threads];
+            for(int i=0; i<workers.length; i++)
+            {
+               workers[i]=new MorrisWorker();
+                workers[i].sampleSize=(int) Math.ceil(r*1.0/threads);
+                workers[i].workerNr=i+1;
+                workers[i].rankBased=rankBased;
+                workers[i].working=true; 
+            }
+            for(int i=0; i<workers.length; i++)
+            {
+                workers[i].execute();
+            }
+            MorrisSampler[] samplers = new MorrisSampler[threads];
+            try
+            {
+                for(int i=0; i<samplers.length; i++)
+                {
+                    samplers[i] = workers[i].get();
+                }
+            }
+            catch(Exception e) 
+            {
+               System.out.println("Error during EE calculation.");
+            }
+            for(int i=samplers.length-2; i>=0; i--)
+            {
+                samplers[i].mergeResults(samplers[i+1]);
+            }
+            samplers[0].calculateElementaryEffectStatistics(r);
+            
+            float[][] result=samplers[0].getRegionMuStars();
+            return result;
+    }
+    
+    public static int setRegions(String regionFile)
+    {
+        CsvTableFloat table = new CsvTableFloat(new File(regionFile));
+        float[] x = table.getColumn("\"X\"");
+        float[] y = table.getColumn("\"Y\"");
+        float[] values=table.getColumn("\"value\"");
+        
+        DataSourceInfo info=new DataSourceInfo();
+        info.sourceFile=regionFile;
+        info.valueField="\"value\"";
+        info.xField="\"X\"";
+        info.yField="\"Y\"";
+        
+        DataGrid grid = GlobalResources.mappingProject.grid.createDataGrid(x, y, values);
+        GlobalResources.mappingProject.addData("Regions", grid, GlobalResources.DATATYPE_REGIONS, info);
+        return 1;
+    }
+    
 }

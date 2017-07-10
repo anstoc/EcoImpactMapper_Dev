@@ -763,7 +763,7 @@ public class MainWindow extends javax.swing.JFrame {
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(drawingPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                        .add(jLabel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
+                        .add(jLabel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 229, Short.MAX_VALUE)
                         .add(249, 249, 249))
                     .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -2336,6 +2336,8 @@ public class MainWindow extends javax.swing.JFrame {
               //
               try
               {
+                  GlobalResources.mappingProject.regions.grid.getUniqueDataValues(); //make sure they're already calculated;
+                                            //as otherwise multiple threads may try to calculate and write them at the same time
                   GlobalResources.statusWindow.println("Starting worker threads...");
                    for(int i=0; i<workers.length; i++)
                    {
@@ -2384,87 +2386,11 @@ public class MainWindow extends javax.swing.JFrame {
                   GlobalResources.statusWindow.println(e);
               }
         }
-       /*
-       boolean multiThreading=true;
-       if(!dialog.wasCanceled())
-       {
-       
-           long startTime=System.currentTimeMillis();
-           int r = dialog.getSampleSize();
-           String outputFolder = dialog.getOutputFolder();
-           //do the multi-threading here: create 2 Morris samplers in 2 threads; they don't have static variables and thus won't interefere;
-           //call their processTrajectories functions; then merge them (new method MorrisSampler.mergeResults(MorrisSampler sampler2) needed);
-           //then call the merged one's calculate elementary effect stats methods
-           
-           if(!multiThreading)
-           {
-                MorrisSampler ms = new MorrisSampler();
-                ms.setup();
-                ms.processTrajectories(r);  //this one calculates the elementary effects
-                ms.calculateElementaryEffectStatistics(r);
-                ms.saveResults(outputFolder);
-                long duration=System.currentTimeMillis()-startTime;
-                System.out.println("Calculated "+r+" elementary effects in "+duration*0.001*(1.0/60)*(1.0/60)+" hours.");
-           }
-           else
-           {
-               MorrisWorker mw1=new MorrisWorker();
-               MorrisWorker mw2=new MorrisWorker();
-               mw1.sampleSize=(int) Math.ceil(0.5*r);
-               mw2.sampleSize=(int) Math.ceil(0.5*r);
-               mw1.workerNr=1;
-               mw2.workerNr=2;
-               mw1.working=true;
-               mw2.working=true;
-               
-              try
-              {
-                    mw1.execute();
-                    Thread.sleep(1000);
-                    mw2.execute();
-                    Thread.sleep(1000);
-                    //block while processing
-                    while(mw1.working || mw2.working)
-                    {
-                        if(mw1.getState().equals(StateValue.DONE)) 
-                        {
-                            System.out.println("THREAD 1 STATE: "+mw1.getState());
-                        }
-                        if(mw2.getState().equals(StateValue.DONE)) 
-                        {
-                            System.out.println("THREAD 2 STATE: "+mw2.getState());
-                        }
-                        
-                        Thread.sleep(1000);
-                    }
-                    System.out.println("Threads completed.");
-                    //both threads are done
-                    //Thread.sleep(500); //
-                    MorrisSampler ms1 = mw1.get();
-                    MorrisSampler ms2 = mw2.get();
-                    ms1.mergeResults(ms2);
-                    ms1.calculateElementaryEffectStatistics(r);
-                    ms1.saveResults(outputFolder);
-                    long duration=System.currentTimeMillis()-startTime;
-                    System.out.println("Calculated "+r+" elementary effects in "+duration*0.001*(1.0/60)*(1.0/60)+" hours.");
-              }
-              catch(Throwable e)
-              {
-                  JOptionPane.showMessageDialog(this, "Multithreading error: "+e.getMessage());
-                  System.out.println("Multithreading error: "+e.getMessage());
-                  System.out.println(e.getStackTrace()[0]);
-                  System.out.println(e.getStackTrace()[1]);
-                  System.out.println(e.getStackTrace()[2]);
-              }
-
-           }
-
-           
-       }*/
     }//GEN-LAST:event_menuItemMorrisActionPerformed
 
     private void menuItemRunCurrentTestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemRunCurrentTestActionPerformed
-      RAccess.getEEMapsParallel(true, 10);
+
+        RAccess.getRegionEEsParallel(6, false, 3);
     }//GEN-LAST:event_menuItemRunCurrentTestActionPerformed
 
     private void radioButtonMenuItemQuantileStretchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioButtonMenuItemQuantileStretchActionPerformed

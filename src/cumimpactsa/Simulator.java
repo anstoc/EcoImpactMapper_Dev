@@ -354,7 +354,7 @@ class Simulator
     //first item of returned list are region codes, second item are ranks
     public ArrayList<float[]> getRegionCodesAndRanks(float[][] regionCodes)
     {
-        ArrayList<RegionRankInfo> regions = new ArrayList<RegionRankInfo>();
+        ArrayList<RegionRankInfo> regions = new ArrayList<>();
         float[][] impacts = getResult().getGrid().getData();
         for(int x=0; x<regionCodes.length; x++)
         {
@@ -584,6 +584,72 @@ class Simulator
             }
         }
         return ranks;
+    }
+
+    //only difference to rank-based calculations above 
+    public ArrayList<float[]> getRegionNormalizedImpact(float[][] regionCodes) 
+    {
+        ArrayList<RegionRankInfo> regions = new ArrayList<>();
+        float[][] impacts = getResult().getGrid().getData();
+        for(int x=0; x<regionCodes.length; x++)
+        {
+            for(int y=0; y<regionCodes[0].length; y++)
+            {
+                if(regionCodes[x][y]!=GlobalResources.NODATAVALUE)
+                {
+                    float code =regionCodes[x][y];
+                    //check if region already in list
+                    RegionRankInfo info = null;
+                    for(int i=0; i<regions.size(); i++)
+                    {
+                        if(regions.get(i).regionCode==code)
+                        {
+                            info=regions.get(i);
+                        }
+                    }
+                    
+                    //region not found: add
+                    if(info==null)
+                    {
+                        info = new RegionRankInfo();
+                        info.regionCode=code;
+                        info.index=regions.size();
+                        regions.add(info);
+                    }
+                    
+                    //add impact to region
+                    if(impacts[x][y]!=GlobalResources.NODATAVALUE)
+                    {
+                        info.currentTotalImpact+=impacts[x][y];
+                        info.nrOfCells++;
+                    }
+                }
+            }
+        }
+        
+        //calculate mean impacts for regions
+        double max=0;
+        for(int i=0; i<regions.size(); i++)
+        {
+            RegionRankInfo info = regions.get(i);
+            info.currentMeanImpact = info.currentTotalImpact/info.nrOfCells;
+            if(info.currentMeanImpact>max) {max=info.currentMeanImpact;}
+        }
+        
+        //sort regions by impact
+        //Collections.sort(regions, new RegionComparator());
+        float[] codes = new float[regions.size()];
+        float[] regionRanks = new float[regions.size()];
+        for(int i=0; i<regions.size();i++)
+        {
+            RegionRankInfo info = regions.get(i);
+            regionRanks[info.index] = (float) (regions.get(i).currentMeanImpact/max);
+            codes[info.index] = info.regionCode;
+        }
+        ArrayList<float[]> results = new ArrayList<float[]>();
+        results.add(codes);
+        results.add(regionRanks);
+        return results;
     }
             
     

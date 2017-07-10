@@ -18,6 +18,7 @@ public class MorrisWorker extends SwingWorker<MorrisSampler,Void>
     public int sampleSize = 0;
     public int workerNr=0;
     private MorrisSampler ms=null;
+    public boolean rankBased=true;
     
         
     public MorrisSampler getMorrisSampler()
@@ -34,7 +35,7 @@ public class MorrisWorker extends SwingWorker<MorrisSampler,Void>
                 ms.setup();
                 //initialized=true;
                 ms.prefix="Thread "+workerNr+": ";
-                ms.processTrajectories(sampleSize);  
+                ms.processTrajectories(sampleSize, rankBased);  
                 GlobalResources.statusWindow.println("Worker thread "+workerNr+ "is done. ");
                 return ms;
     }

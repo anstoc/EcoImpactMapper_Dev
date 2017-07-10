@@ -183,7 +183,7 @@ public class MorrisSampler
     }
     
     //returned array contains one rank for each region
-    public MappingResults calculateOutputs(int[] parameters)	
+    public MappingResults calculateOutputs(int[] parameters, boolean rankBased)	
     {
         
         //ArrayList<SpatialDataLayer> oldStressors=stressors;
@@ -231,7 +231,9 @@ public class MorrisSampler
         
         MappingResults results = new MappingResults();
         //GlobalResources.mappingProject.results.add(simulator.getResult());
-        ArrayList<float[]> regionResults = simulator.getRegionCodesAndRanks(originalRegions.getGrid().getData()); //return region ranks in order in which region codes appear
+        ArrayList<float[]> regionResults; 
+        if(rankBased) {regionResults=simulator.getRegionCodesAndRanks(originalRegions.getGrid().getData());} //return region ranks in order in which region codes appear
+        else {regionResults=simulator.getRegionNormalizedImpact(originalRegions.getGrid().getData());}
         regionCodes = regionResults.get(0);
         results.regionRanks=regionResults.get(1);
         results.stressorRanks=simulator.getStressorRanks();
@@ -535,7 +537,7 @@ public class MorrisSampler
     
     //returns matrix with elemntary effects: [parameter][region]
     
-    public ElementaryEffects calculateElementaryEffects(int[][] orientationMatrix)
+    public ElementaryEffects calculateElementaryEffects(int[][] orientationMatrix,boolean rankBased)
     {
         //orientation matrix: [steps][parameters]
 
@@ -548,7 +550,7 @@ public class MorrisSampler
         {
             int[] pVector=orientationMatrix[step];
             GlobalResources.statusWindow.println("    "+prefix+": Calculating elementary effect for orientation matrix row "+step);
-            MappingResults results = calculateOutputs(pVector); 
+            MappingResults results = calculateOutputs(pVector,rankBased); 
             regionOutputs[step] = results.regionRanks;
             stressorOutputs[step] = results.stressorRanks;
             ecocompOutputs[step] = results.ecocompRanks;
@@ -736,18 +738,19 @@ public class MorrisSampler
         else return new String[0];
     }
     
-    public void processTrajectories(int sampleSize)
+    public void processTrajectories(int sampleSize, boolean rankBased)
     {
-         //[trajectory][parameter][region]
+         //[trajectory][parameter][region]                             
         regionEEMatrices = new float[sampleSize][this.factorValues.length][originalRegions.getGrid().getUniqueDataValues().size()];
         stressorEEMatrices = new float[sampleSize][this.factorValues.length][originalStressors.size()];
         ecocompEEMatrices = new float[sampleSize][this.factorValues.length][originalEcocomps.size()];
         for(int r=0; r<sampleSize; r++)
         {
+            //System.out.println(prefix+": Processing trajectory: "+r);
             GlobalResources.statusWindow.println(prefix+"Processing trajectory " + (r+1) + " out of " + sampleSize);
             int[][] b = getOrientationMatrix();
             GlobalResources.statusWindow.println("    "+ prefix+"Created orientation matrix");
-            ElementaryEffects eE = calculateElementaryEffects(b);
+            ElementaryEffects eE = calculateElementaryEffects(b,rankBased);
             GlobalResources.statusWindow.println("    "+ prefix+"Calculated elementary effects");
             regionEEMatrices[r] = eE.regionEEffects;
             stressorEEMatrices[r]=eE.stressorEEffects;
@@ -762,6 +765,8 @@ public class MorrisSampler
         //[parameter][region/stressor/ecocomp]
         regionMuStarMatrix = new float[this.factorValues.length][originalRegions.getGrid().getUniqueDataValues().size()];
         regionMuMatrix  = new float[this.factorValues.length][originalRegions.getGrid().getUniqueDataValues().size()];
+        int nregs=originalRegions.getGrid().getUniqueDataValues().size();
+        //System.out.println("00000   "+nregs);
         for(int p=0; p<this.factorValues.length; p++)
         {    
             for(int region=0; region<originalRegions.getGrid().getUniqueDataValues().size(); region++)
@@ -770,6 +775,8 @@ public class MorrisSampler
                 float muSum=0;
                 for(int r=0; r<sampleSize; r++)  
                 {   
+                    //System.out.println("p="+p+"region="+region+"r="+r);
+                    //p=0region=2r=2
                     muStarSum+=Math.abs(regionEEMatrices[r][p][region]);
                     muSum+=regionEEMatrices[r][p][region];
                 }
@@ -941,6 +948,24 @@ public class MorrisSampler
             table.addRow(row);
         }
         table.writeToFile(file);
+    }
+    
+    protected float[][] getRegionMuStars()
+    {
+        float[][] muStarMatrix = new float[this.regionMuStarMatrix[0].length][this.parameterNames.length+1];
+        
+        for(int r=0; r<regionMuStarMatrix[0].length; r++)
+        {
+            //fill in first column: regions
+            muStarMatrix[r][0]=regionCodes[r];
+            //fill in for the factors
+            for(int p=0; p<regionMuStarMatrix.length; p++)
+            {
+                muStarMatrix[r][p+1]=regionMuStarMatrix[p][r];
+            }
+        }
+        
+        return muStarMatrix;
     }
     
     private void saveStressorData(float[][] data, String file)
